@@ -1,0 +1,14 @@
+<extension>
+    <modules>
+        <module>
+            <id>cms-site-preset</id>
+            <auto-deploy>true</auto-deploy>
+            <customizations>
+                <customization>
+                    <targetPackageRoot>org.alfresco.modules</targetPackageRoot>
+                    <sourcePackageRoot>com.alfresco.museum.cms</sourcePackageRoot>
+                </customization>
+            </customizations>
+        </module>
+    </modules>
+</extension>

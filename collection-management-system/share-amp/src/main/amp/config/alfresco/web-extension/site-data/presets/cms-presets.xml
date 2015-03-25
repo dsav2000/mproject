@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<presets>
+   <preset id="cms-site-dashboard">
+      <components>
+         <!-- title -->
+         <component>
+            <scope>page</scope>
+            <region-id>title</region-id>
+            <source-id>site/${siteid}/dashboard</source-id>
+            <url>/components/title/collaboration-title</url>
+         </component>
+         <!-- navigation -->
+         <component>
+            <scope>page</scope>
+            <region-id>navigation</region-id>
+            <source-id>site/${siteid}/dashboard</source-id>
+            <url>/components/navigation/collaboration-navigation</url>
+         </component>
+         <!-- dashboard components -->
+         <component>
+            <scope>page</scope>
+            <region-id>component-1-1</region-id>
+            <source-id>site/${siteid}/dashboard</source-id>
+            <url>/components/dashlets/site-profile</url>
+         </component>
+      </components>
+      <pages>
+         <page id="site/${siteid}/dashboard">
+            <title>CMS Site Dashboard</title>
+            <title-id>page.siteDashboard.title</title-id>
+            <description>CMS site's dashboard page</description>
+            <description-id>page.siteDashboard.description</description-id>
+            <template-instance>dashboard-2-columns</template-instance>
+            <authentication>user</authentication>
+            <properties>
+                <sitePages>[{"pageId":"documentlibrary"}]</sitePages>
+            </properties>
+         </page>
+      </pages>
+   </preset>
+</presets>
