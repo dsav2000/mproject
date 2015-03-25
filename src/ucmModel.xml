@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model name="ucm:model" xmlns="http://www.alfresco.org/model/dictionary/1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<description>Museum content management system data type model</description>
+	<author>Dmitry Alexandrov</author>
+	<version>1.0</version>
+
+	<!-- TODO: Create additional property value constraints, like UID constraint? -->
+	<!-- TODO: Adjust index settings (e.g. for ID properties) -->
+	<!-- TODO: References to attachments and references to attachment owners 
+		should be kept in sync -->
+
+	<namespaces>
+		<namespace uri="ucm.model" prefix="ucm" />
+	</namespaces>
+
+	<imports>
+		<!-- Import Alfresco Dictionary Definitions -->
+		<import uri="http://www.alfresco.org/model/dictionary/1.0"
+			prefix="d" />
+		<!-- Import Alfresco Content Domain Model Definitions -->
+		<import uri="http://www.alfresco.org/model/content/1.0" prefix="cm" />
+	</imports>
+
+	<!-- Types definitions -->
+	<types>
+		<type name="ucm:folder">
+			<title>CM folder</title>
+			<parent>cm:folder</parent>
+			<!-- TODO: create child-association for "ucm:documents" -->
+		</type>
+
+		<type name="ucm:site">
+			<title>CM site</title>
+			<parent>ucm:folder</parent>
+			<mandatory-aspects>
+				<aspect>ucm:site_aspect</aspect>
+			</mandatory-aspects>
+		</type>
+
+		<type name="ucm:collection">
+			<title>Collection</title>
+			<parent>ucm:site</parent>
+			<properties>
+				<property name="ucm:collection_name">
+					<title>Collection Name</title>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+				</property>
+				<property name="ucm:collection_id">
+					<title>Collection ID</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+					<!-- TODO: add constraint? WHAT KIND OF CONSTRAINT?  -->
+				</property>
+			</properties>
+
+			<!-- Collection may contain: -->
+			<associations>
+
+				<!-- Artist (as it is child type of type cm:folder) -->
+
+				<!-- Collection (only for alphabetical folders) (as it is child type 
+					of type cm:folder) -->
+
+				<!-- Artifact (as it is child type of type cm:folder) -->
+				<!-- TODO: this may require changes if implementation of usm:artifact 
+					would change -->
+
+				<!-- Document -->
+				<child-association name="cm:contains">
+					<source>
+						<mandatory>false</mandatory>
+						<many>false</many>
+					</source>
+					<target>
+						<class>ucm:document</class>
+						<mandatory>false</mandatory>
+						<many>true</many>
+					</target>
+					<duplicate>false</duplicate>
+					<propagateTimestamps>true</propagateTimestamps>
+				</child-association>
+			</associations>
+
+			<mandatory-aspects>
+				<aspect>ucm:site_aspect</aspect>
+			</mandatory-aspects>
+		</type>
+
+		<type name="ucm:artist">
+			<title>Artist</title>
+			<parent>ucm:collection</parent>
+
+			<!-- TODO: implement references as an association with many="true" ? -->
+			<!-- <associations> <association name="ucm:artist_referenced_objects"> 
+				<source> <mandatory>false</mandatory> <many>true</many> </source> <target> 
+				<class>ucm:artifact</class> <mandatory>false</mandatory> <many>true</many> 
+				</target> </association> </associations> -->
+
+			<properties>
+				<property name="ucm:artist_referenced_objects">
+					<title>Referenced objects</title>
+					<type>d:noderef</type>
+					<multiple>true</multiple>
+					<mandatory>false</mandatory>
+				</property>
+			</properties>
+
+			<!-- Artist collection may contain: -->
+			<associations>
+
+				<!-- Artifact (as it is child type of type cm:folder) -->
+
+				<!-- Document (for the future references) -->
+				<child-association name="cm:contains">
+					<source>
+						<mandatory>false</mandatory>
+						<many>false</many>
+					</source>
+					<target>
+						<class>ucm:document</class>
+						<mandatory>false</mandatory>
+						<many>true</many>
+					</target>
+					<duplicate>false</duplicate>
+					<propagateTimestamps>true</propagateTimestamps>
+				</child-association>
+			</associations>
+
+
+			<mandatory-aspects>
+				<aspect>ucm:artist_aspect</aspect>
+			</mandatory-aspects>
+		</type>
+
+		<type name="ucm:content">
+			<title>UCM Document</title>
+			<parent>cm:content</parent>
+		</type>
+
+		<type name="ucm:document">
+			<title>Document</title>
+			<parent>ucm:content</parent>
+		</type>
+
+		<type name="ucm:attached_file">
+			<title>Reference file</title>
+			<parent>ucm:content</parent> 
+
+			<properties>
+				<property name="ucm:attached_file_name">
+					<title>Name</title>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+				</property>
+
+				<property name="ucm:attached_file_type">
+					<title>Name</title>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+					<constraints>
+						<constraint name="ucm:allowed_attach_types" type="LIST">
+							<parameter name="allowedValues">
+								<list>
+									<value>Artifact</value>
+									<value>Media-type</value>
+									<value>Document</value>
+								</list>
+							</parameter>
+						</constraint>
+					</constraints>
+				</property>
+
+				<property name="ucm:attached_file_location">
+					<title>Location in ECM</title>
+					<type>d:noderef</type>
+					<mandatory>true</mandatory>
+				</property>
+
+				<property name="ucm:attached_file_referenced_to">
+					<title>Referenced to</title>
+					<type>d:noderef</type>
+					<mandatory>true</mandatory>
+					<multiple>true</multiple>
+				</property>
+
+			</properties>
+
+		</type>
+
+		<type name="ucm:artifact">
+			<title>Artifact</title>
+			<parent>ucm:folder</parent> <!-- TODO: or sys:container? -->
+
+			<properties>
+				<property name="ucm:artifact_name">
+					<title>Title</title>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+				</property>
+
+				<property name="ucm:artifact_date">
+					<title>Date</title>
+					<type>d:date</type>
+					<mandatory>true</mandatory>
+				</property>
+
+				<property name="ucm:artifact_medium">
+					<title>Medium</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+					<constraints>
+						<!-- TODO: change constraint in order to load list of allowed values 
+							dynamically -->
+						<constraint name="ucm:allowedMediums" type="LIST">
+							<parameter name="allowedValues">
+								<list>
+									<value>Photo</value>
+									<value>Video</value>
+									<value>Audio</value>
+									<value>Oil on canvas</value>
+									<value>Acrylic on paper</value>
+									<value>Bronze</value>
+									<value>Stoneware</value>
+								</list>
+							</parameter>
+						</constraint>
+					</constraints>
+				</property>
+
+				<property name="ucm:artifact_technique">
+					<title>Technique</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+					<constraints>
+						<!-- TODO: change constraint in order to load list of allowed values 
+							dynamically -->
+						<constraint name="ucm:allowedTechniques" type="LIST">
+							<parameter name="allowedValues">
+								<list>
+									<value>Bosch school</value>
+									<value>Clear glaze and stippled underglaze iron decoration
+									</value>
+									<value>Photo</value>
+								</list>
+							</parameter>
+						</constraint>
+					</constraints>
+				</property>
+
+				<!-- TODO: split property into two: height and width? I do not think we need to because sometimes we need width as well -->
+				<property name="ucm:artifact_dimension">
+					<title>Dimension</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+				</property>
+
+				<property name="ucm:artifact_status">
+					<title>Status</title>
+					<type>d:text</type>
+					<mandatory enforced="exhibition">true</mandatory>
+					<constraints>
+						<!-- TODO: change constraint in order to load list of allowed values 
+							dynamically -->
+						<constraint name="ucm:allowedStatuses" type="LIST">
+							<parameter name="allowedValues">
+								<list>
+									<value>Exhibition</value>
+									<value>Restoration</value>
+									<value>Loan</value>
+								</list>
+							</parameter>
+						</constraint>
+					</constraints>
+				</property>
+
+				<property name="ucm:artifact_location">
+					<title>Current Location</title>
+					<type>d:text</type>
+<!--					
+					<mandatory enforced="exhibition">false</mandatory>
+						TODO: change constraint in order to load list of allowed values 
+							dynamically
+						<constraint name="ucm:artifactLocation" type="LIST">
+							<parameter name="allowedValues">
+								<list>
+									<value>exhibition</value>
+									<value>storage</value>
+								</list>
+							</parameter>
+						</constraint>
+-->						
+				</property>
+
+				<property name="ucm:artifact_collection">
+					<title>Belongs to Collection</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+				</property>
+
+				<property name="ucm:artifact_acquisition_type">
+					<title>Acquisition Type</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+					<constraints>
+						<constraint name="ucm:allowedAcquisitionTypes" type="LIST">
+							<parameter name="allowedValues">
+								<list>
+									<value>Purchased</value>
+									<value>Donated</value>
+								</list>
+							</parameter>
+						</constraint>
+					</constraints>
+				</property>
+
+				<property name="ucm:artifact_donor">
+					<title>Donor Name</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+				</property>
+
+				<property name="ucm:artifact_type">
+					<title>Type</title>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+					<constraints>
+						<!-- TODO: change constraint in order to load list of allowed values 
+							dynamically -->
+						<constraint name="ucm:allowed_artifact_types" type="LIST">
+							<parameter name="allowedValues">
+								<list>
+									<value>Portrait</value>
+									<value>Landscape</value>
+									<value>Fresco</value>
+									<value>Statue</value>
+									<value>Naturmort</value>
+									<value>Jar</value>
+									<value>Sarcophagus</value>
+								</list>
+							</parameter>
+						</constraint>
+					</constraints>
+				</property>
+
+				<property name="ucm:artifact_on_display">
+					<title>On display</title>
+					<type>d:boolean</type>
+					<mandatory>true</mandatory>
+				</property>
+
+				<property name="ucm:artifact_comments">
+					<title>Comments</title>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+				</property>
+
+				<!-- TODO: implement references as an association with many="true" ? -->
+				<!-- <associations> <association name="ucm:artifact_referenced_objects"> 
+					<source> <mandatory>false</mandatory> <many>true</many> </source> <target> 
+					<class>ucm:artifact</class> <mandatory>false</mandatory> <many>true</many> 
+					</target> </association> </associations> -->
+
+				<properties>
+					<property name="ucm:artifact_referenced_objects">
+						<title>Referenced objects</title>
+						<type>d:noderef</type>
+						<multiple>true</multiple>
+						<mandatory>false</mandatory>
+					</property>
+				</properties>
+
+			</properties>
+
+			<associations>
+				<!-- Artifact may contain ucm:attached_file's -->
+				<child-association name="cm:contains">
+					<source>
+						<mandatory>false</mandatory>
+						<many>false</many>
+					</source>
+					<target>
+						<class>ucm:attached_file</class>
+						<mandatory>false</mandatory>
+						<many>true</many>
+					</target>
+					<duplicate>false</duplicate>
+					<propagateTimestamps>true</propagateTimestamps>
+				</child-association>
+			</associations>
+
+			<mandatory-aspects>
+				<aspect>ucm:museum_artifact_aspect</aspect>
+				<aspect>ucm:artist_aspect</aspect>
+<!--
+				<aspect>ucm:indoor_artifact_aspect</aspect>
+				<aspect>ucm:outdoor_artifact_aspect</aspect>
+				<aspect>ucm:archeological_aspect</aspect>
+-->				
+			</mandatory-aspects>
+
+			<aspects>	
+				<aspect name="ucm:indoor_artifact_aspect">
+					<title>Indoor Artifact Aspect</title>
+					<properties>
+						<property name="ucm:indoor_artifact_x">
+							<title>IPS X</title>
+							<type>d:double</type>
+							<mandatory>true</mandatory>
+							<default>0</default>
+							<!-- TODO: constraints, custom data type? -->
+						</property>
+		
+						<property name="ucm:indoor_artifact_y">
+							<title>IPS Y</title>
+							<type>d:double</type>
+							<mandatory>true</mandatory>
+							<default>0</default>
+							<!-- TODO: constraints, custom data type? -->
+						</property>
+					</properties>
+				</aspect>
+		
+				<aspect name="ucm:outdoor_artifact_aspect">
+					<title>Outdoor Artifact Aspect</title>
+					<properties>
+						<property name="ucm:outdoor_artifact_x">
+							<title>GPS Lat.</title>
+							<type>d:double</type>
+							<mandatory>true</mandatory>
+							<default>0</default>
+							<!-- TODO: constraints, custom data type? -->
+						</property>
+		
+						<property name="ucm:outdoor_artifact_y">
+							<title>GPS Lon.</title>
+							<type>d:double</type>
+							<mandatory>true</mandatory>
+							<default>0</default>
+							<!-- TODO: constraints, custom data type? -->
+						</property>
+					</properties>
+				</aspect>
+		
+				<aspect name="ucm:archeological_aspect">
+					<title>Archeological Aspect</title>
+					<properties>
+						<property name="ucm:archeological_aspect_excavated_by">
+							<title>Excavated by</title>
+							<type>d:text</type>
+							<mandatory>false</mandatory>
+							<!-- TODO: custom data type, cm:person? -->
+						</property>
+		
+						<property name="ucm:archeological_aspect_excavated_date">
+							<title>Excavated Date</title>
+							<type>d:date</type>
+							<mandatory>false</mandatory>
+						</property>
+		
+						<property name="ucm:archeological_aspect_excavated_place">
+							<title>Excavated Place</title>
+							<type>d:text</type>
+							<mandatory>false</mandatory>
+							<!-- TODO: custom data type, cm:person? -->
+						</property>
+		
+						<property name="ucm:archeological_aspect_excavated_lat">
+							<title>Excavated Lat.</title>
+							<type>d:double</type>
+							<mandatory>false</mandatory>
+							<!-- TODO: constraints, custom data type? -->
+						</property>
+		
+						<property name="ucm:archeological_aspect_excavated_lon">
+							<title>Excavated Lon.</title>
+							<type>d:double</type>
+							<mandatory>false</mandatory>
+							<!-- TODO: constraints, custom data type? -->
+						</property>
+					</properties>
+				</aspect>
+
+			</aspects>	
+		</type>
+	</types>
+
+	<aspects>
+		<aspect name="ucm:site_aspect">
+			<title>Site Aspect</title>
+			<properties>
+				<property name="ucm:site_aspect_name">
+					<title>Site Name</title>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+					<!-- TODO: constraints? -->
+				</property>
+
+				<property name="ucm:site_aspect_address">
+					<title>Museum Address</title>
+					<type>d:text</type>
+					<!-- TODO: constraints, custom data type? -->
+				</property>
+				<property name="ucm:site_aspect_buildYear">
+					<title>Build Year</title>
+					<type>d:date</type>
+					<!-- TODO: add constraints? -->
+				</property>
+				<property name="ucm:site_aspect_curator">
+					<title>Curator</title>
+					<type>cm:person</type>
+				</property>
+
+				<property name="ucm:site_aspect_type">
+					<title>Site Type</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+					<constraints>
+						<!-- TODO: change constraint in order to load list of allowed values 
+							dynamically -->
+						<constraint name="ucm:site_aspect_allowed_types" type="LIST">
+							<parameter name="allowedValues">
+								<list>
+									<value>Modern</value>
+									<value>Classical</value>
+									<value>Sculture only</value>
+								</list>
+							</parameter>
+						</constraint>
+					</constraints>
+				</property>
+
+				<property name="ucm:site_aspect_contact_person">
+					<title>Contact Person</title>
+					<type>cm:person</type>
+				</property>
+
+				<property name="ucm:site_aspect_contact_email">
+					<title>Contact Email</title>
+					<type>cm:email</type>
+				</property>
+
+				<property name="ucm:site_aspect_contact_tweed">
+					<title>Contact Tweed</title>
+					<type>d:text</type>
+					<!-- TODO: constraints, custom data type? -->
+				</property>
+
+				<property name="ucm:site_aspect_contact_phone">
+					<title>Contact Phone</title>
+					<type>cm:text</type>
+				</property>
+			</properties>
+		</aspect>
+
+		<aspect name="ucm:museum_artifact_aspect">
+			<title>Musem Artifact Aspect</title>
+			<properties>
+				<property name="ucm:museum_number">
+					<title>Museum Number</title>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+					<!-- TODO: constraints. E.g. "260:1 to 3-1877" -->
+				</property>
+
+				<property name="ucm:museum_artifact_gallery_location">
+					<title>Gallery Location</title>
+					<type>d:text</type>
+					<!-- TODO: constraints. E.g. "room 146, case 6, shelf 1" -->
+				</property>
+			</properties>
+		</aspect>
+
+		<aspect name="ucm:artist_aspect">
+			<title>Artist Aspect</title>
+			<properties>
+				<property name="ucm:artist_name">
+					<title>Artist Name</title>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+				</property>
+
+				<property name="ucm:artist_nickname">
+					<title>Artist Nick Name</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+				</property>
+
+				<property name="ucm:artist_dob">
+					<title>Date of Birth</title>
+					<type>d:date</type>
+					<mandatory>false</mandatory>
+				</property>
+
+				<property name="ucm:artist_birth_place">
+					<title>Birth Place</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+					<!-- TODO: constraints, custom data type? -->
+				</property>
+
+				<property name="ucm:artist_dod">
+					<title>Date of Death</title>
+					<type>d:date</type>
+					<mandatory>false</mandatory>
+				</property>
+
+				<property name="ucm:artist_death_place">
+					<title>Death Place</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+					<!-- TODO: constraints, custom data type? -->
+				</property>
+
+				<property name="ucm:artist_study_workshop">
+					<title>Studied at Workshop</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+					<multiple>true</multiple>
+				</property>
+
+				<property name="ucm:artist_live_city">
+					<title>Lived Cities</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory> <!-- TODO: true? -->
+					<multiple>true</multiple>
+				</property>
+
+				<property name="ucm:artist_period">
+					<title>Period</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+					<multiple>true</multiple>
+					<constraints>
+						<!-- TODO: check if this constraint works fine with multiple = true -->
+						<!-- TODO: change constraint in order to load list of allowed values 
+							dynamically -->
+						<constraint name="ucm:allowed_art_periods" type="LIST">
+							<parameter name="allowedValues">
+								<list>
+									<value>NA</value>
+									<value>Renaissance</value>
+									<value>Renaissance</value>
+									<value>Northern Renaissance</value>
+									<value>Post-impressionists</value>
+								</list>
+							</parameter>
+						</constraint>
+					</constraints>
+				</property>
+
+				<property name="ucm:artist_comments">
+					<title>Comments</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+				</property>
+			</properties>
+		</aspect>
+	</aspects>
+</model>
