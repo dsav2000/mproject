@@ -31,3 +31,6 @@ In short:
 
 ###Build and run
 Command line script run.bat (run.sh for Unix) may be used to build project and start it. Maven command line arguments used to build/run/package project may be found here: http://docs.alfresco.com/5.0/concepts/alfresco-sdk-usage-aio.html
+
+###Content model deployment
+Custom content model file may be added by path `collection-management-system/repo-amp/src/main/amp/config/alfresco/extension/model`. It should be then registered in Spring config file, e.g. `collection-management-system-clean/repo-amp/src/main/amp/config/alfresco/module/repo-amp/module-context.xml`. For details see https://wiki.alfresco.com/wiki/Data_Dictionary_Guide#Model_Bootstrapping
