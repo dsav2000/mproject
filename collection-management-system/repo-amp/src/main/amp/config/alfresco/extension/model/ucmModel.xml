@@ -192,19 +192,19 @@
 
 		<type name="ucm:artifact">
 			<title>Artifact</title>
-			<parent>ucm:folder</parent> <!-- TODO: or sys:container? -->
+			<parent>ucm:content</parent> <!-- TODO: ucm:folder or sys:container? -->
 
 			<properties>
 				<property name="ucm:artifact_name">
 					<title>Title</title>
 					<type>d:text</type>
-					<mandatory>true</mandatory>
+					<mandatory>false</mandatory>
 				</property>
 
 				<property name="ucm:artifact_date">
 					<title>Date</title>
 					<type>d:date</type>
-					<mandatory>true</mandatory>
+					<mandatory>false</mandatory>
 				</property>
 
 				<property name="ucm:artifact_medium">
@@ -259,7 +259,7 @@
 				<property name="ucm:artifact_status">
 					<title>Status</title>
 					<type>d:text</type>
-					<mandatory enforced="true">true</mandatory>
+					<mandatory enforced="false">false</mandatory>
 					<constraints>
 						 <!--TODO: change constraint in order to load list of allowed values 
 							dynamically--> 
@@ -312,7 +312,7 @@
 				<property name="ucm:artifact_type">
 					<title>Type</title>
 					<type>d:text</type>
-					<mandatory>true</mandatory>
+					<mandatory>false</mandatory>
 					<constraints>
 						<!-- TODO: change constraint in order to load list of allowed values 
 							dynamically -->
@@ -335,13 +335,13 @@
 				<property name="ucm:artifact_on_display">
 					<title>On display</title>
 					<type>d:boolean</type>
-					<mandatory>true</mandatory>
+					<mandatory>false</mandatory>
 				</property>
 
 				<property name="ucm:artifact_comments">
 					<title>Comments</title>
 					<type>d:text</type>
-					<mandatory>true</mandatory>
+					<mandatory>false</mandatory>
 				</property>
 
 				<!-- TODO: implement references as an association with many="true" ? -->
@@ -389,7 +389,7 @@
 
 		<type name="ucm:license_file">
 			<title>Reference file</title>
-			<parent>cm:content</parent> <!-- TODO: no instructions in specification! -->
+			<parent>ucm:content</parent> <!-- TODO: no instructions in specification! -->
 
 			<properties>
 				<property name="ucm:license_document_language">

@@ -4,7 +4,7 @@
     <groupId>com.alfresco.museum</groupId>
     <artifactId>collection-management-system</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Alfresco Repository and Share Quickstart with database and an embedded runner.</name>
+    <name>Museum Collection Management System main project with database and an embedded runner.</name>
     <description>This All-in-One project allows to manage all the components involved in Alfresco development (Repo, Share, Solr, AMPs) in one project</description>
     <packaging>pom</packaging>    
 
@@ -64,7 +64,7 @@
                 <!-- While running in rapid dev mode with -Prun, we don't want amp web resources 
                     to be added to the war, so we can load them directly from the AMP project (see 
                     runner/tomcat/context-*.xml for more details) -->
-                <maven.alfresco.includeWebResources>false</maven.alfresco.includeWebResources>
+                <maven.alfresco.includeWebResources>true</maven.alfresco.includeWebResources>
             </properties>
         </profile>
          <!-- RM profile, manually activated, automatically adds support for RM development (dependencies) and install the RM amps in the WARs -->

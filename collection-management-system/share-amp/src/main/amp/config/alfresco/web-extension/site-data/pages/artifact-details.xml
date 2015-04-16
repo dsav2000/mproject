@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>Artifact Details</title>
+   <title-id>page.artifactDetails.title</title-id>
+   <description>Artifact details</description>
+   <description-id>page.artifactDetails.description</description-id>
+   <template-instance>artifact-details</template-instance>
+   <authentication>user</authentication>
+</page>

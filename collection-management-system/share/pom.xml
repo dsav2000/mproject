@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>share</artifactId>
-    <name>Alfresco Share WAR Aggregator</name>
+    <artifactId>collection-management-system-share</artifactId>
+    <name>Museum Collection Management System Share WAR Aggregator</name>
     <packaging>war</packaging>
     <description>Alfresco Share aggregator, installs your Share AMPs in the Share WAR for aggregation and easy deployment purposes</description>
 
@@ -23,7 +23,7 @@
         <!-- Demonstrating the dependency / installation of the share AMP developed in the 'share-amp' module -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>share-amp</artifactId>
+            <artifactId>collection-management-system-share-amp</artifactId>
             <version>${project.version}</version>
             <type>amp</type>
         </dependency>
@@ -53,7 +53,7 @@
                         <!-- Add / sort your AMPs here -->
                         <overlay>
                             <groupId>${project.groupId}</groupId>
-                            <artifactId>share-amp</artifactId>
+                            <artifactId>collection-management-system-share-amp</artifactId>
                             <type>amp</type>
                         </overlay>
                     </overlays>

@@ -8,14 +8,11 @@
                 http://www.hazelcast.com/schema/config
                 http://www.hazelcast.com/schema/config/hazelcast-spring.xsd">
    
-   <!--bean id="webscripts.resources" class="org.alfresco.i18n.ResourceBundleBootstrapComponent"-->
-   <bean id="webscripts.resources" class="org.springframework.extensions.surf.util.ResourceBundleBootstrapComponent">
+   <bean id="ucm.resources" class="org.springframework.extensions.surf.util.ResourceBundleBootstrapComponent">
       <property name="resourceBundles">
          <list>
-            <value>webscripts.messages.webscripts</value>
-            <value>alfresco.messages.common</value>
-            <value>alfresco.messages.slingshot</value>
             <value>alfresco.web-extension.messages.cms-site</value>
+            <value>alfresco.web-extension.messages.ucmModel</value>
          </list>
       </property>
    </bean>

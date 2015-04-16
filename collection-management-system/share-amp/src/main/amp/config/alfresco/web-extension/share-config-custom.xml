@@ -1,0 +1,456 @@
+<alfresco-config>
+
+	<!-- Global config section -->
+	<config replace="true">
+		<flags>
+			<!-- Developer debugging setting to turn on DEBUG mode for client scripts 
+				in the browser -->
+			<client-debug>false</client-debug>
+
+			<!-- LOGGING can always be toggled at runtime when in DEBUG mode (Ctrl, 
+				Ctrl, Shift, Shift). This flag automatically activates logging on page load. -->
+			<client-debug-autologging>false</client-debug-autologging>
+		</flags>
+	</config>
+
+	<config evaluator="string-compare" condition="WebFramework">
+		<web-framework>
+			<!-- SpringSurf Autowire Runtime Settings -->
+			<!-- Developers can set mode to 'development' to disable; SpringSurf caches, 
+				FreeMarker template caching and Rhino JavaScript compilation. -->
+			<autowire>
+				<!-- Pick the mode: "production" or "development" -->
+				<mode>production</mode>
+			</autowire>
+
+			<!-- Allows extension modules with <auto-deploy> set to true to be automatically 
+				deployed -->
+			<module-deployment>
+				<mode>manual</mode>
+				<enable-auto-deploy-modules>true</enable-auto-deploy-modules>
+			</module-deployment>
+		</web-framework>
+	</config>
+
+	<!-- Document Library config section -->
+	<config evaluator="string-compare" condition="DocumentLibrary">
+		<!-- Used by the "Manage Aspects" action For custom aspects, remember to 
+			also add the relevant i18n string(s) cm_myaspect=My Aspect -->
+		<aspects>
+			<!-- Aspects that a user can see -->
+			<visible>
+				<aspect name="cm:dublincore" />
+				<aspect name="cm:versionable" />
+				<aspect name="cm:taggable" />
+				<aspect name="exif:exif" />
+
+				<aspect name="ucm:site_aspect" />
+				<aspect name="ucm:indoor_artifact_aspect" />
+				<aspect name="ucm:outdoor_artifact_aspect" />
+				<aspect name="ucm:archeological_aspect" />
+				<aspect name="ucm:museum_artifact_aspect" />
+				<aspect name="ucm:artist_aspect" />
+				<aspect name="ucm:project_aspect" />
+			</visible>
+
+			<!-- Aspects that a user can add. Same as "visible" if left empty -->
+			<addable>
+			</addable>
+
+			<!-- Aspects that a user can remove. Same as "visible" if left empty -->
+			<removeable>
+			</removeable>
+		</aspects>
+
+		<!-- Used by the "Change Type" action Define valid subtypes using the following 
+			example: <type name="cm:content"> <subtype name="cm:mysubtype" /> </type> 
+			Remember to also add the relevant i18n string(s): cm_mysubtype=My SubType -->
+		<types>
+			<type name="cm:content">
+				<subtype name="ucm:artifact" />
+			</type>
+
+			<type name="ucm:artifact"></type>
+
+			<type name="cm:folder"></type>
+
+			<type name="trx:transferTarget">
+				<subtype name="trx:fileTransferTarget" />
+			</type>
+		</types>
+
+		<create-content>
+			<content id="artifact" mimetype="image/jpeg" label="menu.create-content.ucm_artifact" itemid="ucm:artifact" />
+			<content id="content" mimetype="text/plain" label="Content" itemid="cm:content" />
+		</create-content>
+	</config>
+
+
+	<!-- ucm:artifact type (creating nodes) -->
+	<config evaluator="model-type" condition="ucm:artifact">
+		<forms>
+			<!-- Default Create Content form -->
+			<!-- TODO: custom form -->
+			<!-- <edit-form template="/com/alfresco/museum/cms/form/artifact-form.ftl"/> -->
+			<form>
+				<edit-form template="/com/alfresco/museum/cms/form/tab-edit-form.ftl"/>
+				<field-visibility>
+					<show id="cm:name" />
+					<show id="cm:title" />
+					
+					<show id="ucm:artifact_name"/>
+					<show id="ucm:artist_name" />
+					<show id="ucm:museum_number" />
+					<show id="ucm:artifact_date" />
+					<show id="ucm:artifact_medium" />
+					<show id="ucm:artifact_technique" />
+					<show id="ucm:artifact_dimension" />
+					<show id="ucm:artifact_status" />
+					<show id="ucm:artifact_location" />
+					<show id="ucm:artifact_collection" />
+					<show id="ucm:artifact_acquisition_type" />
+					<show id="ucm:artifact_donor" />
+					<show id="ucm:artifact_type" />
+					<show id="ucm:artifact_on_display" />
+					<show id="ucm:artifact_comments" />
+					<show id="ucm:artifact_referenced_objects" />
+					<show id="ucm:artist_nickname" />
+					<show id="ucm:artist_dob" />
+					<show id="ucm:artist_birth_place" />
+					<show id="ucm:artist_dod" />
+					<show id="ucm:artist_death_place" />
+					<show id="ucm:artist_study_workshop" />
+					<show id="ucm:artist_live_city" />
+					<show id="ucm:artist_period" />
+					<show id="ucm:artist_comments" />
+					<show id="ucm:museum_artifact_gallery_location" />
+					
+					<!-- <show id="ucm:artifact_referenced_objects" /> -->
+
+					<!-- cm:dublincore aspect -->
+					<!--<show id="cm:publisher" />
+					<show id="cm:contributor" />
+					<show id="cm:type" />
+					<show id="cm:identifier" />
+					<show id="cm:dcsource" />
+					<show id="cm:coverage" />
+					<show id="cm:rights" />
+					<show id="cm:subject" /> -->
+				</field-visibility>
+				<appearance>
+					<set id="artifactMain" appearance="panel" label="Main artifact properties" />
+					<set id="artifactRest" appearance="panel" label="Additional properties" />
+						<set id="artifactAdditional" parent="artifactRest" appearance="accordion" label="Artifact" />
+						<set id="artifactArtist" parent="artifactRest" appearance="accordion" label="Artist" />
+						<set id="artifactMuseum" parent="artifactRest" appearance="accordion" label="Museum" />
+					<!-- TODO: rest of aspects. And properties? -->
+					<field id="cm:name">
+						<control>
+							<control-param name="maxLength">255</control-param>
+						</control>
+					</field>
+<!-- 					<field id="cm:title">
+						<control template="/org/alfresco/components/form/controls/textfield.ftl" />
+					</field> -->
+<!-- 					<field id="cm:content" label-id="">
+						<control>
+							<control-param name="editorAppearance">explorer</control-param>
+						</control>
+					</field> -->
+					<field id="ucm:artifact_name" set="artifactMain" />
+					<field id="ucm:artist_name" set="artifactMain" />
+					<field id="ucm:museum_number" set="artifactMain" />
+					
+					<field id="ucm:artifact_date" set="artifactMain" />
+					<field id="ucm:artifact_medium" set="artifactMain" />
+					<field id="ucm:artifact_technique" set="artifactMain" />
+					<field id="ucm:artifact_dimension" set="artifactMain" />
+					<field id="ucm:artifact_status" set="artifactMain" />
+					
+					<field id="ucm:artifact_location" set="artifactAdditional" />
+					<field id="ucm:artifact_collection" set="artifactAdditional" />
+					<field id="ucm:artifact_acquisition_type" set="artifactAdditional" />
+					<field id="ucm:artifact_donor" set="artifactAdditional" />
+					<field id="ucm:artifact_type" set="artifactAdditional" />
+					<field id="ucm:artifact_on_display" set="artifactAdditional" />
+					<field id="ucm:artifact_comments" set="artifactAdditional" />
+					<field id="ucm:artifact_referenced_objects" set="artifactAdditional" />
+					
+					<field id="ucm:artist_nickname" set="artifactArtist" />
+					<field id="ucm:artist_dob" set="artifactArtist" />
+					<field id="ucm:artist_birth_place" set="artifactArtist" />
+					<field id="ucm:artist_dod" set="artifactArtist" />
+					<field id="ucm:artist_death_place" set="artifactArtist" />
+					<field id="ucm:artist_study_workshop" set="artifactArtist" />
+					<field id="ucm:artist_live_city" set="artifactArtist" />
+					<field id="ucm:artist_period" set="artifactArtist" />
+					<field id="ucm:artist_comments" set="artifactArtist" />
+					
+					<field id="ucm:museum_artifact_gallery_location" set="artifactMuseum" />
+				</appearance>
+			</form>
+			<!-- Search form -->
+			<form id="search">
+				<field-visibility>
+					<!-- <show id="cm:name" /> <show id="cm:title" force="true" /> <show 
+						id="cm:description" force="true" /> <show id="mimetype" /> <show id="cm:modified" 
+						/> <show id="cm:modifier" /> -->
+
+					<show id="cm:name" />
+					<show id="ucm:artifact_name" />
+					<show id="ucm:artist_name" />
+					<show id="ucm:museum_number" />
+				</field-visibility>
+				<appearance>
+					<field id="cm:name" />
+					<field id="ucm:artifact_name" />
+					<field id="ucm:artist_name" />
+					<field id="ucm:museum_number" />
+					<!-- <field id="mimetype"> <control template="/org/alfresco/components/form/controls/mimetype.ftl" 
+						/> </field> <field id="cm:modifier"> <control> <control-param name="forceEditable">true</control-param> 
+						</control> </field> <field id="cm:modified"> <control template="/org/alfresco/components/form/controls/daterange.ftl" 
+						/> </field> -->
+				</appearance>
+			</form>
+		</forms>
+	</config>
+
+	<!-- ucm:artifact type (existing nodes) -->
+	<config evaluator="node-type" condition="ucm:artifact">
+		<forms>
+			<!-- Default form configuration for the ucm:artifact type -->
+			<form>
+				<edit-form template="/com/alfresco/museum/cms/form/tab-edit-form.ftl"/>
+				<field-visibility>
+					<show id="cm:name" />
+					<show id="cm:title" />
+					
+					<show id="ucm:artifact_name"/>
+					<show id="ucm:artist_name" />
+					<show id="ucm:museum_number" />
+					<show id="ucm:artifact_date" />
+					<show id="ucm:artifact_medium" />
+					<show id="ucm:artifact_technique" />
+					<show id="ucm:artifact_dimension" />
+					<show id="ucm:artifact_status" />
+					<show id="ucm:artifact_location" />
+					<show id="ucm:artifact_collection" />
+					<show id="ucm:artifact_acquisition_type" />
+					<show id="ucm:artifact_donor" />
+					<show id="ucm:artifact_type" />
+					<show id="ucm:artifact_on_display" />
+					<show id="ucm:artifact_comments" />
+					<show id="ucm:artifact_referenced_objects" />
+					<show id="ucm:artist_nickname" />
+					<show id="ucm:artist_dob" />
+					<show id="ucm:artist_birth_place" />
+					<show id="ucm:artist_dod" />
+					<show id="ucm:artist_death_place" />
+					<show id="ucm:artist_study_workshop" />
+					<show id="ucm:artist_live_city" />
+					<show id="ucm:artist_period" />
+					<show id="ucm:artist_comments" />
+					<show id="ucm:museum_artifact_gallery_location" />
+					
+					<!-- <show id="ucm:artifact_referenced_objects" /> -->
+
+					<!-- cm:dublincore aspect -->
+					<!--<show id="cm:publisher" />
+					<show id="cm:contributor" />
+					<show id="cm:type" />
+					<show id="cm:identifier" />
+					<show id="cm:dcsource" />
+					<show id="cm:coverage" />
+					<show id="cm:rights" />
+					<show id="cm:subject" /> -->
+				</field-visibility>
+				<appearance>
+					<set id="artifactMain" appearance="fieldset" label="Main artifact properties" />
+					<set id="artifactRest" appearance="panel" label="Additional properties" />
+						<set id="artifactAdditional" parent="artifactRest" appearance="accordion" label="Artifact" />
+						<set id="artifactArtist" parent="artifactRest" appearance="accordion" label="Artist" />
+						<set id="artifactMuseum" parent="artifactRest" appearance="accordion" label="Museum" />
+					<!-- TODO: rest of aspects. And properties? -->
+					<field id="cm:name">
+						<control>
+							<control-param name="maxLength">255</control-param>
+						</control>
+					</field>
+<!-- 					<field id="cm:title">
+						<control template="/org/alfresco/components/form/controls/textfield.ftl" />
+					</field> -->
+<!-- 					<field id="cm:content" label-id="">
+						<control>
+							<control-param name="editorAppearance">explorer</control-param>
+						</control>
+					</field> -->
+					<field id="ucm:artifact_name" set="artifactMain" />
+					<field id="ucm:artist_name" set="artifactMain" />
+					<field id="ucm:museum_number" set="artifactMain" />
+					
+					<field id="ucm:artifact_date" set="artifactMain" />
+					<field id="ucm:artifact_medium" set="artifactMain" />
+					<field id="ucm:artifact_technique" set="artifactMain" />
+					<field id="ucm:artifact_dimension" set="artifactMain" />
+					<field id="ucm:artifact_status" set="artifactMain" />
+					
+					<field id="ucm:artifact_location" set="artifactAdditional" />
+					<field id="ucm:artifact_collection" set="artifactAdditional" />
+					<field id="ucm:artifact_acquisition_type" set="artifactAdditional" />
+					<field id="ucm:artifact_donor" set="artifactAdditional" />
+					<field id="ucm:artifact_type" set="artifactAdditional" />
+					<field id="ucm:artifact_on_display" set="artifactAdditional" />
+					<field id="ucm:artifact_comments" set="artifactAdditional" />
+					<field id="ucm:artifact_referenced_objects" set="artifactAdditional" />
+					
+					<field id="ucm:artist_nickname" set="artifactArtist" />
+					<field id="ucm:artist_dob" set="artifactArtist" />
+					<field id="ucm:artist_birth_place" set="artifactArtist" />
+					<field id="ucm:artist_dod" set="artifactArtist" />
+					<field id="ucm:artist_death_place" set="artifactArtist" />
+					<field id="ucm:artist_study_workshop" set="artifactArtist" />
+					<field id="ucm:artist_live_city" set="artifactArtist" />
+					<field id="ucm:artist_period" set="artifactArtist" />
+					<field id="ucm:artist_comments" set="artifactArtist" />
+					
+					<field id="ucm:museum_artifact_gallery_location" set="artifactMuseum" />
+				</appearance>
+			</form>
+
+			<!-- TODO -->
+			<!-- Document Library pop-up Edit Metadata form -->
+			<form id="doclib-simple-metadata">
+				<field-visibility>
+					<show id="cm:name" />
+					<show id="ucm:artifact_name" />
+					<show id="ucm:artist_name" />
+					<show id="ucm:museum_number" />
+				</field-visibility>
+				<edit-form template="../documentlibrary/forms/doclib-simple-metadata.ftl" />
+				<appearance>
+					<field id="cm:name" />
+					<field id="ucm:artifact_name" />
+					<field id="ucm:artist_name" />
+					<field id="ucm:museum_number" />
+				</appearance>
+			</form>
+
+			<!-- TODO -->
+			<!-- Document Library Inline Edit form -->
+			<form id="doclib-inline-edit">
+				<field-visibility>
+					<show id="cm:name" />
+					<show id="ucm:artifact_name" />
+					<show id="ucm:artist_name" />
+					<show id="ucm:museum_number" />
+				</field-visibility>
+				<appearance>
+					<field id="cm:name" />
+					<field id="ucm:artifact_name" />
+					<field id="ucm:artist_name" />
+					<field id="ucm:museum_number" />
+				</appearance>
+			</form>
+	</forms>
+</config>
+
+	<config evaluator="model-type" condition="my:example">
+		<forms>
+			<form>
+				<field-visibility>
+					<show id="cm:name" />
+					<show id="my:text" />
+					<show id="my:mltext" />
+					<show id="my:boolean" />
+					<show id="my:int" />
+					<show id="my:long" />
+					<show id="my:double" />
+					<show id="my:float" />
+					<show id="my:status" />
+					<show id="my:restricted-string" />
+					<show id="my:date" />
+					<show id="my:dateTime" />
+				</field-visibility>
+				<appearance>
+					<set id="text" appearance="fieldset" label="Text Fields" />
+					<set id="number" appearance="panel" label="Number Fields" />
+					<set id="date" appearance="fieldset" label="Date Fields" />
+
+					<field id="cm:name" set="text" />
+					<field id="my:text" set="text" />
+					<field id="my:mltext" set="text" />
+					<field id="my:boolean" set="text" />
+
+					<field id="my:int" set="number" />
+					<field id="my:long" set="number" />
+					<field id="my:double" set="number" />
+					<field id="my:float" set="number" />
+
+					<field id="my:date" set="date" />
+					<field id="my:dateTime" set="date" />
+				</appearance>
+			</form>
+		</forms>
+	</config>
+
+	<config evaluator="string-compare" condition="DocumentDetails"
+		replace="true">
+		<document-details>
+			<!-- display web previewer on document details page -->
+			<display-web-preview>true</display-web-preview>
+		</document-details>
+		
+		<!-- Sorting Options The 'sort' config element contains the name of the 
+			content model field to sort against and can be of the form: - short QName 
+			string e.g. "cm:name" - any other valid sortable fts-alfresco special field 
+			e.g. "TYPE" The field can be optionally followed by |true or |false to indicate 
+			sort direction, where true = ascending, false = descending -->
+		<sorting>
+			<sort label="label.name">cm:name|true</sort>
+			<sort label="label.popularity">cm:likesRatingSchemeCount|false</sort>
+			<sort label="label.title">cm:title</sort>
+			<sort label="label.description">cm:description</sort>
+			<sort label="label.created">cm:created</sort>
+			<sort label="label.creator">cm:creator</sort>
+			<sort label="label.modified">cm:modified</sort>
+			<sort label="label.modifier">cm:modifier</sort>
+			<sort label="label.size">cm:content.size</sort>
+			<sort label="label.mimetype">cm:content.mimetype</sort>
+			<sort label="label.type">TYPE</sort>
+		</sorting>
+	</config>
+   
+   <!-- Document Library config section -->
+   <config evaluator="string-compare" condition="DocumentLibraryViews" replace="true">
+         <!-- The view renderers that will be available as options in DocumentLibrary, My Files, Shared Files and 
+              Repository pages. This list can be added to or removed to control the views displayed. Use the a module
+              that provides evaluated configuration to have the options change based on criteria (e.g. site name, 
+              site preset, user group, etc)
+              
+              Remember to include all dependencies, even those duplicated by another view - Surf will ensure only 
+              one version of each is loaded - but if a view is removed that depends on a dependency defined in another
+              view then it will cause an error. 
+           -->
+      <view-renderers>
+<!--          <view-renderer id="simple" iconClass="simple" label="button.view.simple" index="10" widget="Alfresco.DocumentListSimpleViewRenderer">
+            <dependencies>
+               <js src="components/documentlibrary/documentlist-view-detailed.js" />
+               <js src="components/documentlibrary/documentlist-view-simple.js" />
+            </dependencies>
+         </view-renderer> -->
+         <view-renderer id="detailed" iconClass="detailed" label="button.view.detailed" index="20" widget="Alfresco.DocumentListViewRenderer">
+            <dependencies>
+               <js src="components/documentlibrary/documentlist-view-detailed.js" />
+            </dependencies>
+         </view-renderer>
+         <view-renderer id="gallery" iconClass="gallery" label="button.view.gallery" index="30" widget="Alfresco.DocumentListGalleryViewRenderer">
+            <dependencies>
+               <js src="components/documentlibrary/documentlist-view-detailed.js" />
+               <js src="components/documentlibrary/documentlist-view-gallery.js" />
+               <js src="yui/slider/slider.js" />
+            </dependencies>
+         </view-renderer>
+      </view-renderers>
+   </config>
+   
+</alfresco-config>

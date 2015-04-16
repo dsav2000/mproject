@@ -13,8 +13,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>repo</artifactId>
-    <name>Alfresco Repository WAR Aggregator</name>
+    <artifactId>collection-management-system-repo</artifactId>
+    <name>Museum Collection Management System Repository WAR Aggregator</name>
     <packaging>war</packaging>
     <description>Alfresco Repository aggregator, installs your repository AMPs in the Alfresco WAR for aggregation and easy deployment purposes</description>
 
@@ -34,7 +34,7 @@
         <!-- Demonstrating the dependency / installation of the repo AMP developed in the 'repo-amp' module -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>repo-amp</artifactId>
+            <artifactId>collection-management-system-repo-amp</artifactId>
             <version>${project.version}</version>
             <type>amp</type>
         </dependency>
@@ -74,7 +74,7 @@
                         <!-- Add / sort your AMPs here -->
                         <overlay>
                             <groupId>${project.groupId}</groupId>
-                            <artifactId>repo-amp</artifactId>
+                            <artifactId>collection-management-system-repo-amp</artifactId>
                             <type>amp</type>
                         </overlay>
                         <!--

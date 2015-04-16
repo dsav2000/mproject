@@ -70,7 +70,7 @@
                                 </webapp>
                                 <webapp>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>repo</artifactId>
+                                    <artifactId>collection-management-system-repo</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
@@ -79,7 +79,7 @@
                                 </webapp>
                                 <webapp>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>share</artifactId>
+                                    <artifactId>collection-management-system-share</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
