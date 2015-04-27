@@ -5,7 +5,7 @@
 		<flags>
 			<!-- Developer debugging setting to turn on DEBUG mode for client scripts 
 				in the browser -->
-			<client-debug>false</client-debug>
+			<client-debug>true</client-debug>
 
 			<!-- LOGGING can always be toggled at runtime when in DEBUG mode (Ctrl, 
 				Ctrl, Shift, Shift). This flag automatically activates logging on page load. -->
@@ -81,22 +81,27 @@
 
 		<create-content>
 			<content id="artifact" mimetype="image/jpeg" label="menu.create-content.ucm_artifact" itemid="ucm:artifact" />
-			<content id="content" mimetype="text/plain" label="Content" itemid="cm:content" />
 		</create-content>
+	
+		<metadata-templates>
+			<template id="isArtifact">
+				<evaluator>evaluator.doclib.metadata.isArtifact</evaluator>
+				<line index="10" id="date" view="detailed">{date}{size}</line>
+			</template>
+		</metadata-templates>
 	</config>
 
 
 	<!-- ucm:artifact type (creating nodes) -->
 	<config evaluator="model-type" condition="ucm:artifact">
 		<forms>
-			<!-- Default Create Content form -->
-			<!-- TODO: custom form -->
-			<!-- <edit-form template="/com/alfresco/museum/cms/form/artifact-form.ftl"/> -->
+			<!-- Default form configuration for the ucm:artifact type -->
 			<form>
-				<edit-form template="/com/alfresco/museum/cms/form/tab-edit-form.ftl"/>
+				<edit-form template="/com/alfresco/museum/ucm/form/ucm-artifact-props-form.ftl"/>
 				<field-visibility>
 					<show id="cm:name" />
 					<show id="cm:title" />
+					<show id="cm:content" force="true"/>
 					
 					<show id="ucm:artifact_name"/>
 					<show id="ucm:artist_name" />
@@ -138,7 +143,7 @@
 					<show id="cm:subject" /> -->
 				</field-visibility>
 				<appearance>
-					<set id="artifactMain" appearance="panel" label="Main artifact properties" />
+					<set id="artifactMain" appearance="fieldset" label="Main artifact properties" />
 					<set id="artifactRest" appearance="panel" label="Additional properties" />
 						<set id="artifactAdditional" parent="artifactRest" appearance="accordion" label="Artifact" />
 						<set id="artifactArtist" parent="artifactRest" appearance="accordion" label="Artist" />
@@ -189,13 +194,29 @@
 					<field id="ucm:museum_artifact_gallery_location" set="artifactMuseum" />
 				</appearance>
 			</form>
-			<!-- Search form -->
-			<form id="search">
-				<field-visibility>
-					<!-- <show id="cm:name" /> <show id="cm:title" force="true" /> <show 
-						id="cm:description" force="true" /> <show id="mimetype" /> <show id="cm:modified" 
-						/> <show id="cm:modifier" /> -->
 
+			<!-- TODO -->
+			<!-- Document Library pop-up Edit Metadata form -->
+			<form id="doclib-simple-metadata">
+				<field-visibility>
+					<show id="cm:name" />
+					<show id="ucm:artifact_name" />
+					<show id="ucm:artist_name" />
+					<show id="ucm:museum_number" />
+				</field-visibility>
+				<edit-form template="../documentlibrary/forms/doclib-simple-metadata.ftl" />
+				<appearance>
+					<field id="cm:name" />
+					<field id="ucm:artifact_name" />
+					<field id="ucm:artist_name" />
+					<field id="ucm:museum_number" />
+				</appearance>
+			</form>
+
+			<!-- TODO -->
+			<!-- Document Library Inline Edit form -->
+			<form id="doclib-inline-edit">
+				<field-visibility>
 					<show id="cm:name" />
 					<show id="ucm:artifact_name" />
 					<show id="ucm:artist_name" />
@@ -206,10 +227,6 @@
 					<field id="ucm:artifact_name" />
 					<field id="ucm:artist_name" />
 					<field id="ucm:museum_number" />
-					<!-- <field id="mimetype"> <control template="/org/alfresco/components/form/controls/mimetype.ftl" 
-						/> </field> <field id="cm:modifier"> <control> <control-param name="forceEditable">true</control-param> 
-						</control> </field> <field id="cm:modified"> <control template="/org/alfresco/components/form/controls/daterange.ftl" 
-						/> </field> -->
 				</appearance>
 			</form>
 		</forms>
@@ -220,10 +237,11 @@
 		<forms>
 			<!-- Default form configuration for the ucm:artifact type -->
 			<form>
-				<edit-form template="/com/alfresco/museum/cms/form/tab-edit-form.ftl"/>
+				<edit-form template="/com/alfresco/museum/ucm/form/ucm-artifact-props-form.ftl"/>
 				<field-visibility>
 					<show id="cm:name" />
 					<show id="cm:title" />
+					<show id="cm:content" force="true"/>
 					
 					<show id="ucm:artifact_name"/>
 					<show id="ucm:artist_name" />
@@ -354,45 +372,6 @@
 	</forms>
 </config>
 
-	<config evaluator="model-type" condition="my:example">
-		<forms>
-			<form>
-				<field-visibility>
-					<show id="cm:name" />
-					<show id="my:text" />
-					<show id="my:mltext" />
-					<show id="my:boolean" />
-					<show id="my:int" />
-					<show id="my:long" />
-					<show id="my:double" />
-					<show id="my:float" />
-					<show id="my:status" />
-					<show id="my:restricted-string" />
-					<show id="my:date" />
-					<show id="my:dateTime" />
-				</field-visibility>
-				<appearance>
-					<set id="text" appearance="fieldset" label="Text Fields" />
-					<set id="number" appearance="panel" label="Number Fields" />
-					<set id="date" appearance="fieldset" label="Date Fields" />
-
-					<field id="cm:name" set="text" />
-					<field id="my:text" set="text" />
-					<field id="my:mltext" set="text" />
-					<field id="my:boolean" set="text" />
-
-					<field id="my:int" set="number" />
-					<field id="my:long" set="number" />
-					<field id="my:double" set="number" />
-					<field id="my:float" set="number" />
-
-					<field id="my:date" set="date" />
-					<field id="my:dateTime" set="date" />
-				</appearance>
-			</form>
-		</forms>
-	</config>
-
 	<config evaluator="string-compare" condition="DocumentDetails"
 		replace="true">
 		<document-details>
@@ -440,17 +419,23 @@
          </view-renderer> -->
          <view-renderer id="detailed" iconClass="detailed" label="button.view.detailed" index="20" widget="Alfresco.DocumentListViewRenderer">
             <dependencies>
-               <js src="components/documentlibrary/documentlist-view-detailed.js" />
+               <js src="components/documentlibrary/ucm-documentlist-view-detailed.js" />
             </dependencies>
          </view-renderer>
          <view-renderer id="gallery" iconClass="gallery" label="button.view.gallery" index="30" widget="Alfresco.DocumentListGalleryViewRenderer">
             <dependencies>
-               <js src="components/documentlibrary/documentlist-view-detailed.js" />
-               <js src="components/documentlibrary/documentlist-view-gallery.js" />
+               <js src="components/documentlibrary/ucm-documentlist-view-detailed.js" />
+               <js src="components/documentlibrary/ucm-documentlist-view-gallery.js" />
                <js src="yui/slider/slider.js" />
             </dependencies>
          </view-renderer>
       </view-renderers>
    </config>
+
+	<config evaluator="string-compare" condition="DocLibCustom">
+		<dependencies>
+			<js src="/custom/ucm-documentlibrary.js" />
+		</dependencies> 
+	</config>
    
 </alfresco-config>

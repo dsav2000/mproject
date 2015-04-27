@@ -26,4 +26,12 @@
 		    </list>
 		</property>
     </bean>
+    
+	<bean id="ucmTypeFilter" class="org.alfresco.repo.forms.processor.node.UCMFormFilter" parent="baseFormFilter">
+   		<property name="filterRegistry" ref="typeFilterRegistry" />
+   		<property name="formProcessor" ref="typeFormProcessor" />
+   		<property name="contentService" ref="ContentService" />
+        <property name="dictionaryService" ref="DictionaryService" />
+        <property name="nodeService" ref="NodeService" />
+	</bean>
 </beans>
