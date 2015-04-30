@@ -154,14 +154,10 @@
 							<control-param name="maxLength">255</control-param>
 						</control>
 					</field>
-<!-- 					<field id="cm:title">
-						<control template="/org/alfresco/components/form/controls/textfield.ftl" />
-					</field> -->
-<!-- 					<field id="cm:content" label-id="">
-						<control>
-							<control-param name="editorAppearance">explorer</control-param>
-						</control>
-					</field> -->
+ 					<field id="cm:title" />
+ 					<field id="cm:content">
+		               <control template="/com/alfresco/museum/ucm/form/controls/ucm-file-upload.ftl" />
+		            </field>
 					<field id="ucm:artifact_name" set="artifactMain" />
 					<field id="ucm:artist_name" set="artifactMain" />
 					<field id="ucm:museum_number" set="artifactMain" />
@@ -294,9 +290,7 @@
 							<control-param name="maxLength">255</control-param>
 						</control>
 					</field>
-<!-- 					<field id="cm:title">
-						<control template="/org/alfresco/components/form/controls/textfield.ftl" />
-					</field> -->
+					<field id="cm:title" />
 <!-- 					<field id="cm:content" label-id="">
 						<control>
 							<control-param name="editorAppearance">explorer</control-param>

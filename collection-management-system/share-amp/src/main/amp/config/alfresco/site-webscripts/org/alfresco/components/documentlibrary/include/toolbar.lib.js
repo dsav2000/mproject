@@ -133,6 +133,10 @@ function getCreateContent()
         		  url = "create-content?destination={nodeRef}";
        		   if (itemid === "ucm:artifact") { //TODO: avoid hardcode
        			   url = "ucm-" + url;
+       			   if (itemid)
+       			   {
+       				   url += "&type=" + itemid;
+       			   }
        		   }
    			   if (permission)
    			   {

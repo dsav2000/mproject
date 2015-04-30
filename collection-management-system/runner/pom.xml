@@ -61,7 +61,7 @@
                             <webapps>
                               <webapp>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>solr</artifactId>
+                                    <artifactId>collection-management-system-solr</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
