@@ -1,18 +1,8 @@
 <#import "/org/alfresco/components/form/form.lib.ftl" as formLib />
-
-<!-- Dependency files for Accordion Appearance -->
-<link rel="stylesheet" type="text/css" href="${url.context}/yui/container/assets/skins/sam/container.css" />
-<link rel="stylesheet" type="text/css" href="${url.context}/js/bubbling-2.1/accordion/assets/accordion.css" />
+<@link rel="stylesheet" type="text/css" href="${url.context}/res/css/jquery-ui.css"/>
+<@link rel="stylesheet" type="text/css" href="${url.context}/res/css/smoothness/jquery-ui.css"/>
+<!-- Fix form width -->
 <style type="text/css">
-	.myAccordion {
-	  float: left;
-	  margin-right: 15px;
-	}
-	
-	.myAccordion .yui-cms-accordion .yui-cms-item {
-	  width: 200px;
-	}
-	
 	.share-form .form-container .form-fields {
 		width: 500px !important;
 	}
@@ -24,9 +14,18 @@
 		width: 527px !important;
 	}
 </style>
-<script type="text/javascript" src="${url.context}/yui/utilities/utilities.js"></script>
-<script type="text/javascript" src="${url.context}/js/bubbling.v2.1-min.js"></script>
-<script type="text/javascript" src="${url.context}/js/bubbling-2.1/accordion/accordion.js"></script>
+
+<@inlineScript type="text/javascript">
+	function ucmFormLoaded() {
+		<!-- Accordion -->
+		require(["jqueryui"], function() {
+			$(".accordion-wrapper").accordion({collapsible: true, heightStyle: "content"});
+		});
+
+		<!-- JQuery splitter -->
+		//require(["jqueryui", "${url.context}/res/js/jquery.splitter.js"], function() {});
+	}
+</@>
 
 <#if error?exists>
    <div class="error">${error}</div>
@@ -70,6 +69,7 @@
       </#if>
 
    </div>
+   <script type="text/javascript">(function(){ucmFormLoaded();})();</script>
 </#if>
 
 <#macro renderSet set>
@@ -80,13 +80,10 @@
          <div class="form-panel">
             <div class="form-panel-heading">${set.label}</div>
             <div class="form-panel-body">
-      <#elseif set.appearance == "accordion">
-      <div class="yui-skin-sam">
-      	<div class="yui-cms-accordion multiple fade fixIE">	  
-	  	    <div class="yui-cms-item yui-panel">
-	              <div class="hd">${set.label}</div>
-	              <div class="bd">
-	                <div class="fixed">
+      <#elseif set.appearance == "accordion-element">
+		<div class="hd">${set.label}</div>
+		<div class="bd">
+			<div class="fixed">
       </#if>
    </#if>
    
@@ -104,15 +101,9 @@
       <#elseif set.appearance == "panel">
             </div>
          </div>
-      <#elseif set.appearance == "accordion">
-					</div>
-            	</div>
-            <div class="actions">
-		      <a href="#" class="accordionToggleItem">&nbsp;</a>
-		    </div>
-		 </div>
-       </div>
-       </div>
+      <#elseif set.appearance == "accordion-element">
+			</div>
+		</div>
       </#if>
    </#if>
 </#macro>
@@ -124,6 +115,8 @@
       <#elseif set.appearance == "panel">
          <div class="form-panel">
             <div class="form-panel-body">
+      <#elseif set.appearance == "accordion-wrapper">
+         <div class="form-panel-body accordion-wrapper">
       </#if>
    </#if>
    
@@ -140,6 +133,8 @@
          </fieldset>
       <#elseif set.appearance == "panel">
             </div>
+         </div>
+      <#elseif set.appearance == "accordion-wrapper">
          </div>
       </#if>
    </#if>

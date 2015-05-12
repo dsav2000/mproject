@@ -32,5 +32,4 @@ YAHOO.lang.substitute(this.msg("exif.metadata.exposure"), exifObj) + '</b></span
       });
    }
 )();*/
-	console.log('i\'m here!')
 })();

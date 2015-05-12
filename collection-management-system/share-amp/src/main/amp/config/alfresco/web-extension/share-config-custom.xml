@@ -87,6 +87,7 @@
 			<template id="isArtifact">
 				<evaluator>evaluator.doclib.metadata.isArtifact</evaluator>
 				<line index="10" id="date" view="detailed">{date}{size}</line>
+				<line index="20" id="social" view="detailed">{social}</line>
 			</template>
 		</metadata-templates>
 	</config>
@@ -144,10 +145,10 @@
 				</field-visibility>
 				<appearance>
 					<set id="artifactMain" appearance="fieldset" label="Main artifact properties" />
-					<set id="artifactRest" appearance="panel" label="Additional properties" />
-						<set id="artifactAdditional" parent="artifactRest" appearance="accordion" label="Artifact" />
-						<set id="artifactArtist" parent="artifactRest" appearance="accordion" label="Artist" />
-						<set id="artifactMuseum" parent="artifactRest" appearance="accordion" label="Museum" />
+					<set id="artifactRest" appearance="accordion-wrapper" label="Additional properties" />
+						<set id="artifactAdditional" parent="artifactRest" appearance="accordion-element" label="Artifact" />
+						<set id="artifactArtist" parent="artifactRest" appearance="accordion-element" label="Artist" />
+						<set id="artifactMuseum" parent="artifactRest" appearance="accordion-element" label="Museum" />
 					<!-- TODO: rest of aspects. And properties? -->
 					<field id="cm:name">
 						<control>
@@ -280,10 +281,10 @@
 				</field-visibility>
 				<appearance>
 					<set id="artifactMain" appearance="fieldset" label="Main artifact properties" />
-					<set id="artifactRest" appearance="panel" label="Additional properties" />
-						<set id="artifactAdditional" parent="artifactRest" appearance="accordion" label="Artifact" />
-						<set id="artifactArtist" parent="artifactRest" appearance="accordion" label="Artist" />
-						<set id="artifactMuseum" parent="artifactRest" appearance="accordion" label="Museum" />
+					<set id="artifactRest" appearance="accordion-wrapper" label="Additional properties" />
+						<set id="artifactAdditional" parent="artifactRest" appearance="accordion-element" label="Artifact" />
+						<set id="artifactArtist" parent="artifactRest" appearance="accordion-element" label="Artist" />
+						<set id="artifactMuseum" parent="artifactRest" appearance="accordion-element" label="Museum" />
 					<!-- TODO: rest of aspects. And properties? -->
 					<field id="cm:name">
 						<control>
@@ -432,4 +433,42 @@
 		</dependencies> 
 	</config>
    
+   
+       <!-- Commented because normal users should not see this aspect
+         It should only be used through the admin interface
+        <config evaluator="string-compare" condition="DocumentLibrary">
+            <aspects>
+                <visible>
+                    <aspect name="up:UploadFolder"/>
+                </visible>
+            </aspects>
+        </config>
+    -->
+
+    <config evaluator="aspect" condition="up:UploadFolder">
+        <forms>
+            <form>
+                <field-visibility>
+                    <show id="up:allowedTypes"/>
+                </field-visibility>
+            </form>
+            <form id="upload-folder">
+                <field-visibility>
+                    <show id="up:allowedTypes"/>
+                </field-visibility>
+                <edit-form
+                        template="../documentlibrary/forms/doclib-simple-metadata.ftl"/>
+                <appearance>
+                    <field id="up:allowedTypes">
+                        <control
+                                template="/uploader-plus/controls/selecttypes.ftl">
+                            <control-param name="styleClass">
+                                supported-types-select
+                            </control-param>
+                        </control>
+                    </field>
+                </appearance>
+            </form>
+        </forms>
+    </config>
 </alfresco-config>

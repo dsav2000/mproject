@@ -1,7 +1,6 @@
 <#include "../../../../org/alfresco/include/alfresco-template.ftl" />
 <@templateHeader>
    <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/doclib-actions.js" group="document-details"/>
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/document-details/document-details-panel.css" group="document-details"/>
    <@templateHtmlEditorAssets />
 </@>
 
@@ -17,16 +16,21 @@
       <@region id="actions-common" scope="template"/>
       <@region id="actions" scope="template"/>
       <@region id="node-header" scope="template"/>
-      <div class="yui-gc">
-         <div class="yui-u first">
+
+      <div id="ucm-horizontal-splitter" class="yui-gc">
+     	<div id="ucm-vertical-splitter" class="yui-u first">
             <#if (config.scoped['DocumentDetails']['document-details'].getChildValue('display-web-preview') == "true")>
-			   <div style="border:2px solid black" id="picture">
+			   <div id="ucm-artifact-image" style="border:2px solid black; width:500px; height:auto;">
 			   	  <@region id="web-preview" scope="template"/>
 			   </div>
             </#if>
-            <@region id="comments" scope="template"/>
+			<div id="ucm-referenced-files">
+				<@region id="comments" scope="template"/>
+			</div>
          </div>
-         <div class="yui-u">
+
+         <div id="ucm-metadata" class="yui-u">
+            <@region id="document-links" scope="template"/>
             <@markup id="bd">
 			    <div id="bd">
 			       <div class="share-form" style="border:1px solid black">
@@ -37,7 +41,6 @@
 		    </@>
             <@region id="document-actions" scope="template"/>
             <@region id="document-tags" scope="template"/>
-            <@region id="document-links" scope="template"/>
             <@region id="document-metadata" scope="template"/>
             <@region id="document-sync" scope="template"/>
             <@region id="document-permissions" scope="template"/>

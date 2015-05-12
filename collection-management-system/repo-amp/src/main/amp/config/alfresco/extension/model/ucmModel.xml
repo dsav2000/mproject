@@ -234,20 +234,6 @@
 					<title>Technique</title>
 					<type>d:text</type>
 					<mandatory>false</mandatory>
-					<constraints>
-						<!-- TODO: change constraint in order to load list of allowed values 
-							dynamically -->
-						<constraint name="ucm:allowedTechniques" type="LIST">
-							<parameter name="allowedValues">
-								<list>
-									<value>Bosch school</value>
-									<value>Clear glaze and stippled underglaze iron decoration
-									</value>
-									<value>Photo</value>
-								</list>
-							</parameter>
-						</constraint>
-					</constraints>
 				</property>
 
 				<property name="ucm:artifact_dimension">
