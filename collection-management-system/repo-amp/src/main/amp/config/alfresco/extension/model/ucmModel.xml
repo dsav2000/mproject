@@ -120,7 +120,8 @@
 						<many>false</many>
 					</source>
 					<target>
-						<class>ucm:document</class>
+<!--						<class>ucm:document</class> -->
+						<class>ucm:artifact</class>
 						<mandatory>false</mandatory>
 						<many>true</many>
 					</target>
@@ -192,7 +193,7 @@
 
 		<type name="ucm:artifact">
 			<title>Artifact</title>
-			<parent>ucm:content</parent> <!-- TODO: ucm:folder or sys:container? -->
+			<parent>ucm:document</parent> <!-- TODO: ucm:folder or sys:container? -->
 
 			<properties>
 				<property name="ucm:artifact_name">
