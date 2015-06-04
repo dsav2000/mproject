@@ -166,7 +166,7 @@
 							<parameter name="allowedValues">
 								<list>
 									<value>Artifact</value>
-									<value>Media-type</value>
+									<value>Media</value>
 									<value>Document</value>
 								</list>
 							</parameter>
@@ -204,7 +204,7 @@
 
 				<property name="ucm:artifact_date">
 					<title>Date</title>
-					<type>d:date</type>
+					<type>d:text</type>
 					<mandatory>false</mandatory>
 				</property>
 
@@ -282,6 +282,7 @@
 						<constraint name="ucm:allowed_acquisition_types" type="LIST">
 							<parameter name="allowedValues">
 								<list>
+									<value>N/A</value>
 									<value>Purchased</value>
 									<value>Donated</value>
 								</list>
@@ -480,8 +481,7 @@
 							type="LIST">
 							<parameter name="allowedValues">
 								<list>
-									<value>Client Material</value>
-									<value>Antenna Material</value>
+									<value>Museum Material</value>
 									<value>Third Party Material</value>
 								</list>
 							</parameter>
@@ -700,6 +700,7 @@
 						<constraint name="ucm:site_aspect_allowed_types" type="LIST">
 							<parameter name="allowedValues">
 								<list>
+									<value>All</value>
 									<value>Modern</value>
 									<value>Classical</value>
 									<value>Sculpture only</value>
@@ -851,7 +852,7 @@
 
 				<property name="ucm:artist_dob">
 					<title>Date of Birth</title>
-					<type>d:date</type>
+					<type>d:text</type>
 					<mandatory>false</mandatory>
 				</property>
 
@@ -864,7 +865,7 @@
 
 				<property name="ucm:artist_dod">
 					<title>Date of Death</title>
-					<type>d:date</type>
+					<type>d:text</type>
 					<mandatory>false</mandatory>
 				</property>
 
@@ -901,7 +902,8 @@
 						<constraint name="ucm:allowed_art_periods" type="LIST">
 							<parameter name="allowedValues">
 								<list>
-									<value>NA</value>
+									<value>N/A</value>
+									<value>Pre-Renaissance</value>
 									<value>Renaissance</value>
 									<value>Northern Renaissance</value>
 									<value>Post-impressionists</value>
