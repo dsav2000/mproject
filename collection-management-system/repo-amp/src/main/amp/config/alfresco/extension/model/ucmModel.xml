@@ -20,7 +20,7 @@
 	</imports>
 
 	<namespaces>
-		<namespace uri="ucm.model" prefix="ucm" />
+		<namespace uri="http://www.ucm.org/model/1.0" prefix="ucm" />
 	</namespaces>
 
 	<!-- Types definitions -->
