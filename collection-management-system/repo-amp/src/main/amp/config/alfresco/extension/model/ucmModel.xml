@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model name="ucm:model" xmlns="http://www.alfresco.org/model/dictionary/1.0"
+<model name="ucm:data-model" xmlns="http://www.alfresco.org/model/dictionary/1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-	<description>Museum content management system data type model</description>
-	<author>Dmitry Alexandrov</author>
-	<version>1.0</version>
+	<description>Museum collection management system data model</description>
+	<author>Greg Davydov</author>
+	<version>2.0</version>
 
 	<!-- TODO: Create additional property value constraints, like UID constraint? -->
 	<!-- TODO: Adjust index settings (e.g. for ID properties) -->
@@ -20,7 +20,7 @@
 	</imports>
 
 	<namespaces>
-		<namespace uri="ucm.model" prefix="ucm" />
+		<namespace uri="http://www.ucm.org/model/1.0" prefix="ucm" />
 	</namespaces>
 
 	<!-- Types definitions -->
@@ -203,7 +203,7 @@
 				</property>
 
 				<property name="ucm:artifact_date">
-					<title>Date</title>
+					<title>Created on Date</title>
 					<type>d:text</type>
 					<mandatory>false</mandatory>
 				</property>
@@ -223,8 +223,12 @@
 									<value>Audio</value>
 									<value>Oil on canvas</value>
 									<value>Acrylic on paper</value>
+									<value>Gold</value>
+									<value>Silver</value>
 									<value>Bronze</value>
+									<value>Cast Iron</value>
 									<value>Stoneware</value>
+									<value>Other</value>
 								</list>
 							</parameter>
 						</constraint>
