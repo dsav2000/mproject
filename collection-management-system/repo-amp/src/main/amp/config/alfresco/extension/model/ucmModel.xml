@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model name="ucm:model" xmlns="http://www.alfresco.org/model/dictionary/1.0"
+<model name="ucm:data-model" xmlns="http://www.alfresco.org/model/dictionary/1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-	<description>Museum content management system data type model</description>
-	<author>Dmitry Alexandrov</author>
-	<version>1.0</version>
+	<description>Museum collection management system data model</description>
+	<author>Greg Davydov</author>
+	<version>2.0</version>
 
 	<!-- TODO: Create additional property value constraints, like UID constraint? -->
 	<!-- TODO: Adjust index settings (e.g. for ID properties) -->
@@ -20,7 +20,7 @@
 	</imports>
 
 	<namespaces>
-		<namespace uri="http://www.alfresco.org/museum/ucm/1.0" prefix="ucm" />
+		<namespace uri="http://www.ucm.org/model/1.0" prefix="ucm" />
 	</namespaces>
 
 	<!-- Types definitions -->
@@ -120,7 +120,8 @@
 						<many>false</many>
 					</source>
 					<target>
-						<class>ucm:document</class>
+<!--						<class>ucm:document</class> -->
+						<class>ucm:artifact</class>
 						<mandatory>false</mandatory>
 						<many>true</many>
 					</target>
@@ -165,7 +166,7 @@
 							<parameter name="allowedValues">
 								<list>
 									<value>Artifact</value>
-									<value>Media-type</value>
+									<value>Media</value>
 									<value>Document</value>
 								</list>
 							</parameter>
@@ -192,7 +193,7 @@
 
 		<type name="ucm:artifact">
 			<title>Artifact</title>
-			<parent>ucm:content</parent> <!-- TODO: ucm:folder or sys:container? -->
+			<parent>ucm:document</parent> <!-- TODO: ucm:folder or sys:container? -->
 
 			<properties>
 				<property name="ucm:artifact_name">
@@ -202,8 +203,8 @@
 				</property>
 
 				<property name="ucm:artifact_date">
-					<title>Date</title>
-					<type>d:date</type>
+					<title>Created on Date</title>
+					<type>d:text</type>
 					<mandatory>false</mandatory>
 				</property>
 
@@ -223,8 +224,12 @@
 									<value>Audio</value>
 									<value>Oil on canvas</value>
 									<value>Acrylic on paper</value>
+									<value>Gold</value>
+									<value>Silver</value>
 									<value>Bronze</value>
+									<value>Cast Iron</value>
 									<value>Stoneware</value>
+									<value>Other</value>
 								</list>
 							</parameter>
 						</constraint>
@@ -282,6 +287,7 @@
 						<constraint name="ucm:allowed_acquisition_types" type="LIST">
 							<parameter name="allowedValues">
 								<list>
+									<value>N/A</value>
 									<value>Purchased</value>
 									<value>Donated</value>
 								</list>
@@ -467,8 +473,7 @@
 							type="LIST">
 							<parameter name="allowedValues">
 								<list>
-									<value>Client Material</value>
-									<value>Antenna Material</value>
+									<value>Museum Material</value>
 									<value>Third Party Material</value>
 								</list>
 							</parameter>
@@ -687,7 +692,7 @@
 						<constraint name="ucm:site_aspect_allowed_types" type="LIST">
 							<parameter name="allowedValues">
 								<list>
-									<value></value>
+									<value>All</value>
 									<value>Modern</value>
 									<value>Classical</value>
 									<value>Sculpture only</value>
@@ -839,7 +844,7 @@
 
 				<property name="ucm:artist_dob">
 					<title>Date of Birth</title>
-					<type>d:date</type>
+					<type>d:text</type>
 					<mandatory>false</mandatory>
 				</property>
 
@@ -852,7 +857,7 @@
 
 				<property name="ucm:artist_dod">
 					<title>Date of Death</title>
-					<type>d:date</type>
+					<type>d:text</type>
 					<mandatory>false</mandatory>
 				</property>
 
@@ -889,7 +894,8 @@
 						<constraint name="ucm:allowed_art_periods" type="LIST">
 							<parameter name="allowedValues">
 								<list>
-									<value>NA</value>
+									<value>N/A</value>
+									<value>Pre-Renaissance</value>
 									<value>Renaissance</value>
 									<value>Northern Renaissance</value>
 									<value>Post-impressionists</value>
