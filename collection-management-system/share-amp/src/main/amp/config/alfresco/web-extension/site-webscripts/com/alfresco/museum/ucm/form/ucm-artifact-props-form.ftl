@@ -66,10 +66,6 @@
       <#if form.mode != "view" && form.redirect?? && form.redirect?length &gt; 0>
          <input id="${formId}-redirect" name="alf_redirect" type="hidden" value="${form.redirect?html}" />
       </#if>
-
-      <#--if form.mode == "create">
-         <input id="${formId}-ucm-assoc-type" name="assoc_type" type="hidden" value="{http://www.alfresco.org/museum/ucm/1.0}artifact_contains"/>		
-      </#if-->
       
       <div id="${formId}-fields" class="form-fields"> 
 		<div class="yui-content">

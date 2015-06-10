@@ -7,7 +7,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.service.namespace.QName;
 
 public class UCMConstants {
-	public static final String UCM_NAMESPACE = "http://www.alfresco.org/museum/ucm/1.0";
+	public static final String UCM_NAMESPACE = "http://www.ucm.org/model/1.0";
 	public static final String CONTENT_PROP_DATA = PROP_DATA_PREFIX + "cm" + DATA_KEY_SEPARATOR
 			+ ContentModel.PROP_CONTENT.getLocalName();
 	public static final String NAME_PROP_DATA = PROP_DATA_PREFIX + "cm" + DATA_KEY_SEPARATOR
