@@ -20,7 +20,7 @@
 	</imports>
 
 	<namespaces>
-		<namespace uri="ucm.model" prefix="ucm" />
+		<namespace uri="http://www.alfresco.org/museum/ucm/1.0" prefix="ucm" />
 	</namespaces>
 
 	<!-- Types definitions -->
@@ -217,6 +217,7 @@
 						<constraint name="ucm:allowed_mediums" type="LIST">
 							<parameter name="allowedValues">
 								<list>
+									<value></value>
 									<value>Photo</value>
 									<value>Video</value>
 									<value>Audio</value>
@@ -305,6 +306,7 @@
 						<constraint name="ucm:allowed_artifact_types" type="LIST">
 							<parameter name="allowedValues">
 								<list>
+									<value></value>
 									<value>Portrait</value>
 									<value>Landscape</value>
 									<value>Fresco</value>
@@ -329,33 +331,19 @@
 					<type>d:text</type>
 					<mandatory>false</mandatory>
 				</property>
-
-				<!-- TODO: implement references as an association with many="true" ? -->
-				<!-- <associations> <association name="ucm:artifact_referenced_objects"> 
-					<source> <mandatory>false</mandatory> <many>true</many> </source> <target> 
-					<class>ucm:artifact</class> <mandatory>false</mandatory> <many>true</many> 
-					</target> </association> </associations> -->
-
-				<property name="ucm:artifact_referenced_objects">
-					<title>Referenced objects</title>
-					<type>d:noderef</type>
-					<mandatory>false</mandatory>
-					<multiple>true</multiple>
-				</property>
-
 			</properties>
 
 			<associations>
-				<!-- Artifact may contain ucm:attached_file's -->
-				<child-association name="ucm:artifactContains">
+				<!-- Artifact may contain attached files -->
+				<child-association name="ucm:artifact_contains">
 					<source>
-						<mandatory>false</mandatory>
+						<mandatory>true</mandatory>
 						<many>false</many>
 					</source>
 					<target>
-						<class>ucm:attached_file</class>
+						<class>cm:folder</class> <!-- TODO: ucm:attached_file ?  -->
 						<mandatory>false</mandatory>
-						<many>true</many>
+						<many>false</many>
 					</target>
 					<duplicate>false</duplicate>
 					<propagateTimestamps>true</propagateTimestamps>
@@ -699,6 +687,7 @@
 						<constraint name="ucm:site_aspect_allowed_types" type="LIST">
 							<parameter name="allowedValues">
 								<list>
+									<value></value>
 									<value>Modern</value>
 									<value>Classical</value>
 									<value>Sculpture only</value>

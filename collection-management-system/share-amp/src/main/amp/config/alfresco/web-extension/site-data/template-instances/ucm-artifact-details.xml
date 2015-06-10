@@ -124,17 +124,25 @@
             <nodeRef>{nodeRef}</nodeRef>
             <activityType>document</activityType>
          </properties>
-      </component> -->
+      </component>
       <component>
          <region-id>document-attachments</region-id>
          <url>/components/document-details/document-attachments</url>
          <properties>
             <nodeRef>{nodeRef}</nodeRef>
          </properties>
-      </component>     
+      </component>
       <component>
          <region-id>repo-document-attachments</region-id>
          <url>/components/document-details/document-attachments</url>
+         <properties>
+            <nodeRef>{nodeRef}</nodeRef>
+         </properties>
+      </component> -->
+      
+      <component>
+         <region-id>ucm-media-files</region-id>
+         <url>/components/ucm/artifact-media-files</url>
          <properties>
             <nodeRef>{nodeRef}</nodeRef>
          </properties>

@@ -1,0 +1,25 @@
+.fs-upload-target {
+	width: 504px;
+	height: 30px;
+	padding: 3px;
+}
+
+.fs-upload-input {
+	display: none;
+}
+
+.ucm-media-wrapper {
+   width: 504px;
+}
+
+.ucm-media-audio {
+   width: 485px;
+}
+
+.ucm-media-file-delete-button {
+	border: 0px;
+    background: inherit;
+    padding: 0;
+    margin: 5px 0px 0px 2px;
+    vertical-align: top;
+}
