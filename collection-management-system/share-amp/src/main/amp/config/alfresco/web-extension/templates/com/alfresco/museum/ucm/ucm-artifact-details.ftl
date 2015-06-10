@@ -4,11 +4,10 @@
 <#--
 	<@script type="text/javascript" src="${url.context}/res/js/jquery.js"  group="document-details"/>
 	<@script type="text/javascript" src="${url.context}/res/js/jquery-ui.js"  group="document-details"/>
--->
-
-  <@script type="text/javascript" src="${url.context}/res/js/lib/jquery-1.11.1/jquery.js" group="document-details"/>
+	<@script type="text/javascript" src="${url.context}/res/js/lib/jquery-1.11.1/jquery.js" group="document-details"/>
 	<@script type="text/javascript" src="${url.context}/res/js/jquery.layout.js"  group="document-details"/>
-  <@script type="text/javascript" src="${url.context}/res/js/jquery.loupe.min.js"  group="document-details"/>
+	<@script type="text/javascript" src="${url.context}/res/js/jquery.loupe.min.js"  group="document-details"/>
+-->
 
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/artifact-preview.css"/>
 
@@ -33,13 +32,13 @@
             <#if (config.scoped['DocumentDetails']['document-details'].getChildValue('display-web-preview') == "true")>
 			   <div id="ucm-artifact-image" class="artifact-preview">
 			   	  <@region id="web-preview" scope="template"/>
-			   	  <script type="text/javascript">
+			   	  <#--script type="text/javascript">
                 $("img").loupe({
                       width: 250, // width of magnifier
                       height: 250, // height of magnifier
                       loupe: 'loupe' // css class for magnifier 
                     });
-            </script>
+            </script-->
 			   </div>
 			   <script type="text/javascript">
 			      require(['jquery'], function() {
