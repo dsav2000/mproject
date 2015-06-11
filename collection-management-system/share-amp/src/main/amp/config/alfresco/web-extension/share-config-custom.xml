@@ -210,7 +210,7 @@
 		<forms>
 			<!-- Default form configuration for the ucm:artifact type -->
 			<form>
-				<edit-form template="/com/alfresco/museum/ucm/form/ucm-artifact-props-form.ftl"/>
+				<create-form template="/com/alfresco/museum/ucm/form/ucm-artifact-props-form.ftl"/>
 				<field-visibility>
 					<show id="cm:name" />
 					<show id="cm:title" />
@@ -231,7 +231,7 @@
 					<show id="ucm:artifact_type" />
 					<show id="ucm:artifact_on_display" />
 					<show id="ucm:artifact_comments" />
-					<show id="ucm:artifact_referenced_objects" />
+					<!--show id="ucm:artifact_referenced_objects" /-->
 					<show id="ucm:artist_nickname" />
 					<show id="ucm:artist_dob" />
 					<show id="ucm:artist_birth_place" />
@@ -288,7 +288,7 @@
 					<field id="ucm:artifact_type" set="artifactAdditional" />
 					<field id="ucm:artifact_on_display" set="artifactAdditional" />
 					<field id="ucm:artifact_comments" set="artifactAdditional" />
-					<field id="ucm:artifact_referenced_objects" set="artifactAdditional" />
+					<!--field id="ucm:artifact_referenced_objects" set="artifactAdditional" /-->
 					
 					<field id="ucm:artist_nickname" set="artifactArtist" />
 					<field id="ucm:artist_dob" set="artifactArtist" />
@@ -360,6 +360,8 @@
 					<show id="ucm:artifact_technique" />
 					<show id="ucm:artifact_dimension" />
 					<show id="ucm:artifact_status" />
+					<!-- show id="ucm:artifact_contains" /-->
+					
 					<show id="ucm:artifact_location" />
 					<show id="ucm:artifact_collection" />
 					<show id="ucm:artifact_acquisition_type" />
@@ -367,7 +369,7 @@
 					<show id="ucm:artifact_type" />
 					<show id="ucm:artifact_on_display" />
 					<show id="ucm:artifact_comments" />
-					<show id="ucm:artifact_referenced_objects" />
+					<!--show id="ucm:artifact_referenced_objects" /-->
 					<show id="ucm:artist_nickname" />
 					<show id="ucm:artist_dob" />
 					<show id="ucm:artist_birth_place" />
@@ -418,6 +420,14 @@
 					<field id="ucm:artifact_technique" set="artifactMain" />
 					<field id="ucm:artifact_dimension" set="artifactMain" />
 					<field id="ucm:artifact_status" set="artifactMain" />
+					<!--field id="ucm:artifact_contains" set="artifactMain">
+			        	<control template="/org/alfresco/components/form/controls/association.ftl">
+							<control-param name="">items</control-param>
+							<control-param name="displayMode">items</control-param>
+							<control-param name="showTargetLink">true</control-param>
+							<control-param name="compactMode">true</control-param>
+						</control>
+					</field-->
 					
 					<field id="ucm:artifact_location" set="artifactAdditional" />
 					<field id="ucm:artifact_collection" set="artifactAdditional" />
@@ -426,7 +436,7 @@
 					<field id="ucm:artifact_type" set="artifactAdditional" />
 					<field id="ucm:artifact_on_display" set="artifactAdditional" />
 					<field id="ucm:artifact_comments" set="artifactAdditional" />
-					<field id="ucm:artifact_referenced_objects" set="artifactAdditional" />
+					<!--field id="ucm:artifact_referenced_objects" set="artifactAdditional" /-->
 					
 					<field id="ucm:artist_nickname" set="artifactArtist" />
 					<field id="ucm:artist_dob" set="artifactArtist" />

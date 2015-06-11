@@ -4,11 +4,10 @@
 <#--
 	<@script type="text/javascript" src="${url.context}/res/js/jquery.js"  group="document-details"/>
 	<@script type="text/javascript" src="${url.context}/res/js/jquery-ui.js"  group="document-details"/>
--->
-
-  <@script type="text/javascript" src="${url.context}/res/js/lib/jquery-1.11.1/jquery.js" group="document-details"/>
+	<@script type="text/javascript" src="${url.context}/res/js/lib/jquery-1.11.1/jquery.js" group="document-details"/>
 	<@script type="text/javascript" src="${url.context}/res/js/jquery.layout.js"  group="document-details"/>
-  <@script type="text/javascript" src="${url.context}/res/js/jquery.loupe.min.js"  group="document-details"/>
+	<@script type="text/javascript" src="${url.context}/res/js/jquery.loupe.min.js"  group="document-details"/>
+-->
 
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/artifact-preview.css"/>
 
@@ -28,26 +27,37 @@
       <@region id="actions" scope="template"/>
       <@region id="node-header" scope="template"/>
 
-      <div id="ucm-horizontal-splitter" class="yui-gc">
-     	<div id="ucm-vertical-splitter" class="yui-u first">
+      <div id="ucm-horizontal-splitter" class="yui-gc" style="width: 1100px;">
+     	<div id="ucm-vertical-splitter" class="yui-u first" style="width: 510px;">
             <#if (config.scoped['DocumentDetails']['document-details'].getChildValue('display-web-preview') == "true")>
 			   <div id="ucm-artifact-image" class="artifact-preview">
 			   	  <@region id="web-preview" scope="template"/>
-			   	  <script type="text/javascript">
+			   	  <#--script type="text/javascript">
                 $("img").loupe({
                       width: 250, // width of magnifier
                       height: 250, // height of magnifier
                       loupe: 'loupe' // css class for magnifier 
                     });
-            </script>
+            </script-->
 			   </div>
+			   <script type="text/javascript">
+			      require(['jquery'], function() {
+			         jQuery = $;
+			         require(["${url.context}/res/js/jquery.elevatezoom.js"], function() {
+			            var image = $('#ucm-artifact-image').find('img');
+			            image.attr( {'data-zoom-image': image.attr('src')} );
+			            image.elevateZoom( {zoomType: 'inner', cursor: 'crosshair', scrollZoom : true} );
+			         });
+			      });
+			   </script>
             </#if>
-			<div id="ucm-referenced-files">
+			<div id="ucm-left-bottom">
+				<@region id="ucm-media-files" scope="template"/>
 				<@region id="comments" scope="template"/>
 			</div>
          </div>
 
-         <div id="ucm-metadata" class="yui-u">
+         <div id="ucm-metadata" class="yui-u" style="width: 550px; margin-left: 20px;">
             <@region id="document-links" scope="template"/>
             <@markup id="bd">
 			    <div id="bd">
@@ -64,7 +74,6 @@
             <@region id="document-permissions" scope="template"/>
             <@region id="document-workflows" scope="template"/>
             <@region id="document-versions" scope="template"/>
-			<#-- TODO: -->
 			<@region id="document-attachments" scope="template"/>
          </div>
       </div>

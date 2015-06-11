@@ -1,24 +1,31 @@
 package org.alfresco.repo.forms.processor.node;
 
-import static org.alfresco.repo.forms.processor.node.FormFieldConstants.DATA_KEY_SEPARATOR;
+import static org.alfresco.museum.ucm.UCMConstants.CONTENT_PROP_DATA;
+import static org.alfresco.museum.ucm.UCMConstants.DEFAULT_CONTENT_MIMETYPE;
+import static org.alfresco.museum.ucm.UCMConstants.NAME_PROP_DATA;
+import static org.alfresco.museum.ucm.UCMConstants.TYPE_UCM_ARTIFACT_QNAME;
 import static org.alfresco.repo.forms.processor.node.FormFieldConstants.PROP_DATA_PREFIX;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.museum.ucm.UCMConstants;
 import org.alfresco.repo.forms.Form;
 import org.alfresco.repo.forms.FormData;
 import org.alfresco.repo.forms.FormData.FieldData;
 import org.alfresco.repo.forms.FormException;
 import org.alfresco.repo.forms.processor.AbstractFilter;
 import org.alfresco.repo.forms.processor.AbstractFormProcessor;
+import org.alfresco.repo.site.SiteModel;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
+import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
@@ -39,16 +46,10 @@ import org.springframework.util.StringUtils;
  * processor class}.
  */
 public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
-	protected static final String CONTENT_PROP_DATA = PROP_DATA_PREFIX + "cm" + DATA_KEY_SEPARATOR
-			+ ContentModel.PROP_CONTENT.getLocalName();
-	protected static final String NAME_PROP_DATA = PROP_DATA_PREFIX + "cm" + DATA_KEY_SEPARATOR
-			+ ContentModel.PROP_NAME.getLocalName();
-	public static final String DEFAULT_CONTENT_MIMETYPE = "image/jpeg";
-
 	private NodeService nodeService;
 	private ContentService contentService;
 	private DictionaryService dictionaryService;
-	private TypeFormProcessor formProcessor;
+	private FileFolderService fileFolderService;
 
 	@Override
 	public void beforeGenerate(TypeDefinition item, List<String> fields, List<String> forcedFields, Form form,
@@ -62,11 +63,7 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 		// Do nothing
 	}
 
-	/**
-	 * Fill file name field. Handle possible file name collisions.
-	 */
-	@Override
-	public void beforePersist(TypeDefinition item, FormData data) {
+	protected String getFilename(FormData data) {
 		String filename = "";
 
 		// If there is field for property "cm:name" use it as new content name
@@ -83,30 +80,21 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 			}
 		}
 
-		// firstly, ensure we have a destination to create the node in
-		NodeRef parentRef = null;
-		FieldData destination = data.getFieldData(AbstractFormProcessor.DESTINATION);
-		if (destination == null) {
-			throw new FormException("Failed to persist form for '" + item.getName() + "' as '"
-					+ AbstractFormProcessor.DESTINATION + "' data was not provided.");
-		}
+		return filename;
+	}
 
-		// create the parent NodeRef
-		parentRef = new NodeRef((String) destination.getValue());
-
-		String tmpFilename = filename;
+	protected String findFreeFilename(NodeRef parentDirectory, String originalFilename) {
+		String tmpFilename = originalFilename;
 		int counter = 1;
-		while (null != childByNamePath(parentRef, tmpFilename)) {
-			tmpFilename = generateFilenameWithIndex(filename, counter);
+		while (null != childByNamePath(parentDirectory, tmpFilename)) {
+			tmpFilename = generateFilenameWithIndex(originalFilename, counter);
 			++counter;
 		}
-
-		// Use name of uploaded file as new content name
-		data.addFieldData(NAME_PROP_DATA, nameField.getValue(), true);
+		return tmpFilename;
 	}
 
 	private NodeRef childByNamePath(NodeRef parent, String filename) {
-		return nodeService.getChildByName(parent, ContentModel.ASSOC_CONTAINS, filename);
+		return getNodeService().getChildByName(parent, ContentModel.ASSOC_CONTAINS, filename);
 	}
 
 	private static String generateFilenameWithIndex(String oldFilename, int index) {
@@ -127,7 +115,29 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 	}
 
 	/**
-	 * Add ignored "cm:content" property.<br/>
+	 * Fill file name field. Handle possible file name collisions.
+	 */
+	@Override
+	public void beforePersist(TypeDefinition item, FormData data) {
+		// firstly, ensure we have a destination to create the node in
+		NodeRef parentRef = null;
+		FieldData destination = data.getFieldData(AbstractFormProcessor.DESTINATION);
+		if (destination == null) {
+			throw new FormException("Failed to persist form for '" + item.getName() + "' as '"
+					+ AbstractFormProcessor.DESTINATION + "' data was not provided.");
+		}
+		// create the parent NodeRef
+		parentRef = new NodeRef((String) destination.getValue());
+
+		String originalFilename = getFilename(data);
+		String validFilename = findFreeFilename(parentRef, originalFilename);
+		// Use name of uploaded file as new content name
+		data.addFieldData(NAME_PROP_DATA, validFilename, true);
+	}
+
+	/**
+	 * Strore "cm:content" property value, which is ignored by default handler.<br/>
+	 * Create "media" folder as an attachment.<br/>
 	 * See
 	 * {@link org.alfresco.repo.forms.processor.node.ContentModelFormProcessor#persistNode(NodeRef, FormData)
 	 * persistNode},
@@ -140,38 +150,92 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 	 */
 	@Override
 	public void afterPersist(TypeDefinition item, FormData data, NodeRef persistedObject) {
-		// get the property definitions for the type of node being persisted
-		QName type = this.nodeService.getType(persistedObject);
-		TypeDefinition typeDef = this.dictionaryService.getAnonymousType(type,
-				this.nodeService.getAspects(persistedObject));
-		Map<QName, PropertyDefinition> propDefs = typeDef.getProperties();
-		Map<QName, Serializable> propsToPersist = new HashMap<QName, Serializable>();
+		writeContent(item, data, persistedObject);
 
+		boolean isArtifact = item.getName().equals(TYPE_UCM_ARTIFACT_QNAME);
+		if (isArtifact) {
+			getOrCreateArtistMediaFolder(persistedObject);
+		}
+	}
+
+	//<site>/system/artifact_attachments/<artist>/<artifact_name>
+	protected NodeRef getOrCreateArtistMediaFolder(NodeRef artifactRef) {
+		// TODO: LOG
+		NodeRef site = getSiteRefByNode(artifactRef);
+		if (site == null) return null;
+		
+		Serializable artistNameValue = this.getNodeService().getProperty(artifactRef, UCMConstants.PROP_UCM_ARTIST_QNAME);
+		Serializable artifactNameValue = this.getNodeService().getProperty(artifactRef, ContentModel.PROP_NAME);
+		
+		if (artistNameValue == null || artifactNameValue == null) return null;
+		
+		String artistName = artistNameValue.toString();
+		String artifactName = artifactNameValue.toString();
+
+		NodeRef doclibFolder = getOrCreateFolder(site, "documentLibrary", false);
+		NodeRef systemFolder = getOrCreateFolder(doclibFolder, UCMConstants.SYSTEM_FOLDER_NAME, false); //NodeRef systemFolder = getOrCreateFolder(site, UCMConstants.SYSTEM_FOLDER_NAME, true);
+		NodeRef mediaFolder = getOrCreateFolder(systemFolder, UCMConstants.MEDIA_FOLDER_NAME, false);
+		NodeRef artistFolder = getOrCreateFolder(mediaFolder, artistName, false);
+		NodeRef artifactFolder = getOrCreateFolder(artistFolder, artifactName, false);
+		
+		// set media folder caption
+		this.getNodeService().setProperty(artifactFolder, ContentModel.PROP_TITLE, "Media content for " + artifactName);
+		
+		// save reference to folder in artifact association
+		this.getNodeService().addChild(artifactRef, artifactFolder, UCMConstants.ASSOC_UCM_ARTIFACT_CONTAINS_QNAME, QName.createQName(UCMConstants.UCM_NAMESPACE, artifactName));
+		
+		return mediaFolder;
+	}
+	
+	protected NodeRef getOrCreateFolder(NodeRef parentRef, String name, boolean isHidden) {
+		NodeRef result = this.getFileFolderService().searchSimple(parentRef, name);
+		if (result == null) {
+			result = this.getFileFolderService().create(parentRef, name, ContentModel.TYPE_FOLDER).getNodeRef();
+			if (isHidden) {
+				Map<QName, Serializable> aspectHiddenProperties = new HashMap<QName, Serializable>(1);
+//				 aspectHiddenProperties.put(ContentModel.PROP_VISIBILITY_MASK, true);
+				 this.getNodeService().addAspect(result, ContentModel.ASPECT_HIDDEN, aspectHiddenProperties);
+				 if (isHidden) {
+					 this.getNodeService().addAspect(result, ContentModel.ASPECT_HIDDEN, aspectHiddenProperties);
+				 }
+			}
+		}
+		return result;
+	}
+	
+	protected NodeRef getSiteRefByNode(NodeRef nodeRef) {
+		while (nodeRef != null && !SiteModel.TYPE_SITE.equals(this.getNodeService().getType(nodeRef))) {
+			nodeRef = this.getNodeService().getPrimaryParent(nodeRef).getParentRef();
+		}
+	 	
+		return nodeRef;
+	}
+
+	protected void writeContent(TypeDefinition item, FormData data, NodeRef persistedObject) {
 		FieldData contentField = data.getFieldData(CONTENT_PROP_DATA);
 		if (contentField != null && contentField.isFile()) {
-			// ensure that the property being persisted is defined in the model
-			PropertyDefinition propDef = propDefs.get(ContentModel.PROP_CONTENT);
-
 			// if we have a property definition attempt the persist
+			PropertyDefinition propDef = item.getProperties().get(ContentModel.PROP_CONTENT);
 			if (propDef != null && propDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)) {
-				ContentWriter writer = this.contentService.getWriter(persistedObject, ContentModel.PROP_CONTENT, true);
+				ContentWriter writer = this.getContentService().getWriter(persistedObject, ContentModel.PROP_CONTENT,
+						true);
 				if (writer != null) {
 					// write the content
 					writer.putContent(contentField.getInputStream());
 
 					// content data has not been persisted yet so get it from
 					// the node
-					ContentData contentData = (ContentData) this.nodeService.getProperty(persistedObject,
+					ContentData contentData = (ContentData) this.getNodeService().getProperty(persistedObject,
 							ContentModel.PROP_CONTENT);
 					if (contentData != null) {
 						contentData = ContentData.setMimetype(contentData, determineDefaultMimetype(data));
+						Map<QName, Serializable> propsToPersist = new HashMap<QName, Serializable>();
 						propsToPersist.put(ContentModel.PROP_CONTENT, contentData);
+						this.getNodeService().addProperties(persistedObject, propsToPersist);
 					}
 				}
 			}
 		}
-
-		this.nodeService.addProperties(persistedObject, propsToPersist);
 	}
 
 	/**
@@ -215,19 +279,19 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 		this.dictionaryService = dictionaryService;
 	}
 
-	public TypeFormProcessor getFormProcessor() {
-		return formProcessor;
-	}
-
-	public void setFormProcessor(TypeFormProcessor formProcessor) {
-		this.formProcessor = formProcessor;
-	}
-
 	public ContentService getContentService() {
 		return contentService;
 	}
 
 	public void setContentService(ContentService contentService) {
 		this.contentService = contentService;
+	}
+
+	public FileFolderService getFileFolderService() {
+		return fileFolderService;
+	}
+
+	public void setFileFolderService(FileFolderService fileFolderService) {
+		this.fileFolderService = fileFolderService;
 	}
 }
