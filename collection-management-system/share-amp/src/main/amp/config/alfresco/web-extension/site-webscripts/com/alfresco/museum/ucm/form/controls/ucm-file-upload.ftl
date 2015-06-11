@@ -7,7 +7,8 @@
 </div>
 <script type="text/javascript">
 	(function() {
-		require(["jquery"], function() {
+		require(["jquery"], function($) {
+			jQuery = $;
 			require(["${url.context}/res/js/jquery.simple-file-preview.js"], function() {
 				if (typeof SoftwareLoop == 'undefined') {
 					$("#${fieldHtmlId}-input").simpleFilePreview();

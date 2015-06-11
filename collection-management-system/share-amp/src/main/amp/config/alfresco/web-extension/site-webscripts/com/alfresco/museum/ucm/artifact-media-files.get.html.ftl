@@ -17,18 +17,16 @@
       <div id="${el}-upload-target"></div>
 
       <script type="text/javascript">
-         ucmCreateMediaFileUploader("${url.context}", "${el}", "${nodeRef}");
+         ucmCreateMediaFileUploader("${el}", "${nodeRef}");
       </script>
    </@>
    
    <@markup id="${el}-list">
       <div id="${el}-body" class="document-ucm-media-files"></div>
       <script type="text/javascript">
-         require(["jquery"], function() {
-            var container = $("#${el}-body.document-ucm-media-files");
-            var mediaFiles = JSON.parse("${response?js_string}").mediaFiles;
-            ucmRefreshMediaFileList("${url.context}", container, mediaFiles);
-         });
+         var containerSelector = "#${el}-body.document-ucm-media-files";
+         var mediaFiles = JSON.parse("${response?js_string}").mediaFiles;
+         ucmRefreshMediaFileList(containerSelector, mediaFiles);
       </script>
    </@>
 </@>

@@ -8,8 +8,9 @@
 	<@script type="text/javascript" src="${url.context}/res/js/jquery.layout.js"  group="document-details"/>
 	<@script type="text/javascript" src="${url.context}/res/js/jquery.loupe.min.js"  group="document-details"/>
 -->
-
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/artifact-preview.css"/>
+   <@script type="text/javascript" src="${url.context}/res/js/artifact-preview.js" group="artifact"/>
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/artifact-preview.css" group="artifact"/>
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/artifact-details.css" group="artifact"/>
 
    <@templateHtmlEditorAssets />
 </@>
@@ -27,9 +28,14 @@
       <@region id="actions" scope="template"/>
       <@region id="node-header" scope="template"/>
 
-      <div id="ucm-horizontal-splitter" class="yui-gc" style="width: 1100px;">
-     	<div id="ucm-vertical-splitter" class="yui-u first" style="width: 510px;">
+      <div id="ucm-horizontal-splitter" class="yui-gc ucm-artifact-horizontal-splitter">
+     	<div id="ucm-vertical-splitter" class="yui-u first ucm-artifact-vertical-splitter">
             <#if (config.scoped['DocumentDetails']['document-details'].getChildValue('display-web-preview') == "true")>
+			   <script type="text/javascript">
+			      // Image initialization is done asynchronously and it raises no event to listen to.
+			      // To make sure that zoom will be enabled after image loading we are "monkey patching" Image_display function.
+			      Alfresco.WebPreview.prototype.Plugins.Image.prototype.display = Image_displayUCM;
+			   </script>
 			   <div id="ucm-artifact-image" class="artifact-preview">
 			   	  <@region id="web-preview" scope="template"/>
 			   	  <#--script type="text/javascript">
@@ -40,16 +46,6 @@
                     });
             </script-->
 			   </div>
-			   <script type="text/javascript">
-			      require(['jquery'], function() {
-			         jQuery = $;
-			         require(["${url.context}/res/js/jquery.elevatezoom.js"], function() {
-			            var image = $('#ucm-artifact-image').find('img');
-			            image.attr( {'data-zoom-image': image.attr('src')} );
-			            image.elevateZoom( {zoomType: 'inner', cursor: 'crosshair', scrollZoom : true} );
-			         });
-			      });
-			   </script>
             </#if>
 			<div id="ucm-left-bottom">
 				<@region id="ucm-media-files" scope="template"/>
@@ -57,11 +53,11 @@
 			</div>
          </div>
 
-         <div id="ucm-metadata" class="yui-u" style="width: 550px; margin-left: 20px;">
+         <div id="ucm-metadata" class="yui-u ucm-metadata">
             <@region id="document-links" scope="template"/>
             <@markup id="bd">
 			    <div id="bd">
-			       <div class="share-form" style="border:1px solid black">
+			       <div class="share-form">
 			          <@region id="edit-metadata-mgr" scope="template" />
 			          <@region id="edit-metadata" scope="template" />
 			       </div>
