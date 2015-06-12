@@ -17,12 +17,11 @@
 
 	</style> 
 
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/jquery-ui.js"></script>
-	<script type="text/javascript" src="js/jquery.popupWindow.js"></script>
+<script type="text/javascript" src="js/jquery.js"></script>                   
+<script type="text/javascript" src="js/jquery-ui.js"></script>               
 
+<link type="text/css" rel="Stylesheet" href="css/themes/smoothness/jquery-ui.css">	<style type="text/css">
 
-	<style type="text/css">
 	/*
 	 * Customize borders and shading to suit this nested layout
 	 */
@@ -34,8 +33,23 @@
 	 
    </style>
    
-	<script type="text/javascript" src="js/jquery.loupe.min.js"></script>
-
+	<script type="text/javascript" src="js/jquery.loupe.min.js"></script>   
+	
+  <script type="text/javascript">
+    function showDialog(url, wdth, hght, tltl)
+    {
+			var $dialog = $('<div></div>')
+			               .html('<iframe style="border: 0px; " src="' + url + '" width="100%" height="100%"></iframe>')
+			               .dialog({
+			                   autoOpen: false,
+			                   modal: false,
+			                   height: wdth,
+			                   width: hght,
+			                   title: tltl
+			               });
+			$dialog.dialog('open');    
+	}
+  </script>
 </head>
 <body>
 
@@ -59,32 +73,28 @@
 		<p>		
 		<br><a href="file:///Users/gdavydov/GitHub/mproject/JQuery/pages/fragment-1.jpg "title="Fragment 1" class="example1" id="fragment1" style="text-decoration:none" >fragment-1</a></br> 
 				<script type="text/javascript"> 
-						$('#fragment1').popupWindow({ 
-						height:300, 
-						width:300, 
-						top:50, 
-						left:50
-						}); 
+
+			  $('#fragment1').click(function(e) { 
+			  	e.preventDefault();
+			  	showDialog($(this).attr('href'), 300, 300, $(this).attr("title"));
+			  	
+			  });	 
 				</script>
 				
-				<br><a href="https://en.wikipedia.org/wiki/The_Renaissance" title="yahoo.com" class="example1demo" id="The_Renaissance">The_Renaissance</a></br> 
+				<br><a href="https://en.wikipedia.org/wiki/The_Renaissance" title="The Renaissance" class="example1demo" id="The_Renaissance">The_Renaissance</a></br> 
 						<script type="text/javascript"> 
-						$('#The_Renaissance').popupWindow({ 
-						height:500, 
-						width:500, 
-						top:70, 
-						left:70 
-						}); 
+						  $('#The_Renaissance').click(function(e) { 
+						  	e.preventDefault();
+						  	showDialog($(this).attr('href'), 600, 600, $(this).attr("title"));
+						  	
+						  });	 
 						</script>
 
 		     <br><a href="file:///Users/gdavydov/GitHub/mproject/JQuery/pages/Antonello da Messina - Bio.pdf" title="Antonello da Messina - Bio" class="example1" id="AntonellodaMessina-Bio.pdf" style="text-decoration:none" >Antonello da Messina - Bio.pdf</a>
 						<script type="text/javascript"> 
-						$('#AntonellodaMessina-Bio.pdf').popupWindow({ 
-						height:500, 
-						width:500, 
-						top:70, 
-						left:70 
-						}); 
+					  $('#AntonellodaMessina-Bio.pdf').click(function(e) { 
+					  	e.preventDefault();
+					  	showDialog($(this).attr('href'), 600, 600, $(this).attr("title"));
 						</script>
 		</p>
   </div>
