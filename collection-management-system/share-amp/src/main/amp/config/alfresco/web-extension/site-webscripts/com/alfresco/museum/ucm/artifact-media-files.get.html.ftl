@@ -1,13 +1,13 @@
 <@standalone>
    <@markup id="css" >
       <#-- CSS Dependencies -->
-      <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/formstone/upload.css" group="artifact" />
-      <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/artifact-media-files.css" group="artifact" />
+      <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/formstone/upload.css" />
+      <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/artifact-media-files.css" />
    </@>
 
    <@markup id="js" >
       <#-- JS Dependencies -->
-      <@script type="text/javascript" src="${url.context}/res/js/artifact-media-files.js" group="artifact" />
+      <@script type="text/javascript" src="${url.context}/res/js/artifact-media-files.js" />
    </@>
 
    <#assign el=args.htmlid?html>

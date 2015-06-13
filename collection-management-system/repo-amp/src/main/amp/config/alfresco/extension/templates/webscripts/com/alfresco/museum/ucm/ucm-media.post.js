@@ -1,5 +1,5 @@
 <import resource="classpath:alfresco/extension/templates/webscripts/com/alfresco/museum/ucm/ucm-media.lib.js">
-
+<!-- Based on alfresco/templates/webscripts/org/alfresco/repository/forms/form.post.js -- >
 function main()
 {
 	var itemKind = "type";
@@ -24,6 +24,7 @@ function main()
            if (formdata.fields[i].isFile)
            {
               repoFormData.addFieldData(formdata.fields[i]);
+              repoFormData.addFieldData("prop_mimetype", formdata.fields[i].mimetype);
            }
            else
            {

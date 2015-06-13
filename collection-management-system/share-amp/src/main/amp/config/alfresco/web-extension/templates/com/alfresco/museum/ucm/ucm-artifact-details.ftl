@@ -11,7 +11,6 @@
    <@script type="text/javascript" src="${url.context}/res/js/artifact-preview.js" group="artifact"/>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/artifact-preview.css" group="artifact"/>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/artifact-details.css" group="artifact"/>
-
    <@templateHtmlEditorAssets />
 </@>
 
@@ -27,7 +26,6 @@
       <@region id="actions-common" scope="template"/>
       <@region id="actions" scope="template"/>
       <@region id="node-header" scope="template"/>
-
       <div id="ucm-horizontal-splitter" class="yui-gc ucm-artifact-horizontal-splitter">
      	<div id="ucm-vertical-splitter" class="yui-u first ucm-artifact-vertical-splitter">
             <#if (config.scoped['DocumentDetails']['document-details'].getChildValue('display-web-preview') == "true")>

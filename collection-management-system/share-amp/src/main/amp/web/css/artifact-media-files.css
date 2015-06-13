@@ -9,17 +9,31 @@
 }
 
 .ucm-media-wrapper {
-   width: 504px;
+	width: 504px;
 }
 
 .ucm-media-audio {
-   width: 485px;
+	width: 485px;
 }
 
 .ucm-media-file-delete-button {
 	border: 0px;
-    background: inherit;
-    padding: 0;
-    margin: 5px 0px 0px 2px;
-    vertical-align: top;
+	background: inherit;
+	padding: 0;
+	margin: 5px 0px 0px 2px;
+	vertical-align: top;
+}
+
+.ucm-media-dialog.ui-dialog-content.ui-widget-content {
+	overflow: hidden;
+}
+
+.ucm-media-frame {
+	border: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+.ucm-media-pdf, .ucm-media-video, .ucm-media-other {
+	text-decoration: none;
 }
