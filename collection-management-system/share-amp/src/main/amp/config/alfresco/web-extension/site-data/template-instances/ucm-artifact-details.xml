@@ -169,13 +169,14 @@
       </component>
 
       <!-- Document Actions (incl commons) -->
-<!--       <component>
+       <component>
          <region-id>document-actions</region-id>
          <url>/components/document-details/document-actions</url>
          <properties>
             <nodeRef>{nodeRef}</nodeRef>
          </properties>
       </component>
+<!-- 
       <component>
          <region-id>actions-common</region-id>
          <url>/components/documentlibrary/actions-common</url>
