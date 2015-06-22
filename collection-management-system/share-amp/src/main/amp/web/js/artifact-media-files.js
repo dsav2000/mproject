@@ -1,28 +1,103 @@
+function ucmShowDialog(url, wdth, hght, tltl) {
+	var $dialog = $('<div/>', {
+		class : 'ucm-media-dialog'
+	}).html('<iframe class="ucm-media-frame" src="' + url + '"/>').dialog({
+		autoOpen : false,
+		modal : false,
+		height : wdth,
+		width : hght,
+		title : tltl
+	});
+	$dialog.dialog('open');
+}
+
+function ucmShowVideo(url, wdth, hght, tltl) {
+	// TODO: may width be in percents? autoplay?
+	var video = $(
+			'<video controls width="' + (wdth - 35)
+					+ '">Your browser does not support HTML5 video.</video>')
+			.append($('<source/>', {
+				src : url,
+				type : 'video/mp4'
+			}));
+	var $dialog = $('<div class="ucm-media-dialog"/>')
+	// .html('<iframe class="ucm-media-frame" src="' + url + '"/>')
+	.html(video).dialog({
+		autoOpen : false,
+		modal : false,
+		height : wdth,
+		width : hght,
+		title : tltl,
+		beforeClose : function(event, ui) {
+			// stops video
+			$dialog.dialog('destroy').remove();
+		}
+	});
+	$dialog.dialog('open');
+}
+
 function ucmCreateMediaFile(mediaFile) {
 	var url = appContext + "/proxy/alfresco/ucm/media";
 	if (Alfresco.util.CSRFPolicy && Alfresco.util.CSRFPolicy.isFilterEnabled()) {
 		url += "?" + Alfresco.util.CSRFPolicy.getParameter() + "="
 				+ encodeURIComponent(Alfresco.util.CSRFPolicy.getToken());
 	}
-	var wrapper = $('<div class="ucm-media-wrapper" />');
+	var wrapper = $('<div class="ucm-media-wrapper"/>');
 
-	wrapper.append(mediaFile.title || mediaFile.name);
-	// TODO: Other media types. CSRF?
-	wrapper.append('<audio src="' + appContext + '/proxy/alfresco/api/node'
-			+ mediaFile.link
-			+ '/content" class="ucm-media-audio" preload="none" controls />');
+	var name = mediaFile.title || mediaFile.name
+
+	var contentLink = appContext + '/proxy/alfresco/api/node' + mediaFile.link
+			+ '/content';
+	switch (mediaFile.type) {
+	case 'audio/mpeg':
+	case 'audio/mp3':
+		wrapper.append(name);
+		wrapper.append('<audio src="' + contentLink
+				+ '" class="ucm-media-audio" preload="none" controls/>');
+		break;
+	case 'application/pdf':
+		var link = $('<a/>', {
+			href : contentLink,
+			'class' : 'ucm-media-pdf'
+		}).html(name).click(function(e) {
+			e.preventDefault();
+			ucmShowDialog(contentLink, 600, 600, name);
+		});
+		wrapper.append(link);
+		break;
+	case 'video/mp4':
+		var link = $('<a/>', {
+			href: contentLink,
+			'class': 'ucm-media-video'
+		}).html(name).click(function(e) {
+			e.preventDefault();
+			ucmShowVideo(contentLink, 600, 600, name);
+		});
+		wrapper.append(link);
+		break;
+	default: //TODO: let user save content instead of showing dialog?
+		var link = $('<a/>', {
+			href : contentLink,
+			'class' : 'ucm-media-other'
+		}).html(name).click(function(e) {
+			e.preventDefault();
+			ucmShowDialog(contentLink, 600, 600, name);
+		});
+		wrapper.append(link);
+		break;
+	}
 
 	wrapper.append($('<button />', {
 		text : '[x]',
 		class : 'ucm-media-file-delete-button'
 	}).click(function() {
-		deleteFile(mediaFile.nodeRef, wrapper);
+		ucmDeleteFile(mediaFile.nodeRef, wrapper);
 	}));
 
 	return wrapper;
 }
 
-function deleteFile(nodeRef, element) {
+function ucmDeleteFile(nodeRef, element) {
 	require(
 			[ "jquery" ],
 			function($) {
@@ -102,8 +177,10 @@ function ucmCreateMediaFileUploader(elementIdPrefix, nodeRef) {
 				}
 				function onFileComplete(e, file, response) {
 					console.log("File Complete");
-					var containerSelector = '#' + elementIdPrefix + "-body.document-ucm-media-files";
-					ucmRefreshMediaFileList(containerSelector, response.mediaFiles);
+					var containerSelector = '#' + elementIdPrefix
+							+ "-body.document-ucm-media-files";
+					ucmRefreshMediaFileList(containerSelector,
+							response.mediaFiles);
 				}
 				function onFileError(e, file, error) {
 					console.error("File Error: " + error);
