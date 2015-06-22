@@ -28,6 +28,7 @@
 		<property name="fileFolderService" ref="FileFolderService" />
 		<property name="dictionaryService" ref="DictionaryService" />
 		<property name="nodeService" ref="NodeService" />
+		<property name="mimetypeService" ref="mimetypeService" />
 	</bean>
 
 	<!-- TODO: explicitly override typeFormProcessor -->
