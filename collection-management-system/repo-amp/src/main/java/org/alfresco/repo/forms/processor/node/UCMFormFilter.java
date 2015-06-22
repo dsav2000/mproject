@@ -6,8 +6,8 @@ import static org.alfresco.museum.ucm.UCMConstants.NAME_PROP_DATA;
 import static org.alfresco.museum.ucm.UCMConstants.TYPE_UCM_ARTIFACT_QNAME;
 import static org.alfresco.repo.forms.processor.node.FormFieldConstants.PROP_DATA_PREFIX;
 
+import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +29,7 @@ import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
+import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
@@ -50,6 +51,7 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 	private ContentService contentService;
 	private DictionaryService dictionaryService;
 	private FileFolderService fileFolderService;
+	private MimetypeService mimetypeService;
 
 	@Override
 	public void beforeGenerate(TypeDefinition item, List<String> fields, List<String> forcedFields, Form form,
@@ -151,7 +153,6 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 	@Override
 	public void afterPersist(TypeDefinition item, FormData data, NodeRef persistedObject) {
 		writeContent(item, data, persistedObject);
-
 		boolean isArtifact = item.getName().equals(TYPE_UCM_ARTIFACT_QNAME);
 		if (isArtifact) {
 			getOrCreateArtistMediaFolder(persistedObject);
@@ -258,6 +259,14 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 					mimetype = mimetypeFieldValue;
 				}
 			}
+			else {
+				FieldData contentField = data.getFieldData(CONTENT_PROP_DATA);
+				if (contentField != null) {
+					String fileName = contentField.getValue().toString();
+					InputStream inputStream = contentField.getInputStream();
+					mimetype = getMimetypeService().guessMimetype(fileName, inputStream);
+				}
+			}
 		}
 
 		return mimetype;
@@ -293,5 +302,13 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 
 	public void setFileFolderService(FileFolderService fileFolderService) {
 		this.fileFolderService = fileFolderService;
+	}
+
+	public MimetypeService getMimetypeService() {
+		return mimetypeService;
+	}
+
+	public void setMimetypeService(MimetypeService mimetypeService) {
+		this.mimetypeService = mimetypeService;
 	}
 }
