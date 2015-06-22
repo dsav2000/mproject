@@ -86,22 +86,31 @@
 		</types>
 
 		<create-content>
+	         <content id="plain-text" label="PDF file" type="pagelink" index="12" icon="text">
+	            <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/plain</param>
+	         </content>
+
 	         <content id="plain-text" label="create-content.text" type="pagelink" index="10" icon="text">
 	            <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/plain</param>
 	         </content>
 
 			<content id="artifact" mimetype="image/jpeg" label="menu.create-content.ucm_artifact" itemid="ucm:artifact" />
-	         <content id="collection" label="menu.create-content.ucm_collection" icon="folder" index="2" type="javascript">
-	            <param name="function">onNewFolder</param>
-	         </content>
+
+	        <content id="collection" label="menu.create-content.ucm_collection"  index="2" type="javascript">
+	            <param name="function">onNewCollection</param>
+	        </content>
 <!-- 	         
 	         <content id="artist" label="menu.create-content.ucm_artist" icon="folder" index="3" type="javascript">
 	            <param name="function">onNewFolder</param>
 	         </content>
--->	         
+-->	        
 		</create-content>
 	
         <create-content-by-template>false</create-content-by-template>
+
+      <folder-types>
+         <type name="ucm:Collection" display-label="FCollection" display-label-id="fcollection" icon="folder" itemid="ucm:Collection" />
+      </folder-types>
 
 		<metadata-templates>
 			<template id="isArtifact">
@@ -151,13 +160,12 @@
 		</types>
 
 		<create-content>
-	         <content id="plain-text" label="create-content.text" type="pagelink" index="10" icon="text">
-	            <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/plain</param>
-	         </content>
-			<content id="artifact" mimetype="image/jpeg" label="menu.create-content.ucm_artifact" itemid="ucm:artifact" />
+ 			 <content id="artifact" mimetype="image/jpeg" label="menu.create-content.ucm_artifact" itemid="ucm:artifact" />
+
 	         <content id="collection" label="menu.create-content.ucm_collection" icon="folder" index="2" type="javascript">
-	            <param name="function">onNewFolder</param>
+	            <param name="function">onNewCollection</param>
 	         </content>
+
 	         <content id="artist" label="menu.create-content.ucm_artist" icon="folder" index="3" type="javascript">
 	            <param name="function">onNewFolder</param>
 	         </content>
