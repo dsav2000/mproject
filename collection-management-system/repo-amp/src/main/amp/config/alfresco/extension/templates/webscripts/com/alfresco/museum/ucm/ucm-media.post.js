@@ -13,10 +13,9 @@ function main()
     }
 
     var persistedObject, artifactRef, folderRef;
-    
+
     try
     {
-    	
         // N.B. This repoFormData is a different FormData class to that used above.
         var repoFormData = new Packages.org.alfresco.repo.forms.FormData();
         for (var i = 0; i < formdata.fields.length; i++)
@@ -31,6 +30,10 @@ function main()
         	   if (formdata.fields[i].name == "nodeRef") {
         		   artifactRef = formdata.fields[i].value;
         		   folderRef = getArtifactFolder(artifactRef).nodeRef;
+        	   }
+        	   else {
+                  // add field to form data
+                  repoFormData.addFieldData(formdata.fields[i].name, formdata.fields[i].value);
         	   }
            }
         }
@@ -74,7 +77,6 @@ function main()
         return;
     }
 
-//    model.mediaFiles = jsonUtils.toJSONString(getMediaFiles(artifactRef));
     model.mediaFiles = jsonUtils.toJSONString(getMediaFiles(artifactRef));
     model.persistedObject = persistedObject.toString();
     model.message = "Successfully persisted form for item [" + itemKind + "]" + itemId;

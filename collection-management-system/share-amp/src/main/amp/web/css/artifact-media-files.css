@@ -9,7 +9,17 @@
 }
 
 .ucm-media-wrapper {
+	height: 18px;
 	width: 504px;
+	overflow: hidden;
+}
+
+.ucm-media-wrapper.ucm-audio-wrapper {
+	height: 50px;
+}
+
+.ucm-media-wrapper:hover {
+	background-color: #f0f0f0;
 }
 
 .ucm-media-audio {
@@ -18,10 +28,15 @@
 
 .ucm-media-file-delete-button {
 	border: 0px;
+	padding: 0px;
 	background: inherit;
-	padding: 0;
-	margin: 5px 0px 0px 2px;
-	vertical-align: top;
+	vertical-align: baseline;
+	float: right;
+}
+
+.ucm-media-file-delete-button:hover {
+	color: red;
+	font-weight: bold !important;
 }
 
 .ucm-media-dialog.ui-dialog-content.ui-widget-content {
@@ -36,4 +51,20 @@
 
 .ucm-media-pdf, .ucm-media-video, .ucm-media-other {
 	text-decoration: none;
+}
+
+.ucm-media-url-button {
+	height: 25px;
+	border-width: 1px !important;
+	vertical-align: baseline;
+}
+
+.ucm-media-url-input {
+	width: 400px !important;
+	height: 25px;
+}
+
+.inline-input-description {
+	color: #666666;
+	font-style: italic;	
 }
