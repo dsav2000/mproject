@@ -108,8 +108,7 @@ function ucmCreateMediaFile(mediaFile) {
 	}
 
 	wrapper.append($('<button />', {
-		text : '[x]',
-		img : src='${url.context}/res/images/delete-item-on.png' alt='[X]'
+		text : '[X]',
 		class : 'ucm-media-file-delete-button'
 	}).click(function() {
 		ucmDeleteFile(mediaFile.nodeRef, wrapper);
