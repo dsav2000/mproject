@@ -43,11 +43,6 @@
 			<title>Collection</title>
 			<parent>ucm:site</parent>
 			<properties>
-				<property name="ucm:collection_name">
-					<title>Collection Name</title>
-					<type>d:text</type>
-					<mandatory>true</mandatory>
-				</property>
 				<property name="ucm:collection_id">
 					<title>Collection ID</title>
 					<type>d:text</type>
