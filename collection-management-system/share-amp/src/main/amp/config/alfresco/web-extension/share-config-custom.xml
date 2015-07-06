@@ -86,10 +86,6 @@
 		</types>
 
 		<create-content>
-	         <content id="plain-text" label="PDF file" type="pagelink" index="12" icon="text">
-	            <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/plain</param>
-	         </content>
-
 	         <content id="plain-text" label="create-content.text" type="pagelink" index="10" icon="text">
 	            <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/plain</param>
 	         </content>
@@ -121,16 +117,17 @@
 		</metadata-templates>
 	</config>
 
-
 	<!-- ucm:collection type (creating nodes) -->
 	<config evaluator="model-type" condition="ucm:collection">
 		<forms>
 			<field-visibility>
+				<show id="cm:name"/>
 				<show id="ucm:collection_name"/>
 				<show id="ucm:collection_id"/>
 			</field-visibility>
             <appearance>                    
-                <field id="ucm:collection_name" label-id="Collection Name" />
+                <field id="cm:name" label-id="Collection Name" />
+                <field id="ucm:collection_name" label-id="Coll Name" />
                 <field id="ucm:collection_id" label-id="Collection ID" />
             </appearance>
 		</forms>
@@ -180,21 +177,21 @@
 		<forms>
 		   <form>
 				<field-visibility>
-					<show id="ucm:collection_name"/>
+					<show id="cm:name"/>
 					<show id="ucm:collection_id"/>
 				</field-visibility>
 	            <appearance>                    
-	                <field id="ucm:collection_name" label-id="Collection Name" />
+	                <field id="cm:name" label-id="Collection Name" />
 	                <field id="ucm:collection_id" label-id="Collection ID" />
 	            </appearance>
             </form>
             <form id="doclib-simple-metadata">
 				<field-visibility>
-					<show id="ucm:collection_name"/>
+					<show id="cm:name"/>
 					<show id="ucm:collection_id"/>
 				</field-visibility>
 	            <appearance>                    
-	                <field id="ucm:collection_name" label-id="Collection Name" />
+	                <field id="cm:name" label-id="Collection Name" />
 	                <field id="ucm:collection_id" label-id="Collection ID" />
 	            </appearance>
 			</form>
@@ -202,11 +199,11 @@
 			<!-- Document Library Inline Edit form -->
 			<form id="doclib-inline-edit">
 				<field-visibility>
-					<show id="ucm:collection_name"/>
+					<show id="cm:name"/>
 					<show id="ucm:collection_id"/>
 				</field-visibility>
 	            <appearance>                    
-	                <field id="ucm:collection_name" label-id="Collection Name" />
+	                <field id="cm:name" label-id="Collection Name" />
 	                <field id="ucm:collection_id" label-id="Collection ID" />
 	            </appearance>
 			</form>
