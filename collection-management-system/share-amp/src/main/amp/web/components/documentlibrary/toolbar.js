@@ -734,12 +734,6 @@
       {
          var destination = this.doclistMetadata.parent.nodeRef;
 
-   	  // Pop-up a message...
-         Alfresco.util.PopupManager.displayMessage({
-           text: this.msg()"onNewFolder! in "+destination)
-         });
-
-         
          // Intercept before dialog show
          var doBeforeDialogShow = function DLTB_onNewFolder_doBeforeDialogShow(p_form, p_dialog)
          {
@@ -836,12 +830,13 @@
        */
       onNewCollection: function DLTB_onNewCollection(e, p_obj)
       {
-    	  // Pop-up a message...
+          var destination = this.doclistMetadata.parent.nodeRef;
+
+          // Pop-up a message...
           Alfresco.util.PopupManager.displayMessage({
-            text: this.msg()"onNewCollection!")
+            text: this.msg("onNewCollection!", destination)
           });
           
-         var destination = this.doclistMetadata.parent.nodeRef;
 
          // Intercept before dialog show
          var doBeforeDialogShow = function DLTB_onNewCollection_doBeforeDialogShow(p_form, p_dialog)
