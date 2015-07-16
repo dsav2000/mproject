@@ -29,6 +29,23 @@
 			<title>CM folder</title>
 			<parent>cm:folder</parent>
 			<!-- TODO: create child-association for "ucm:documents"? -->
+			<associations>
+				<!-- Generic UCM Document -->
+				<child-association name="ucm:documents">
+					<source>
+						<mandatory>false</mandatory>
+						<many>false</many>
+					</source>
+					<target>
+						<class>ucm:document</class>
+						<mandatory>false</mandatory>
+						<many>true</many>
+					</target>
+					<duplicate>false</duplicate>
+					<propagateTimestamps>true</propagateTimestamps>
+				</child-association>
+			</associations>
+
 		</type>
 
 		<type name="ucm:site">
@@ -47,7 +64,10 @@
 					<title>Collection ID</title>
 					<type>d:text</type>
 					<mandatory>false</mandatory>
-					<!-- TODO: add constraint? WHAT KIND OF CONSTRAINT?  -->
+				</property>
+				<property name="ucm:curator">
+					<title>Curator</title>
+					<type>d:text</type>
 				</property>
 			</properties>
 
@@ -55,16 +75,42 @@
 			<associations>
 
 				<!-- Artist (as it is child type of type cm:folder) -->
+				<child-association name="ucm:collectionArtists">
+					<source>
+						<mandatory>false</mandatory>
+						<many>false</many>
+					</source>
+					<target>
+						<class>ucm:artist</class>
+						<mandatory>false</mandatory>
+						<many>true</many>
+					</target>
+					<duplicate>false</duplicate>
+					<propagateTimestamps>true</propagateTimestamps>
+				</child-association>
 
-				<!-- Collection (only for alphabetical folders) (as it is child type 
-					of type cm:folder) -->
+				
 
 				<!-- Artifact (as it is child type of type cm:folder) -->
+				<child-association name="ucm:collectionArtifacts">
+					<source>
+						<mandatory>false</mandatory>
+						<many>false</many>
+					</source>
+					<target>
+						<class>ucm:artifact</class>
+						<mandatory>false</mandatory>
+						<many>true</many>
+					</target>
+					<duplicate>false</duplicate>
+					<propagateTimestamps>true</propagateTimestamps>
+				</child-association>
+				
 				<!-- TODO: this may require changes if implementation of ucm:artifact 
 					would change -->
 
-				<!-- Document -->
-				<child-association name="ucm:collectionContains">
+				<!-- Generic UCM Document -->
+				<child-association name="ucm:collectionDocuments">
 					<source>
 						<mandatory>false</mandatory>
 						<many>false</many>
@@ -78,10 +124,11 @@
 					<propagateTimestamps>true</propagateTimestamps>
 				</child-association>
 			</associations>
-
+<!-- 
 			<mandatory-aspects>
 				<aspect>ucm:site_aspect</aspect>
 			</mandatory-aspects>
+ -->	
 		</type>
 
 		<type name="ucm:artist">
@@ -109,7 +156,7 @@
 				<!-- Artifact (as it is child type of type cm:folder) -->
 
 				<!-- Document (for the future references) -->
-				<child-association name="ucm:artistContains">
+				<child-association name="ucm:artistArtifacts">
 					<source>
 						<mandatory>false</mandatory>
 						<many>false</many>
@@ -117,6 +164,21 @@
 					<target>
 <!--						<class>ucm:document</class> -->
 						<class>ucm:artifact</class>
+						<mandatory>false</mandatory>
+						<many>true</many>
+					</target>
+					<duplicate>false</duplicate>
+					<propagateTimestamps>true</propagateTimestamps>
+				</child-association>
+
+				<!-- Generic UCM Document -->
+				<child-association name="ucm:artistDocuments">
+					<source>
+						<mandatory>false</mandatory>
+						<many>false</many>
+					</source>
+					<target>
+						<class>ucm:document</class>
 						<mandatory>false</mandatory>
 						<many>true</many>
 					</target>
@@ -291,12 +353,6 @@
 					</constraints>
 				</property>
 
-				<property name="ucm:artifact_donor">
-					<title>Donor Name</title>
-					<type>d:text</type>
-					<mandatory>false</mandatory>
-				</property>
-
 				<property name="ucm:artifact_type">
 					<title>Type</title>
 					<type>d:text</type>
@@ -353,12 +409,14 @@
 
 			<mandatory-aspects>
 				<aspect>ucm:artist_aspect</aspect>
+				<aspect>ucm:museum_artifact_aspect</aspect>
 <!--
 				<aspect>ucm:indoor_artifact_aspect</aspect>
-				<aspect>ucm:outdoor_artifact_aspect</aspect>
+				<aspect>cm:geographical</aspect>
 				<aspect>ucm:archeological_aspect</aspect>
+				<aspect>ucm:artifact_donor</aspect>
+
 -->
-				<aspect>ucm:museum_artifact_aspect</aspect>
 			</mandatory-aspects>
 		</type>
 
@@ -655,26 +713,22 @@
 		<aspect name="ucm:site_aspect">
 			<title>Site Aspect</title>
 			<properties>
-				<property name="ucm:site_aspect_name">
+				<property name="ucm:site_name">
 					<title>Site Name</title>
 					<type>d:text</type>
 					<mandatory>true</mandatory>
 					<!-- TODO: constraints? -->
 				</property>
 
-				<property name="ucm:site_aspect_address">
+				<property name="ucm:site_address">
 					<title>Museum Address</title>
 					<type>d:text</type>
 					<!-- TODO: constraints? -->
 				</property>
-				<property name="ucm:site_aspect_buildYear">
+				<property name="ucm:site_buildYear">
 					<title>Build Year</title>
-					<type>d:date</type>
+					<type>d:text</type>
 					<!-- TODO: add constraints? -->
-				</property>
-				<property name="ucm:site_aspect_curator">
-					<title>Curator</title>
-					<type>d:text</type><!-- TODO: add constraint? -->
 				</property>
 
 				<property name="ucm:site_aspect_type">
@@ -726,47 +780,26 @@
 		<aspect name="ucm:indoor_artifact_aspect">
 			<title>Indoor Artifact Aspect</title>
 			<properties>
-				<property name="ucm:indoor_artifact_x">
-					<title>IPS X</title>
-					<type>d:double</type>
+				<property name="ucm:indoor_artifact_beacon_id">
+					<title>Location ID</title>
+					<type>d:text</type>
 					<mandatory>true</mandatory>
-					<default>0</default>
-					<!-- TODO: constraints? -->
+					<default>ID-00</default>
 				</property>
 
-				<property name="ucm:indoor_artifact_y">
-					<title>IPS Y</title>
+				<property name="ucm:indoor_artifact_beacon_threshhold_value">
+					<title>Location ID</title>
 					<type>d:double</type>
 					<mandatory>true</mandatory>
-					<default>0</default>
-					<!-- TODO: constraints? -->
-				</property>
-			</properties>
-		</aspect>
-
-		<aspect name="ucm:outdoor_artifact_aspect">
-			<title>Outdoor Artifact Aspect</title>
-			<properties>
-				<property name="ucm:outdoor_artifact_x">
-					<title>GPS Lat.</title>
-					<type>d:double</type>
-					<mandatory>true</mandatory>
-					<default>0</default>
-					<!-- TODO: constraints? -->
+					<default>0.0</default>
 				</property>
 
-				<property name="ucm:outdoor_artifact_y">
-					<title>GPS Lon.</title>
-					<type>d:double</type>
-					<mandatory>true</mandatory>
-					<default>0</default>
-					<!-- TODO: constraints? -->
-				</property>
 			</properties>
 		</aspect>
 
 		<aspect name="ucm:archeological_aspect">
 			<title>Archeological Aspect</title>
+			<parent>cm:geographic</parent>
 			<properties>
 				<property name="ucm:archeological_aspect_excavated_by">
 					<title>Excavated by</title>
@@ -777,6 +810,7 @@
 
 				<property name="ucm:archeological_aspect_excavated_date">
 					<title>Excavated Date</title>
+					<!-- TODO: text date? -->
 					<type>d:date</type>
 					<mandatory>false</mandatory>
 				</property>
@@ -785,23 +819,26 @@
 					<title>Excavated Place</title>
 					<type>d:text</type>
 					<mandatory>false</mandatory>
-					<!-- TODO: constraints? -->
 				</property>
-
+<!-- 
 				<property name="ucm:archeological_aspect_excavated_lat">
 					<title>Excavated Lat.</title>
 					<type>d:double</type>
 					<mandatory>false</mandatory>
-					<!-- TODO: constraints? -->
 				</property>
 
 				<property name="ucm:archeological_aspect_excavated_lon">
 					<title>Excavated Lon.</title>
 					<type>d:double</type>
 					<mandatory>false</mandatory>
-					<!-- TODO: constraints? -->
 				</property>
+-->
 			</properties>
+<!-- 
+			<mandatory-aspects>
+				<aspect>cm:geographical</aspect>
+			</mandatory-aspects>
+-->
 		</aspect>
 
 		<aspect name="ucm:museum_artifact_aspect">
@@ -911,19 +948,36 @@
 		<aspect name="ucm:project_aspect">
 			<title>Project Aspect</title>
 			<properties>
-				<property name="ucm:project_aspect_name">
+				<property name="ucm:project_name">
 					<title>Project Name</title>
 					<type>d:text</type>
 					<mandatory>true</mandatory>
 				</property>
 
-				<property name="ucm:project_aspect_number">
-					<title>Project Number</title>
-					<type>d:int</type>
+				<property name="ucm:project_id">
+					<title>Project ID</title>
+					<type>d:text</type>
 					<mandatory>true</mandatory>
 					<!-- TODO: constraints? -->
 				</property>
 			</properties>
 		</aspect>
+		
+		<aspect name="ucm:artifact_donor"> 
+			<title>Artifact Donor</title>
+			<properties>
+				<property name="ucm:donor_name">
+					<title>Donor Name</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+				</property>
+				<property name="ucm:donation_date">
+					<title>Donated</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+				</property>
+			</properties>
+		</aspect>
+		
 	</aspects>
 </model>

@@ -127,14 +127,20 @@
 			<form id="doclib-common">
 				<field-visibility>
 					<show id="cm:name"/>
-					<show id="ucm:collection_name"/>
 					<show id="ucm:collection_id"/>
+					<show id="ucm:curator"/>
+					<show id="cm:description" />
 				</field-visibility>
 				<create-form template="../documentlibrary/forms/doclib-common.ftl" />
 	            <appearance>
 	                <field id="cm:name" label-id="Collection Name" />
-	                <field id="ucm:collection_name" label-id="Coll Name" />
 	                <field id="ucm:collection_id" label-id="Collection ID" />
+					<field id="ucm:curator"/>
+	                <field id="cm:description">
+	                  <control>
+	                     <control-param name="activateLinks">true</control-param>
+	                  </control>
+	               </field>
 	            </appearance>
 			</form>
 		</forms>
@@ -147,20 +153,28 @@
 				<field-visibility>
 					<show id="cm:name"/>
 					<show id="ucm:collection_id"/>
+					<show id="ucm:curator"/>
+ 	                <show id="cm:description"/>
 				</field-visibility>
 	            <appearance>                    
 	                <field id="cm:name" label-id="Collection Name" />
 	                <field id="ucm:collection_id" label-id="Collection ID" />
+					<field id="ucm:curator"/>
+ 	                <field id="cm:description"/>
 	            </appearance>
             </form>
             <form id="doclib-simple-metadata">
 				<field-visibility>
 					<show id="cm:name"/>
 					<show id="ucm:collection_id"/>
+					<show id="ucm:curator"/>
+ 	                <show id="cm:description"/>
 				</field-visibility>
 	            <appearance>                    
 	                <field id="cm:name" label-id="Collection Name" />
 	                <field id="ucm:collection_id" label-id="Collection ID" />
+					<field id="ucm:curator"/>
+ 	                <field id="cm:description"/>
 	            </appearance>
 			</form>
 
@@ -169,10 +183,14 @@
 				<field-visibility>
 					<show id="cm:name"/>
 					<show id="ucm:collection_id"/>
+					<show id="ucm:curator"/>
+ 	                <show id="cm:description"/>
 				</field-visibility>
 	            <appearance>                    
 	                <field id="cm:name" label-id="Collection Name" />
 	                <field id="ucm:collection_id" label-id="Collection ID" />
+					<field id="ucm:curator"/>
+ 	                <field id="cm:description"/>
 	            </appearance>
 			</form>
 		</forms>
@@ -200,7 +218,7 @@
 					<show id="ucm:artifact_location" />
 					<show id="ucm:artifact_collection" />
 					<show id="ucm:artifact_acquisition_type" />
-					<show id="ucm:artifact_donor" />
+<!-- 					<show id="ucm:artifact_donor" /> -->
 					<show id="ucm:artifact_type" />
 					<show id="ucm:artifact_on_display" />
 					<show id="ucm:artifact_comments" />
@@ -257,7 +275,7 @@
 					<field id="ucm:artifact_location" set="artifactAdditional" />
 					<field id="ucm:artifact_collection" set="artifactAdditional" />
 					<field id="ucm:artifact_acquisition_type" set="artifactAdditional" />
-					<field id="ucm:artifact_donor" set="artifactAdditional" />
+<!-- 					<field id="ucm:artifact_donor" set="artifactAdditional" /> -->
 					<field id="ucm:artifact_type" set="artifactAdditional" />
 					<field id="ucm:artifact_on_display" set="artifactAdditional" />
 					<field id="ucm:artifact_comments" set="artifactAdditional" />
