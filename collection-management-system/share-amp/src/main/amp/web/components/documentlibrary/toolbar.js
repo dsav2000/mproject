@@ -841,8 +841,8 @@
          // Intercept before dialog show
          var doBeforeDialogShow = function DLTB_onNewCollection_doBeforeDialogShow(p_form, p_dialog)
          {
-            Dom.get(p_dialog.id + "-dialogTitle").innerHTML = this.msg("label.new-folder.title");
-            Dom.get(p_dialog.id + "-dialogHeader").innerHTML = this.msg("label.new-folder.header");
+            Dom.get(p_dialog.id + "-dialogTitle").innerHTML = this.msg("label.new-collection.title");
+            Dom.get(p_dialog.id + "-dialogHeader").innerHTML = this.msg("label.new-collection.header");
          };
          
          var templateUrl = YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&destination={destination}&mode={mode}&submitType={submitType}&formId={formId}&showCancelButton=true",

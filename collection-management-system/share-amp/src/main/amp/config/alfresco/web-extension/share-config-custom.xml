@@ -74,6 +74,10 @@
 				<subtype name="ucm:collection" />
 			</type>
 
+			<type name="ucm:collection">
+				<subtype name="ucm:artist" />
+			</type>
+			
 			<type name="ucm:artifact"></type>
 <!-- 
 			<type name="ucm:collection"></type>
@@ -120,56 +124,20 @@
 	<!-- ucm:collection type (creating nodes) -->
 	<config evaluator="model-type" condition="ucm:collection">
 		<forms>
-			<field-visibility>
-				<show id="cm:name"/>
-				<show id="ucm:collection_name"/>
-				<show id="ucm:collection_id"/>
-			</field-visibility>
-            <appearance>                    
-                <field id="cm:name" label-id="Collection Name" />
-                <field id="ucm:collection_name" label-id="Coll Name" />
-                <field id="ucm:collection_id" label-id="Collection ID" />
-            </appearance>
+			<form id="doclib-common">
+				<field-visibility>
+					<show id="cm:name"/>
+					<show id="ucm:collection_name"/>
+					<show id="ucm:collection_id"/>
+				</field-visibility>
+				<create-form template="../documentlibrary/forms/doclib-common.ftl" />
+	            <appearance>
+	                <field id="cm:name" label-id="Collection Name" />
+	                <field id="ucm:collection_name" label-id="Coll Name" />
+	                <field id="ucm:collection_id" label-id="Collection ID" />
+	            </appearance>
+			</form>
 		</forms>
-		
-		<types>
-			<type name="cm:content">
-				<subtype name="ucm:artifact" />
-			</type>
-
-			<type name="cm:folder">
-				<subtype name="ucm:collection" />
-			</type>
-
-			<type name="ucm:collection">
-				<subtype name="ucm:artist" />
-			</type>
-
-			<type name="ucm:artifact"></type>
-<!-- 
-			<type name="ucm:collection"></type>
-			
-			<type name="cm:folder"></type>
--->
-			<type name="trx:transferTarget">
-				<subtype name="trx:fileTransferTarget" />
-			</type>
-		</types>
-
-		<create-content>
- 			 <content id="artifact" mimetype="image/jpeg" label="menu.create-content.ucm_artifact" itemid="ucm:artifact" />
-
-	         <content id="collection" label="menu.create-content.ucm_collection" icon="folder" index="2" type="javascript">
-	            <param name="function">onNewCollection</param>
-	         </content>
-
-	         <content id="artist" label="menu.create-content.ucm_artist" icon="folder" index="3" type="javascript">
-	            <param name="function">onNewFolder</param>
-	         </content>
-		</create-content>
-		
-		
-		
 	</config>
 
 	<!-- ucm:collection type (existing nodes) -->
