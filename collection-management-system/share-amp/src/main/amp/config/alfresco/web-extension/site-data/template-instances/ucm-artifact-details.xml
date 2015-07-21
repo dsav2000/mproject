@@ -117,7 +117,7 @@
       </component>
 
       <!-- Comments -->
-<!--       <component>
+       <component>
          <region-id>comments</region-id>
          <url>/components/comments/list</url>
          <properties>
@@ -125,6 +125,7 @@
             <activityType>document</activityType>
          </properties>
       </component>
+<!-- 
       <component>
          <region-id>document-attachments</region-id>
          <url>/components/document-details/document-attachments</url>
@@ -187,7 +188,7 @@
       </component> -->
 
       <!-- Document Tags -->
-<!--       <component>
+       <component>
          <region-id>document-tags</region-id>
          <sub-components>
             <sub-component id="default">
@@ -205,7 +206,7 @@
                </evaluations>
             </sub-component>
          </sub-components>
-      </component> -->
+      </component>
 
       <!-- Document Links -->
        <component>
@@ -226,14 +227,15 @@
       </component> -->
 
       <!-- Document Sync -->
-<!--       <component>
+<!--       
+       <component>
          <region-id>document-sync</region-id>
          <url>/components/document-details/document-sync</url>
          <properties>
             <nodeRef>{nodeRef}</nodeRef>
          </properties>
-      </component> -->
-
+      </component>
+-->
       <!-- Document Permissions -->
 <!--       <component>
          <region-id>document-permissions</region-id>
@@ -256,22 +258,22 @@
       </component> -->
 
       <!-- Document Workflows -->
-<!--       <component>
+       <component>
          <region-id>document-workflows</region-id>
          <url>/components/document-details/document-workflows</url>
          <properties>
             <nodeRef>{nodeRef}</nodeRef>
          </properties>
-      </component> -->
+      </component>
 
       <!-- Document Versions -->
-<!--       <component>
+       <component>
          <region-id>document-versions</region-id>
          <url>/components/document-details/document-versions</url>
          <properties>
             <nodeRef>{nodeRef}</nodeRef>
          </properties>
-      </component> -->
+      </component>
 
       <!-- Document Publishing -->
 <!--       <component>

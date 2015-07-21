@@ -233,6 +233,9 @@
 					<show id="ucm:artist_period" />
 					<show id="ucm:artist_comments" />
 					<show id="ucm:museum_artifact_gallery_location" />
+					               <!-- cm:geographic aspect -->
+	                <show id="cm:latitude" />
+	                <show id="cm:longitude" />
 					
 					<!-- <show id="ucm:artifact_referenced_objects" /> -->
 
@@ -249,7 +252,7 @@
 				<appearance>
 					<set id="artifactMain" appearance="fieldset" label="Main artifact properties" />
 					<set id="artifactRest" appearance="accordion-wrapper" label="Additional properties" />
-						<set id="artifactAdditional" parent="artifactRest" appearance="accordion-element" label="Artifact" />
+						<set id="artifactAdditional" parent="artifactRest" appearance="accordion-element" label="Artifact additional properties" />
 						<set id="artifactArtist" parent="artifactRest" appearance="accordion-element" label="Artist" />
 						<set id="artifactMuseum" parent="artifactRest" appearance="accordion-element" label="Museum" />
 					<!-- TODO: rest of aspects. And properties? -->
@@ -423,7 +426,7 @@
 					<field id="ucm:artifact_location" set="artifactAdditional" />
 					<field id="ucm:artifact_collection" set="artifactAdditional" />
 					<field id="ucm:artifact_acquisition_type" set="artifactAdditional" />
-					<field id="ucm:artifact_donor" set="artifactAdditional" />
+<!-- 					<field id="ucm:artifact_donor" set="artifactAdditional" /> -->
 					<field id="ucm:artifact_type" set="artifactAdditional" />
 					<field id="ucm:artifact_on_display" set="artifactAdditional" />
 					<field id="ucm:artifact_comments" set="artifactAdditional" />

@@ -53,6 +53,7 @@
 
          <div id="ucm-metadata" class="yui-u ucm-metadata">
             <@region id="document-links" scope="template"/>
+			<@region id="document-tags" scope="template"/>
             <@markup id="bd">
 			    <div id="bd">
 			       <div class="share-form">
@@ -61,14 +62,20 @@
 			       </div>
 			    </div>
 		    </@>
-            <@region id="document-actions" scope="template"/>
-            <@region id="document-tags" scope="template"/>
-            <@region id="document-metadata" scope="template"/>
-            <@region id="document-sync" scope="template"/>
-            <@region id="document-permissions" scope="template"/>
-            <@region id="document-workflows" scope="template"/>
-            <@region id="document-versions" scope="template"/>
-			<@region id="document-attachments" scope="template"/>
+	        <@region id="document-actions" scope="template"/>
+	        <@region id="document-versions" scope="template"/>
+          </div>
+		  <div class="yui-u">
+<#--		    
+	            <@region id="document-actions" scope="template"/>                 
+	            <@region id="document-metadata" scope="template"/>
+	            <@region id="document-sync" scope="template"/>
+	            <@region id="document-permissions" scope="template"/>
+	            <@region id="document-workflows" scope="template"/>    
+	            <@region id="document-versions" scope="template"/>
+				<@region id="document-attachments" scope="template"/>
+-->    
+            </div>
          </div>
       </div>
 
