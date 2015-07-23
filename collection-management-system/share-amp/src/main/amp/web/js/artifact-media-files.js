@@ -45,21 +45,38 @@ function ucmMediaServiceUrl() {
 	return result;
 }
 
+
+// !!!! TODO create custom jquery player 
+// (https://www.theparticlelab.com/building-a-custom-html5-audio-player-with-jquery/)
+// https://serversideup.net/style-the-html-5-audio-element/
+// http://webdesign.tutsplus.com/tutorials/create-a-customized-html5-audio-player--webdesign-7081
+
 function ucmCreateMediaFile(mediaFile) {
 	var url = ucmMediaServiceUrl();
 	var wrapper = $('<div class="ucm-media-wrapper"/>');
 
-	var name = mediaFile.title || mediaFile.name
+	var name = mediaFile.title || mediaFile.name;
 
+/*
+	wrapper.append(
+			'<div><span class="ucm-delete_media-right">'+
+			    '<button class="ucm-media-file-delete-button"><img src="code.png" alt="zhopa" width="16" height="16" />(XX)</button>'+
+			'</span></div>'
+			).click(function() {
+				ucmDeleteFile(mediaFile.nodeRef, wrapper);
+			});
+*/
+	
 	var contentLink = appContext + '/proxy/alfresco/api/node' + mediaFile.link
 			+ '/content';
 	switch (mediaFile.type) {
 	case 'audio/mpeg':
 	case 'audio/mp3':
 		wrapper.addClass('ucm-audio-wrapper');
-		wrapper.append(name);
-		wrapper.append('<audio src="' + contentLink
-				+ '" class="ucm-media-audio" preload="none" controls/>');
+//		wrapper.append(name);
+		wrapper.append('<font color="blue">'+name+'</font>'+
+				     '<span class="ucm-media-right">'+'<audio src="' + contentLink
+				+ '" class="ucm-media-audio" preload="none" controls/></span>');
 		break;
 	case 'application/pdf':
 		var link = $('<a/>', {
@@ -106,13 +123,30 @@ function ucmCreateMediaFile(mediaFile) {
 		wrapper.append(link);
 		break;
 	}
+//http://www.sanwebe.com/2013/03/addremove-input-fields-dynamically-with-jquery
+	
 
 	wrapper.append($('<button />', {
-		text : '[X]',
+		text : '(--)',
 		class : 'ucm-media-file-delete-button'
 	}).click(function() {
 		ucmDeleteFile(mediaFile.nodeRef, wrapper);
 	}));
+/*	
+	wrapper.append(
+			'<button class="ucm-media-file-delete-button"><img src="code.png" alt="zhopa" width="16" height="16" />(X)</button>'
+			).click(function() {
+				ucmDeleteFile(mediaFile.nodeRef, wrapper);
+			});
+
+/*	
+	wrapper.append(
+			'<a href="#" class="ucm-media-file-delete-button"><img src="/res/images/image1.png" border="0" alt="zhopa"/>Remove</a>'
+			).click(function() {
+				ucmDeleteFile(mediaFile.nodeRef, wrapper);
+			});
+*/	
+//	wrapper.append('</li>');
 
 	return wrapper;
 }

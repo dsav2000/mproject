@@ -1,6 +1,6 @@
 .fs-upload-target {
 	width: 504px;
-	height: 30px;
+	height: 60px;
 	padding: 3px;
 }
 
@@ -12,10 +12,13 @@
 	height: 18px;
 	width: 504px;
 	overflow: hidden;
+	margin-top:3px;
+	margin-bottom:3px;
+	
 }
 
 .ucm-media-wrapper.ucm-audio-wrapper {
-	height: 50px;
+	height: 25px;
 }
 
 .ucm-media-wrapper:hover {
@@ -23,7 +26,9 @@
 }
 
 .ucm-media-audio {
-	width: 485px;
+	width: 230px;
+	display: #888888;
+	color: #888888;
 }
 
 .ucm-media-file-delete-button {
@@ -54,6 +59,7 @@
 }
 
 .ucm-media-url-button {
+	background-image: url(/images/buttons/remove.png);
 	height: 25px;
 	border-width: 1px !important;
 	vertical-align: baseline;
@@ -67,4 +73,12 @@
 .inline-input-description {
 	color: #666666;
 	font-style: italic;	
+}
+
+.ucm-media-right {
+	float: right;
+	margin-right: 1px;
+}
+.ucm-delete_media-right {
+	float: right;
 }
