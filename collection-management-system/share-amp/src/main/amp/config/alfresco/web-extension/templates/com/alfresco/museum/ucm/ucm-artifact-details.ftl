@@ -47,7 +47,6 @@
             </#if>
 			<div id="ucm-left-bottom">
 				<@region id="ucm-media-files" scope="template"/>
-				<@region id="comments" scope="template"/>
 			</div>
          </div>
 
@@ -64,6 +63,9 @@
 		    </@>
 	        <@region id="document-actions" scope="template"/>
 	        <@region id="document-versions" scope="template"/>
+<#--
+			<@region id="comments" scope="template"/>
+-->    
           </div>
 		  <div class="yui-u">
 <#--		    

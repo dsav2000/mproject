@@ -204,16 +204,10 @@
 		</type>
 
 		<type name="ucm:attached_file">
-			<title>Reference file</title>
+			<title>Attachment file</title>
 			<parent>ucm:content</parent>
 
 			<properties>
-				<property name="ucm:attached_file_name">
-					<title>Name</title>
-					<type>d:text</type>
-					<mandatory>true</mandatory>
-				</property>
-
 				<property name="ucm:attached_file_type">
 					<title>Name</title>
 					<type>d:text</type>
@@ -229,6 +223,35 @@
 							</parameter>
 						</constraint>
 					</constraints>
+				</property>
+
+				<property name="ucm:attached_file_language">
+					<title>Language</title>
+					<type>d:text</type>
+					<mandatory>false</mandatory>
+					<constraints>
+						<constraint name="ucm:attachment_language" type="LIST">
+							<parameter name="allowedValues">
+								<list>
+									<value>English</value>
+									<value>German</value>
+									<value>French</value>
+									<value>Italian</value>
+									<value>Dutch</value>
+									<value>Spanish</value>
+									<value>Polish</value>
+									<value>Russian</value>
+									<value>Arabic</value>
+								</list>
+							</parameter>
+						</constraint>
+					</constraints>
+				</property>
+
+				<property name="ucm:attached_file_sequence">
+					<title>Order</title>
+					<type>d:int</type>
+					<mandatory>false</mandatory>
 				</property>
 
 				<property name="ucm:attached_file_location">
