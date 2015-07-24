@@ -212,6 +212,7 @@
 					<title>Name</title>
 					<type>d:text</type>
 					<mandatory>true</mandatory>
+<!--					
 					<constraints>
 						<constraint name="ucm:allowed_attach_types" type="LIST">
 							<parameter name="allowedValues">
@@ -223,12 +224,15 @@
 							</parameter>
 						</constraint>
 					</constraints>
+-->
 				</property>
 
 				<property name="ucm:attached_file_language">
 					<title>Language</title>
 					<type>d:text</type>
 					<mandatory>false</mandatory>
+					<multiple>false</multiple>
+            		<default>English</default> 
 					<constraints>
 						<constraint name="ucm:attachment_language" type="LIST">
 							<parameter name="allowedValues">
@@ -259,14 +263,14 @@
 					<type>d:noderef</type>
 					<mandatory>true</mandatory>
 				</property>
-
+<!--
 				<property name="ucm:attached_file_referenced_to">
 					<title>Referenced to</title>
 					<type>d:noderef</type>
 					<mandatory>true</mandatory>
 					<multiple>true</multiple>
 				</property>
-
+-->
 			</properties>
 
 		</type>
@@ -443,6 +447,11 @@
 			</mandatory-aspects>
 		</type>
 
+		<type name="ucm:about_artist_artifact">
+			<title>About Artist</title>
+			<parent>ucm:artifact</parent> 
+		</type>
+		
 		<type name="ucm:license_file">
 			<title>Reference file</title>
 			<parent>ucm:content</parent> <!-- TODO: no instructions in specification! -->
