@@ -57,26 +57,32 @@ function ucmCreateMediaFile(mediaFile) {
 
 	var name = mediaFile.title || mediaFile.name;
 
-/*
-	wrapper.append(
-			'<div><span class="ucm-delete_media-right">'+
-			    '<button class="ucm-media-file-delete-button"><img src="code.png" alt="zhopa" width="16" height="16" />(XX)</button>'+
-			'</span></div>'
-			).click(function() {
-				ucmDeleteFile(mediaFile.nodeRef, wrapper);
-			});
-*/
+/* TODO implement it and check it
+	var deleteButton = $('&nbsp;');
 	
+	if (mediaFile.hasPermission("write"))
+	{
+		deleteButton = $('<button class="ucm-media-file-delete-button"><img src="/share/images/delete-item-on.png"/></button>'
+		).click(function() {
+			ucmDeleteFile(mediaFile.nodeRef, wrapper);
+		});
+	}
+*/
+	var deleteButton = $('<button class="ucm-media-file-delete-button"><img src="/share/images/delete-item-on.png"/></button>'
+	).click(function() {
+		ucmDeleteFile(mediaFile.nodeRef, wrapper);
+	});
+
 	var contentLink = appContext + '/proxy/alfresco/api/node' + mediaFile.link
 			+ '/content';
+	
 	switch (mediaFile.type) {
 	case 'audio/mpeg':
 	case 'audio/mp3':
 		wrapper.addClass('ucm-audio-wrapper');
-//		wrapper.append(name);
-		wrapper.append('<font color="blue">'+name+'</font>'+
+		wrapper.append(name+
 				     '<span class="ucm-media-right">'+'<audio src="' + contentLink
-				+ '" class="ucm-media-audio" preload="none" controls/></span>');
+				+ '" class="ucm-media-audio" preload="none" controls/>'+deleteButton.get(0).outerHTML+"</span>");
 		break;
 	case 'application/pdf':
 		var link = $('<a/>', {
@@ -87,16 +93,31 @@ function ucmCreateMediaFile(mediaFile) {
 			ucmShowDialog(contentLink, 600, 600, name);
 		});
 		wrapper.append(link);
+		wrapper.append(deleteButton);
+		break;
+	case 'application/msword':
+	case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+	case 'text/plain':
+		var link = $('<a/>', {
+			href : contentLink,
+			'class' : 'ucm-media-pdf'
+		}).html(name).click(function(e) {
+			e.preventDefault();
+			ucmShowDialog(contentLink, 600, 600, name);
+		});
+		wrapper.append(link);
+		wrapper.append(deleteButton);
 		break;
 	case 'video/mp4':
 		var link = $('<a/>', {
 			href : contentLink,
 			'class' : 'ucm-media-video'
-		}).html(name).click(function(e) {
+		}).html(name+ ' (Video)').click(function(e) {
 			e.preventDefault();
 			ucmShowVideo(contentLink, 600, 600, name);
 		});
 		wrapper.append(link);
+		wrapper.append(deleteButton);
 		break;
 	case 'text/uri-list':
 		var link = $('<a/>', {
@@ -111,6 +132,7 @@ function ucmCreateMediaFile(mediaFile) {
 		 * ucmShowDialog(mediaFile.title, 600, 600, name); });
 		 */
 		wrapper.html(link);
+		wrapper.append(deleteButton);
 		break;
 	default: // TODO: let user save content instead of showing dialog?
 		var link = $('<a/>', {
@@ -121,33 +143,10 @@ function ucmCreateMediaFile(mediaFile) {
 			ucmShowDialog(contentLink, 600, 600, name);
 		});
 		wrapper.append(link);
+		wrapper.append(deleteButton);
 		break;
 	}
 //http://www.sanwebe.com/2013/03/addremove-input-fields-dynamically-with-jquery
-	
-
-	wrapper.append($('<button />', {
-		text : '(--)',
-		class : 'ucm-media-file-delete-button'
-	}).click(function() {
-		ucmDeleteFile(mediaFile.nodeRef, wrapper);
-	}));
-/*	
-	wrapper.append(
-			'<button class="ucm-media-file-delete-button"><img src="code.png" alt="zhopa" width="16" height="16" />(X)</button>'
-			).click(function() {
-				ucmDeleteFile(mediaFile.nodeRef, wrapper);
-			});
-
-/*	
-	wrapper.append(
-			'<a href="#" class="ucm-media-file-delete-button"><img src="/res/images/image1.png" border="0" alt="zhopa"/>Remove</a>'
-			).click(function() {
-				ucmDeleteFile(mediaFile.nodeRef, wrapper);
-			});
-*/	
-//	wrapper.append('</li>');
-
 	return wrapper;
 }
 
@@ -198,7 +197,9 @@ function ucmRefreshMediaFileList(containerSelector, mediaFiles) {
 	});
 }
 
-function ucmCreateMediaFileUploader(elementIdPrefix, nodeRef) {
+function ucmCreateMediaFileUploader(elementIdPrefix, nodeRef) 
+{
+	// TODO Add security here (permision==write) otherwise do not do the rest
 	require([ "jquery" ], function($) {
 		jQuery = $;
 		require([ appContext + "/res/js/formstone/core.js" ], function() {
