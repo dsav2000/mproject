@@ -45,6 +45,99 @@
    var PREFERENCES_ROOT = "org.alfresco.share.documentList",
       PREF_HIDE_NAVBAR = PREFERENCES_ROOT + ".hideNavBar";
    
+   function ucmCreateCustomOnNewFolderHandler(title, header, type) {
+ 	  return function ucm_onNewFolder(e, p_obj)
+       {
+         var destination = this.doclistMetadata.parent.nodeRef;
+
+         // Intercept before dialog show
+         var doBeforeDialogShow = function ucm_onNewCustomFolder_doBeforeDialogShow(p_form, p_dialog)
+         {
+            Dom.get(p_dialog.id + "-dialogTitle").innerHTML = this.msg(title);
+            Dom.get(p_dialog.id + "-dialogHeader").innerHTML = this.msg(header);
+         };
+         
+         var templateUrl = YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&destination={destination}&mode={mode}&submitType={submitType}&formId={formId}&showCancelButton=true",
+         {
+            itemKind: "type",
+            itemId: type,
+            destination: destination,
+            mode: "create",
+            submitType: "json",
+            formId: "doclib-common"
+         });
+
+         // Using Forms Service, so always create new instance
+         var createFolder = new Alfresco.module.SimpleDialog(this.id + "-createFolder");
+
+         createFolder.setOptions(
+         {
+            width: "33em",
+            templateUrl: templateUrl,
+            actionUrl: null,
+            destroyOnHide: true,
+            doBeforeDialogShow:
+            {
+               fn: doBeforeDialogShow,
+               scope: this
+            },
+            onSuccess:
+            {
+               fn: function DLTB_onNewFolder_success(response)
+               {
+                  var activityData;
+                  var folderName = response.config.dataObj["prop_cm_name"];
+                  var folderNodeRef = response.json.persistedObject;
+                  
+                  activityData =
+                  {
+                     fileName: folderName,
+                     nodeRef: folderNodeRef,
+                     path: this.currentPath + (this.currentPath !== "/" ? "/" : "") + folderName
+                  };
+                  this.modules.actions.postActivity(this.options.siteId, "folder-added", "documentlibrary", activityData);
+                  
+                  YAHOO.Bubbling.fire("folderCreated",
+                  {
+                     name: folderName,
+                     parentNodeRef: destination
+                  });
+                  Alfresco.util.PopupManager.displayMessage(
+                  {
+                     text: this.msg("message.new-folder.success", folderName)
+                  });
+               },
+               scope: this
+            },
+            onFailure:
+            {
+               fn: function DLTB_onNewFolder_failure(response)
+               {
+                  if (response)
+                  {
+                     var folderName = response.config.dataObj["prop_cm_name"];
+                     Alfresco.util.PopupManager.displayMessage(
+                     {
+                        text: this.msg("message.new-folder.failure", folderName)
+                     });
+                  }
+                  else
+                  {
+                     Alfresco.util.PopupManager.displayMessage(
+                     {
+                        text: this.msg("message.failure")
+                     });
+                  }
+                  createFolder.widgets.cancelButton.set("disabled", false);
+               },
+               scope: this
+            }
+         });
+         createFolder.show();
+         return createFolder;
+      }
+   };
+   
    /**
     * DocListToolbar constructor.
     * 
@@ -373,14 +466,6 @@
                this.dynamicControls.push(this.widgets.createContent);
             }
 
-         // UCM create collection button user needs "create" access
-         this.widgets.newCollection = Alfresco.util.createYUIButton(this, "newCollection-button", this.onNewCollection,
-         {
-               disabled: true,
-               value: "CreateChildren"
-         });
-         this.dynamicControls.push(this.widgets.newCollection);
-
          // New Folder button: user needs "create" access
          this.widgets.newFolder = Alfresco.util.createYUIButton(this, "newFolder-button", this.onNewFolder,
          {
@@ -388,6 +473,22 @@
             value: "CreateChildren"
          });
          this.dynamicControls.push(this.widgets.newFolder);
+         
+         // UCM create collection button user needs "create" access
+         this.widgets.newCollection = Alfresco.util.createYUIButton(this, "newCollection-button", this.onNewCollection,
+         {
+        	 disabled: true,
+        	 value: "CreateChildren"
+         });
+         this.dynamicControls.push(this.widgets.newCollection);
+         
+         // UCM create artist button user needs "create" access
+         this.widgets.newCollection = Alfresco.util.createYUIButton(this, "newArtist-button", this.onNewArtist,
+         {
+        	 disabled: true,
+        	 value: "CreateChildren"
+         });
+         this.dynamicControls.push(this.widgets.newCollection);
             
          // File Upload button: user needs  "CreateChildren" access
          this.widgets.fileUpload = Alfresco.util.createYUIButton(this, "fileUpload-button", this.onFileUpload,
@@ -723,6 +824,7 @@
          };
       },
       
+      
       /**
        * New Folder button click handler
        *
@@ -730,96 +832,7 @@
        * @param e {object} DomEvent
        * @param p_obj {object} Object passed back from addListener method
        */
-      onNewFolder: function DLTB_onNewFolder(e, p_obj)
-      {
-         var destination = this.doclistMetadata.parent.nodeRef;
-
-         // Intercept before dialog show
-         var doBeforeDialogShow = function DLTB_onNewFolder_doBeforeDialogShow(p_form, p_dialog)
-         {
-            Dom.get(p_dialog.id + "-dialogTitle").innerHTML = this.msg("label.new-folder.title");
-            Dom.get(p_dialog.id + "-dialogHeader").innerHTML = this.msg("label.new-folder.header");
-         };
-         
-         var templateUrl = YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&destination={destination}&mode={mode}&submitType={submitType}&formId={formId}&showCancelButton=true",
-         {
-            itemKind: "type",
-            itemId: "cm:folder",
-            destination: destination,
-            mode: "create",
-            submitType: "json",
-            formId: "doclib-common"
-         });
-
-         // Using Forms Service, so always create new instance
-         var createFolder = new Alfresco.module.SimpleDialog(this.id + "-createFolder");
-
-         createFolder.setOptions(
-         {
-            width: "33em",
-            templateUrl: templateUrl,
-            actionUrl: null,
-            destroyOnHide: true,
-            doBeforeDialogShow:
-            {
-               fn: doBeforeDialogShow,
-               scope: this
-            },
-            onSuccess:
-            {
-               fn: function DLTB_onNewFolder_success(response)
-               {
-                  var activityData;
-                  var folderName = response.config.dataObj["prop_cm_name"];
-                  var folderNodeRef = response.json.persistedObject;
-                  
-                  activityData =
-                  {
-                     fileName: folderName,
-                     nodeRef: folderNodeRef,
-                     path: this.currentPath + (this.currentPath !== "/" ? "/" : "") + folderName
-                  };
-                  this.modules.actions.postActivity(this.options.siteId, "folder-added", "documentlibrary", activityData);
-                  
-                  YAHOO.Bubbling.fire("folderCreated",
-                  {
-                     name: folderName,
-                     parentNodeRef: destination
-                  });
-                  Alfresco.util.PopupManager.displayMessage(
-                  {
-                     text: this.msg("message.new-folder.success", folderName)
-                  });
-               },
-               scope: this
-            },
-            onFailure:
-            {
-               fn: function DLTB_onNewFolder_failure(response)
-               {
-                  if (response)
-                  {
-                     var folderName = response.config.dataObj["prop_cm_name"];
-                     Alfresco.util.PopupManager.displayMessage(
-                     {
-                        text: this.msg("message.new-folder.failure", folderName)
-                     });
-                  }
-                  else
-                  {
-                     Alfresco.util.PopupManager.displayMessage(
-                     {
-                        text: this.msg("message.failure")
-                     });
-                  }
-                  createFolder.widgets.cancelButton.set("disabled", false);
-               },
-               scope: this
-            }
-         });
-         createFolder.show();
-         return createFolder;
-      },
+      onNewFolder: ucmCreateCustomOnNewFolderHandler("label.new-folder.title", "label.new-folder.header", "cm:folder"),
       
       /**
        * New Collection button click handler
@@ -828,107 +841,16 @@
        * @param e {object} DomEvent
        * @param p_obj {object} Object passed back from addListener method
        */
-      onNewCollection: function DLTB_onNewCollection(e, p_obj)
-      {
-          var destination = this.doclistMetadata.parent.nodeRef;
-
-          // Pop-up a message...
-          Alfresco.util.PopupManager.displayMessage({
-            text: this.msg("onNewCollection!", destination)
-          });
-          
-
-         // Intercept before dialog show
-         var doBeforeDialogShow = function DLTB_onNewCollection_doBeforeDialogShow(p_form, p_dialog)
-         {
-            Dom.get(p_dialog.id + "-dialogTitle").innerHTML = this.msg("label.new-collection.title");
-            Dom.get(p_dialog.id + "-dialogHeader").innerHTML = this.msg("label.new-collection.header");
-         };
-         
-         var templateUrl = YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&destination={destination}&mode={mode}&submitType={submitType}&formId={formId}&showCancelButton=true",
-         {
-            itemKind: "type",
-            itemId: "ucm:collection",
-            destination: destination,
-            mode: "create",
-            submitType: "json",
-            formId: "doclib-common"
-         });
-         
-         Alfresco.util.PopupManager.displayMessage(
-                 {
-                    text: this.msg(templateUrl)
-                 });
-
-         // Using Forms Service, so always create new instance
-         var createCollection = new Alfresco.module.SimpleDialog(this.id + "-createCollection");
-
-         createCollection.setOptions(
-         {
-            width: "33em",
-            templateUrl: templateUrl,
-            actionUrl: null,
-            destroyOnHide: true,
-            doBeforeDialogShow:
-            {
-               fn: doBeforeDialogShow,
-               scope: this
-            },
-            onSuccess:
-            {
-               fn: function DLTB_onNewFolder_success(response)
-               {
-                  var activityData;
-                  var folderName = response.config.dataObj["prop_cm_name"];
-                  var folderNodeRef = response.json.persistedObject;
-                  
-                  activityData =
-                  {
-                     fileName: folderName,
-                     nodeRef: folderNodeRef,
-                     path: this.currentPath + (this.currentPath !== "/" ? "/" : "") + folderName
-                  };
-                  this.modules.actions.postActivity(this.options.siteId, "folder-added", "documentlibrary", activityData);
-                  
-                  YAHOO.Bubbling.fire("CollectionCreated", // folderCreated
-                  {
-                     name: folderName,
-                     parentNodeRef: destination
-                  });
-                  Alfresco.util.PopupManager.displayMessage(
-                  {
-                     text: this.msg("message.new-folder.success", folderName)
-                  });
-               },
-               scope: this
-            },
-            onFailure:
-            {
-               fn: function DLTB_onNewFolder_failure(response)
-               {
-                  if (response)
-                  {
-                     var folderName = response.config.dataObj["prop_cm_name"];
-                     Alfresco.util.PopupManager.displayMessage(
-                     {
-                        text: this.msg("message.new-folder.failure", folderName)
-                     });
-                  }
-                  else
-                  {
-                     Alfresco.util.PopupManager.displayMessage(
-                     {
-                        text: this.msg("message.failure")
-                     });
-                  }
-                  createFolder.widgets.cancelButton.set("disabled", false);
-               },
-               scope: this
-            }
-         });
-         createCollection.show();
-         return createCollection;
-      },
+      onNewCollection: ucmCreateCustomOnNewFolderHandler("label.new-collection.title", "label.new-collection.header", "ucm:collection"),
+      
+      /**
+       * New Artist button click handler
+       *
+       * @method onNewCollection
+       * @param e {object} DomEvent
+       * @param p_obj {object} Object passed back from addListener method
+       */
+      onNewArtist: ucmCreateCustomOnNewFolderHandler("label.new-artist.title", "label.new-artist.header", "ucm:artist"),
 
       /**
        * Sync to Cloud button click handler

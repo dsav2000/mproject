@@ -218,7 +218,16 @@
       
          if (isContainer || (isLink && node.linkedNode.isContainer))
          {
-            elCell.innerHTML = '<span class="folder">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-64.png" /></a>';
+            // Artist folder uses the same thumbnail artist artifact does
+            var artistArtifactRef = node.properties['ucm:artist_artifact_reference'];
+            if (node.type === "ucm:artist" && artistArtifactRef) {
+               var artistArtifactUri = artistArtifactRef.replace(':/', '');
+               var artistThumbnailPreview = Alfresco.constants.PROXY_URI + "api/node/" + artistArtifactUri + "/content/thumbnails/doclib?c=queue&ph=true&lastModified=1";
+               elCell.innerHTML = '<span class="thumbnail">' + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + artistThumbnailPreview + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
+            }
+            else {
+               elCell.innerHTML = '<span class="folder">' + (isLink ? '<span class="link"></span>' : '') + (scope.dragAndDropEnabled ? '<span class="droppable"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-64.png" /></a>';
+            }
             containerTarget = new YAHOO.util.DDTarget(imgId); // Make the folder a target
          }
          else

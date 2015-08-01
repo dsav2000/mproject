@@ -21,7 +21,17 @@
 		</property>
 	</bean>
 
-	<bean id="ucmTypeFilter" class="org.alfresco.repo.forms.processor.node.UCMFormFilter"
+	<bean id="ucmArtifactFilter" class="org.alfresco.repo.forms.processor.node.UCMCreateArtifact"
+		parent="baseFormFilter">
+		<property name="filterRegistry" ref="typeFilterRegistry" />
+		<property name="contentService" ref="ContentService" />
+		<property name="fileFolderService" ref="FileFolderService" />
+		<property name="dictionaryService" ref="DictionaryService" />
+		<property name="nodeService" ref="NodeService" />
+		<property name="mimetypeService" ref="mimetypeService" />
+	</bean>
+	
+	<bean id="ucmArtistFilter" class="org.alfresco.repo.forms.processor.node.UCMCreateArtist"
 		parent="baseFormFilter">
 		<property name="filterRegistry" ref="typeFilterRegistry" />
 		<property name="contentService" ref="ContentService" />
