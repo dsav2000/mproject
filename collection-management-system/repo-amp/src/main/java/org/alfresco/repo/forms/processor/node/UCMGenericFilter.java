@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.forms.FormData;
@@ -41,7 +42,7 @@ import org.springframework.util.StringUtils;
  * {@link org.alfresco.repo.forms.processor.node.ContentModelFormProcessor form
  * processor class}.
  */
-public abstract class UCMGenericFilter extends AbstractFilter<TypeDefinition, NodeRef> {
+public abstract class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 	private NodeService nodeService;
 	private ContentService contentService;
 	private DictionaryService dictionaryService;
@@ -192,6 +193,31 @@ public abstract class UCMGenericFilter extends AbstractFilter<TypeDefinition, No
 		data.addFieldData(NAME_PROP_DATA, validFilename, true);
 	}
 
+	/*
+	 * Fills properties of "to" node with values of "from" node. To be updated property should:
+	 * 1. be defined in child node type description in types model file;
+	 * 2. be set in parent node. 
+	 */
+	protected void inheritProperties(TypeDefinition toType, NodeRef fromNode, NodeRef toNode) {
+		Set<QName> propsSet = toType.getProperties().keySet();
+		for (QName property : propsSet) {
+			Serializable value = this.getNodeService().getProperty(fromNode, property);
+			if (value != null) {
+				this.getNodeService().setProperty(toNode, property, value);
+			}
+		}
+	}
+
+	/*
+	 * Fills properties of node with values of it's primary parent node. To be updated property should:
+	 * 1. be defined in child node type description in types model file;
+	 * 2. be set in parent node. 
+	 */
+	protected void inheritPropertiesFromParent(TypeDefinition nodeType, NodeRef node) {
+		NodeRef parent = this.getNodeService().getPrimaryParent(node).getParentRef();
+		inheritProperties(nodeType, parent, node);
+	}
+	
 	public NodeService getNodeService() {
 		return nodeService;
 	}

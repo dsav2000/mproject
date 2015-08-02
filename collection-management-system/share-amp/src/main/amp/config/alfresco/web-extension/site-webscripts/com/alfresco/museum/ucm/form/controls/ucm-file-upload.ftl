@@ -1,5 +1,5 @@
 <#-- Image uploading preview  -->
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/css/simple-file-preview.css"/>
+<link rel="stylesheet" type="text/css" href="${url.context}/res/css/simple-file-preview.css"/>
 
 <div id="${fieldHtmlId}" class="form-field">
 	<label for="${fieldHtmlId}">${field.label?html}:<#if field.mandatory><span class="mandatory-indicator">${msg("form.required.fields.marker")}</span></#if></label>

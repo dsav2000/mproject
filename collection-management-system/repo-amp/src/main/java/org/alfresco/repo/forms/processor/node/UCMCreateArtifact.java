@@ -20,7 +20,7 @@ import org.alfresco.service.namespace.QName;
  * Handle custom operations during artifact creation. Such as creating folder
  * for attachments and setting image content as artifact property.
  */
-public class UCMCreateArtifact extends UCMGenericFilter {
+public class UCMCreateArtifact extends UCMGenericFilter<TypeDefinition> {
 	@Override
 	public void beforeGenerate(TypeDefinition item, List<String> fields, List<String> forcedFields, Form form,
 			Map<String, Object> context) {

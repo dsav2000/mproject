@@ -16,5 +16,7 @@
 }
 
 .alfresco-twister .alfresco-twister-actions {
-	left: 475px !important;
+	position: initial !important;
+	float: right !important;
+	right: initial !important;
 }

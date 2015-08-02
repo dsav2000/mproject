@@ -230,6 +230,46 @@
 			</form>
 		</forms>
 	</config>
+	
+	<!-- ucm:artist type (existing nodes) -->
+	<config evaluator="model-type" condition="ucm:artist">
+		<forms>
+			<!-- Default form configuration for the ucm:artifact type -->
+			<form>
+				<edit-form template="/com/alfresco/museum/ucm/form/ucm-artifact-props-form.ftl"/>
+				<field-visibility>
+					<show id="cm:content" force="true"/>
+					<show id="ucm:artist_nickname" />
+					<show id="ucm:artist_name" />
+					<show id="cm:name" />
+					<show id="ucm:artist_dob" />
+					<show id="ucm:artist_birth_place" />
+					<show id="ucm:artist_dod" />
+					<show id="ucm:artist_death_place" />
+					<show id="ucm:artist_study_workshop" />
+					<show id="ucm:artist_live_city" />
+					<show id="ucm:artist_period" />
+					<show id="ucm:artist_comments" />
+				</field-visibility>
+				<appearance>
+ 					<field id="cm:content">
+		               <control template="/com/alfresco/museum/ucm/form/controls/ucm-file-upload.ftl" />
+		            </field>
+					<field id="ucm:artist_nickname" />
+					<field id="ucm:artist_name" />
+	                <field id="cm:name" />
+					<field id="ucm:artist_dob" />
+					<field id="ucm:artist_birth_place" />
+					<field id="ucm:artist_dod" />
+					<field id="ucm:artist_death_place" />
+					<field id="ucm:artist_study_workshop" />
+					<field id="ucm:artist_live_city" />
+					<field id="ucm:artist_period" />
+					<field id="ucm:artist_comments" />
+				</appearance>
+			</form>
+		</forms>
+	</config>
 
 	<!-- ucm:artifact type (creating nodes) -->
 	<config evaluator="model-type" condition="ucm:artifact">

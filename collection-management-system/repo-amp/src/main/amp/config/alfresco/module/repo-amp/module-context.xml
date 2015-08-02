@@ -21,7 +21,7 @@
 		</property>
 	</bean>
 
-	<bean id="ucmArtifactFilter" class="org.alfresco.repo.forms.processor.node.UCMCreateArtifact"
+	<bean id="ucmCreateArtifactFilter" class="org.alfresco.repo.forms.processor.node.UCMCreateArtifact"
 		parent="baseFormFilter">
 		<property name="filterRegistry" ref="typeFilterRegistry" />
 		<property name="contentService" ref="ContentService" />
@@ -31,9 +31,19 @@
 		<property name="mimetypeService" ref="mimetypeService" />
 	</bean>
 	
-	<bean id="ucmArtistFilter" class="org.alfresco.repo.forms.processor.node.UCMCreateArtist"
+	<bean id="ucmCreateArtistFilter" class="org.alfresco.repo.forms.processor.node.UCMCreateArtist"
 		parent="baseFormFilter">
 		<property name="filterRegistry" ref="typeFilterRegistry" />
+		<property name="contentService" ref="ContentService" />
+		<property name="fileFolderService" ref="FileFolderService" />
+		<property name="dictionaryService" ref="DictionaryService" />
+		<property name="nodeService" ref="NodeService" />
+		<property name="mimetypeService" ref="mimetypeService" />
+	</bean>
+	
+	<bean id="ucmEditArtistFilter" class="org.alfresco.repo.forms.processor.node.UCMEditArtist"
+		parent="baseFormFilter">
+		<property name="filterRegistry" ref="nodeFilterRegistry" />
 		<property name="contentService" ref="ContentService" />
 		<property name="fileFolderService" ref="FileFolderService" />
 		<property name="dictionaryService" ref="DictionaryService" />

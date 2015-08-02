@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.model.ContentModel;
 import org.alfresco.museum.ucm.UCMConstants;
 import org.alfresco.repo.forms.Form;
 import org.alfresco.repo.forms.FormData;
@@ -23,7 +22,7 @@ import org.springframework.util.StringUtils;
  * to artist artifact. This is necessary because artist artifact's thumbnail is
  * used also as thumbnail for artist node.
  */
-public class UCMCreateArtist extends UCMGenericFilter {
+public class UCMCreateArtist extends UCMGenericFilter<TypeDefinition> {
 
 	@Override
 	public void beforeGenerate(TypeDefinition item, List<String> fields, List<String> forcedFields, Form form,
@@ -46,8 +45,7 @@ public class UCMCreateArtist extends UCMGenericFilter {
 	}
 	
 	/**
-	 * Strore "cm:content" property value, which is ignored by default handler.<br/>
-	 * Create "media" folder as an attachment.<br/>
+	 * Store "cm:content" property value, which is ignored by default handler.<br/>
 	 * See
 	 * {@link org.alfresco.repo.forms.processor.node.ContentModelFormProcessor#persistNode(NodeRef, FormData)
 	 * persistNode},
@@ -66,8 +64,7 @@ public class UCMCreateArtist extends UCMGenericFilter {
 			if (!StringUtils.isEmpty(artistNameValue)) {
 				String artistName = artistNameValue.toString();
 				
-				NodeRef aboutArtistFolder = createArtistAboutFolder(persistedObject, artistName);
-				NodeRef artistArtifact = createArtistArtifact(data, aboutArtistFolder, artistName);
+				NodeRef artistArtifact = createArtistArtifact(data, persistedObject, artistName);
 				
 				if (artistArtifact != null) {
 					// save reference to artist artifact in artist property
@@ -77,27 +74,14 @@ public class UCMCreateArtist extends UCMGenericFilter {
 		}
 	}
 
-	// <artist>/about/
-	protected NodeRef createArtistAboutFolder(NodeRef artistRef, String artistName) {
-		// TODO: LOG
-
-		// create 'About' folder
-		NodeRef aboutArtistFolder = getOrCreateFolder(artistRef, "About " + artistName, false);
-
-		// set folder caption
-		this.getNodeService().setProperty(aboutArtistFolder, ContentModel.PROP_TITLE, "Details about " + artistName);
-
-		return aboutArtistFolder;
-	}
-
-	// <artist>/about/<artist_image.jpg>
-	protected NodeRef createArtistArtifact(FormData data, NodeRef aboutArtistFolder, String artistName) {
+	// <artist>/"About " + artistName
+	protected NodeRef createArtistArtifact(FormData data, NodeRef artistFolder, String artistName) {
 		// TODO: LOG
 		NodeRef artistArtifactRef = null;
 
-		String artistArtifactFilename = getFilename(data);
-		if (aboutArtistFolder != null && !StringUtils.isEmpty(artistArtifactFilename)) {
-			FileInfo artistImageFile = this.getFileFolderService().create(aboutArtistFolder, artistArtifactFilename,
+		String artistArtifactFilename = "About " + artistName;
+		if (artistFolder != null && !StringUtils.isEmpty(artistArtifactFilename)) {
+			FileInfo artistImageFile = this.getFileFolderService().create(artistFolder, artistArtifactFilename,
 					UCMConstants.TYPE_UCM_ARTIST_ARTIFACT_QNAME);
 
 			artistArtifactRef = artistImageFile.getNodeRef();
