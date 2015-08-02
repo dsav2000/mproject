@@ -45,7 +45,7 @@
    var PREFERENCES_ROOT = "org.alfresco.share.documentList",
       PREF_HIDE_NAVBAR = PREFERENCES_ROOT + ".hideNavBar";
    
-   function ucmCreateCustomOnNewFolderHandler(title, header, type) {
+   function ucmCreateCustomOnNewFolderHandler(title, header, type, isInherit) {
  	  return function ucm_onNewFolder(e, p_obj)
        {
          var destination = this.doclistMetadata.parent.nodeRef;
@@ -57,7 +57,11 @@
             Dom.get(p_dialog.id + "-dialogHeader").innerHTML = this.msg(header);
          };
          
-         var templateUrl = YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&destination={destination}&mode={mode}&submitType={submitType}&formId={formId}&showCancelButton=true",
+         var noInheritTemplate = "components/form?itemKind={itemKind}&itemId={itemId}&destination={destination}&mode={mode}&submitType={submitType}&formId={formId}&showCancelButton=true"
+         var inheritTemplate = "components/ucm-form?itemKind={itemKind}&itemId={itemId}&destination={destination}&inherit={destination}&mode={mode}&submitType={submitType}&formId={formId}&showCancelButton=true"
+         var template = (isInherit) ? inheritTemplate : noInheritTemplate;
+        	 
+         var templateUrl = YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + template,
          {
             itemKind: "type",
             itemId: type,
@@ -832,7 +836,7 @@
        * @param e {object} DomEvent
        * @param p_obj {object} Object passed back from addListener method
        */
-      onNewFolder: ucmCreateCustomOnNewFolderHandler("label.new-folder.title", "label.new-folder.header", "cm:folder"),
+      onNewFolder: ucmCreateCustomOnNewFolderHandler("label.new-folder.title", "label.new-folder.header", "cm:folder", false),
       
       /**
        * New Collection button click handler
@@ -841,7 +845,7 @@
        * @param e {object} DomEvent
        * @param p_obj {object} Object passed back from addListener method
        */
-      onNewCollection: ucmCreateCustomOnNewFolderHandler("label.new-collection.title", "label.new-collection.header", "ucm:collection"),
+      onNewCollection: ucmCreateCustomOnNewFolderHandler("label.new-collection.title", "label.new-collection.header", "ucm:collection", true),
       
       /**
        * New Artist button click handler
@@ -850,7 +854,7 @@
        * @param e {object} DomEvent
        * @param p_obj {object} Object passed back from addListener method
        */
-      onNewArtist: ucmCreateCustomOnNewFolderHandler("label.new-artist.title", "label.new-artist.header", "ucm:artist"),
+      onNewArtist: ucmCreateCustomOnNewFolderHandler("label.new-artist.title", "label.new-artist.header", "ucm:artist", true),
 
       /**
        * Sync to Cloud button click handler

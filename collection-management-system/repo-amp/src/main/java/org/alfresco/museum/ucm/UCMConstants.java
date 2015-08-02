@@ -20,7 +20,7 @@ public class UCMConstants {
 	public static final String PROP_UCM_ARTIST = "artist_name";
 	public static final QName PROP_UCM_ARTIST_QNAME = QName.createQName(UCM_NAMESPACE, PROP_UCM_ARTIST);
 
-	public static final String PROP_UCM_ARTIST_ARTIFACT = "artist_artifact_reference";
+	public static final String PROP_UCM_ARTIST_ARTIFACT = "about_artist_artifact_reference";
 	public static final QName PROP_UCM_ARTIST_ARTIFACT_QNAME = QName.createQName(UCM_NAMESPACE, PROP_UCM_ARTIST_ARTIFACT);
 	
 	public static final String TYPE_UCM_ARTIFACT = "artifact";

@@ -1,6 +1,6 @@
 package org.alfresco.repo.forms.processor.node;
 
-import static org.alfresco.museum.ucm.UCMConstants.TYPE_UCM_ARTIST_QNAME;
+import static org.alfresco.museum.ucm.UCMConstants.*;
 
 import java.util.List;
 import java.util.Map;
@@ -49,6 +49,14 @@ public class UCMEditArtist extends UCMGenericFilter<NodeRef> {
 				TypeDefinition artistArtifactType = this.getDictionaryService().getType(
 						UCMConstants.TYPE_UCM_ARTIST_ARTIFACT_QNAME);
 				writeContent(artistArtifactType, data, artistArtifactRef);
+			}
+		}
+		else {
+			boolean isArtistArtifact = nodeType.equals(TYPE_UCM_ARTIST_ARTIFACT_QNAME);
+			if (isArtistArtifact) {
+				TypeDefinition artistArtifactType = this.getDictionaryService().getType(
+						UCMConstants.TYPE_UCM_ARTIST_ARTIFACT_QNAME);
+				writeContent(artistArtifactType, data, persistedObject);
 			}
 		}
 	}

@@ -721,7 +721,7 @@
       if (isContainer)
       {
          // Artist folder uses the same thumbnail artist artifact does
-         var artistArtifactRef = node.properties['ucm:artist_artifact_reference'];
+         var artistArtifactRef = node.properties['ucm:about_artist_artifact_reference'];
          if (node.type === "ucm:artist" && artistArtifactRef) {
             var artistArtifactUri = artistArtifactRef.replace(':/', '');
             var artistThumbnailPreview = Alfresco.constants.PROXY_URI + "api/node/" + artistArtifactUri + "/content/thumbnails/" + renditionName +"?c=queue&ph=true&lastModified=1";

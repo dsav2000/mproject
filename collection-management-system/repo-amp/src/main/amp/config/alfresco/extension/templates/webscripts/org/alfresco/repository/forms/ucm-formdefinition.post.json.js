@@ -130,21 +130,23 @@ function main()
         }
         
         // pre-populate the form data model
-        //TODO: skip cm:name and check type of inherit node
+        //TODO: check type of inherit node
         for (var k in inheritScriptObj.formData.data)
         {
-            var value = inheritScriptObj.formData.data[k].value;
-
-            if (value instanceof java.util.Date)
-            {
-                formModel.formData[k] = utils.toISO8601(value);
-            }
-            // There is no need to handle java.util.List instances here as they are
-            // returned from ScriptFormData.java as Strings
-            else
-            {
-                formModel.formData[k] = value;
-            }
+        	if (k != "prop_cm_name") {
+        		var value = inheritScriptObj.formData.data[k].value;
+        		
+        		if (value instanceof java.util.Date)
+        		{
+        			formModel.formData[k] = utils.toISO8601(value);
+        		}
+        		// There is no need to handle java.util.List instances here as they are
+        		// returned from ScriptFormData.java as Strings
+        		else
+        		{
+        			formModel.formData[k] = value;
+        		}
+        	}
         }
     }
     // UCM customization end

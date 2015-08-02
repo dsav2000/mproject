@@ -201,9 +201,10 @@ public abstract class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 	protected void inheritProperties(TypeDefinition toType, NodeRef fromNode, NodeRef toNode) {
 		Set<QName> propsSet = toType.getProperties().keySet();
 		for (QName property : propsSet) {
-			Serializable value = this.getNodeService().getProperty(fromNode, property);
-			if (value != null) {
-				this.getNodeService().setProperty(toNode, property, value);
+			Serializable fromValue = this.getNodeService().getProperty(fromNode, property);
+			Serializable toValue = this.getNodeService().getProperty(toNode, property);
+			if (toValue == null && fromValue != null) {
+				this.getNodeService().setProperty(toNode, property, fromValue);
 			}
 		}
 	}

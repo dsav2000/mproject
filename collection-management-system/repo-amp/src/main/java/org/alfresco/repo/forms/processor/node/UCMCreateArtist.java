@@ -85,9 +85,11 @@ public class UCMCreateArtist extends UCMGenericFilter<TypeDefinition> {
 					UCMConstants.TYPE_UCM_ARTIST_ARTIFACT_QNAME);
 
 			artistArtifactRef = artistImageFile.getNodeRef();
+			
 
 			TypeDefinition artistArtifactType = this.getDictionaryService().getType(
 					UCMConstants.TYPE_UCM_ARTIST_ARTIFACT_QNAME);
+			inheritProperties(artistArtifactType, artistFolder, artistArtifactRef);
 			writeContent(artistArtifactType, data, artistArtifactRef);
 		}
 		return artistArtifactRef;

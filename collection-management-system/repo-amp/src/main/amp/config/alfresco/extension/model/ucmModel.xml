@@ -136,7 +136,7 @@
 			<parent>ucm:collection</parent>
 
 			<properties>
-				<property name="ucm:artist_artifact_reference">
+				<property name="ucm:about_artist_artifact_reference">
 					<title>Artist artifact</title>
 					<type>d:text</type> <!-- TODO: d:noderef ? -->
 					<mandatory>false</mandatory>
