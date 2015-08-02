@@ -5,16 +5,21 @@ import static org.alfresco.museum.ucm.UCMConstants.DEFAULT_CONTENT_MIMETYPE;
 import static org.alfresco.museum.ucm.UCMConstants.NAME_PROP_DATA;
 import static org.alfresco.repo.forms.processor.node.FormFieldConstants.PROP_DATA_PREFIX;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.forms.Form;
 import org.alfresco.repo.forms.FormData;
-import org.alfresco.repo.forms.FormException;
 import org.alfresco.repo.forms.FormData.FieldData;
+import org.alfresco.repo.forms.FormException;
 import org.alfresco.repo.forms.processor.AbstractFilter;
 import org.alfresco.repo.forms.processor.AbstractFormProcessor;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
@@ -29,7 +34,17 @@ import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.IOUtils;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.jpeg.JpegParser;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Form fields of type "file" are currently ignored in
@@ -42,12 +57,14 @@ import org.springframework.util.StringUtils;
  * {@link org.alfresco.repo.forms.processor.node.ContentModelFormProcessor form
  * processor class}.
  */
-public abstract class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
+public class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 	private NodeService nodeService;
 	private ContentService contentService;
 	private DictionaryService dictionaryService;
 	private FileFolderService fileFolderService;
 	private MimetypeService mimetypeService;
+
+	private static Log logger = LogFactory.getLog(UCMGenericFilter.class);
 
 	protected String getFilename(FormData data) {
 		String filename = "";
@@ -126,15 +143,26 @@ public abstract class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 				ContentWriter writer = this.getContentService().getWriter(persistedObject, ContentModel.PROP_CONTENT,
 						true);
 				if (writer != null) {
+					InputStream inputStream = contentField.getInputStream();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					try {
+						IOUtils.copy(inputStream, baos);
+					} catch (IOException e) {
+						logger.error("Can't create copy of image stream", e);
+					}
+
+					processMetadata(new ByteArrayInputStream(baos.toByteArray()), persistedObject);
+
 					// write the content
-					writer.putContent(contentField.getInputStream());
+					writer.putContent(new ByteArrayInputStream(baos.toByteArray()));
 
 					// content data has not been persisted yet so get it from
 					// the node
 					ContentData contentData = (ContentData) this.getNodeService().getProperty(persistedObject,
 							ContentModel.PROP_CONTENT);
 					if (contentData != null) {
-						contentData = ContentData.setMimetype(contentData, determineDefaultMimetype(data));
+						String mimetype = determineDefaultMimetype(data);
+						contentData = ContentData.setMimetype(contentData, mimetype);
 						Map<QName, Serializable> propsToPersist = new HashMap<QName, Serializable>();
 						propsToPersist.put(ContentModel.PROP_CONTENT, contentData);
 						this.getNodeService().addProperties(persistedObject, propsToPersist);
@@ -143,6 +171,59 @@ public abstract class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 			}
 		}
 	}
+
+	/**
+	 * @see <a
+	 *      href="https://github.com/jpotts/alfresco-api-java-examples/blob/master/alfresco-api-examples/src/main/java/com/alfresco/api/example/CmisGeographicAspectExample.java">source</a>
+	 *      Only handle JPEG. inputStream is reset in the end.
+	 */
+	public void processMetadata(InputStream inputStream, NodeRef node) {
+		try {
+			Metadata metadata = new Metadata();
+			metadata.set(Metadata.CONTENT_TYPE, MediaType.IMAGE_JPEG_VALUE);
+
+			new JpegParser().parse(inputStream, new DefaultHandler(), metadata, new ParseContext());
+
+			String lat = metadata.get("geo:lat");
+			String lon = metadata.get("geo:long");
+
+			if (lat != null && lon != null) {
+				this.getNodeService().setProperty(node, ContentModel.PROP_LATITUDE, lat);
+				this.getNodeService().setProperty(node, ContentModel.PROP_LONGITUDE, lon);
+			}
+		} catch (IOException e) {
+			logger.warn("Can't read image content, skipping", e);
+		} catch (TikaException te) {
+			logger.warn("Caught tika exception, skipping", te);
+		} catch (SAXException se) {
+			logger.warn("Caught SAXException, skipping", se);
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.reset();
+				} catch (IOException e) {
+					logger.warn("Can't reset image stream", e);
+				}
+			}
+		}
+	}
+
+	/*
+	 * TODO: ideally metadata should be extracted in the same way it is done in
+	 * upload.post.js:extractMetadata
+	 * "actions.create("extract-metadata").execute(file, false, false)"
+	 * equivalent Java code would be
+	 * "create("extract-metadata").execute(persistedObject, false, false);" But
+	 * unfortunately registryService bean isn't available in current context.
+	 * Are there any workarounds? private ScriptAction create(String actionName)
+	 * { ScriptAction scriptAction = null; ActionService actionService =
+	 * serviceRegistry.getActionService(); ActionDefinition actionDef =
+	 * actionService.getActionDefinition(actionName); if (actionDef != null) {
+	 * Action action = actionService.createAction(actionName); scriptAction =
+	 * new ScriptAction(this.serviceRegistry, action, actionDef);
+	 * scriptAction.setScope(new BaseScopableProcessorExtension().getScope()); }
+	 * return scriptAction; }
+	 */
 
 	/**
 	 * Looks through the form data for the 'mimetype' transient field and
@@ -194,9 +275,9 @@ public abstract class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 	}
 
 	/*
-	 * Fills properties of "to" node with values of "from" node. To be updated property should:
-	 * 1. be defined in child node type description in types model file;
-	 * 2. be set in parent node. 
+	 * Fills properties of "to" node with values of "from" node. To be updated
+	 * property should: 1. be defined in child node type description in types
+	 * model file; 2. be set in parent node.
 	 */
 	protected void inheritProperties(TypeDefinition toType, NodeRef fromNode, NodeRef toNode) {
 		Set<QName> propsSet = toType.getProperties().keySet();
@@ -209,16 +290,24 @@ public abstract class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 		}
 	}
 
-	/*
-	 * Fills properties of node with values of it's primary parent node. To be updated property should:
-	 * 1. be defined in child node type description in types model file;
-	 * 2. be set in parent node. 
-	 */
-	protected void inheritPropertiesFromParent(TypeDefinition nodeType, NodeRef node) {
-		NodeRef parent = this.getNodeService().getPrimaryParent(node).getParentRef();
-		inheritProperties(nodeType, parent, node);
+	@Override
+	public void beforeGenerate(T item, List<String> fields, List<String> forcedFields, Form form,
+			Map<String, Object> context) {
 	}
-	
+
+	@Override
+	public void afterGenerate(T item, List<String> fields, List<String> forcedFields, Form form,
+			Map<String, Object> context) {
+	}
+
+	@Override
+	public void beforePersist(T item, FormData data) {
+	}
+
+	@Override
+	public void afterPersist(T item, FormData data, NodeRef persistedObject) {
+	}
+
 	public NodeService getNodeService() {
 		return nodeService;
 	}
