@@ -194,7 +194,7 @@
 		</type>
 
 		<type name="ucm:content">
-			<title>UCM Document</title>
+			<title>UCM Content</title>
 			<parent>cm:content</parent>
 		</type>
 
@@ -209,10 +209,11 @@
 
 			<properties>
 				<property name="ucm:attached_file_type">
-					<title>Name</title>
+					<title>Type</title>
 					<type>d:text</type>
-					<mandatory>true</mandatory>
+					<mandatory>false</mandatory>
 <!--					
+            		<default>English</default> 
 					<constraints>
 						<constraint name="ucm:allowed_attach_types" type="LIST">
 							<parameter name="allowedValues">
@@ -393,9 +394,10 @@
 									<value></value>
 									<value>Portrait</value>
 									<value>Landscape</value>
+									<value>Naturmort</value>
+									<value>Gobelen</value>
 									<value>Fresco</value>
 									<value>Statue</value>
-									<value>Naturmort</value>
 									<value>Jar</value>
 									<value>Sarcophagus</value>
 								</list>
@@ -820,7 +822,7 @@
 				</property>
 
 				<property name="ucm:indoor_artifact_beacon_threshhold_value">
-					<title>Location ID</title>
+					<title>Threshhold</title>
 					<type>d:double</type>
 					<mandatory>true</mandatory>
 					<default>0.0</default>
@@ -866,11 +868,6 @@
 				</property>
 -->
 			</properties>
-<!-- 
-			<mandatory-aspects>
-				<aspect>cm:geographical</aspect>
-			</mandatory-aspects>
--->
 		</aspect>
 
 		<aspect name="ucm:museum_artifact_aspect">
@@ -950,7 +947,7 @@
 					<title>Period</title>
 					<type>d:text</type>
 					<mandatory>false</mandatory>
-					<multiple>true</multiple>
+					<multiple>false</multiple>
 					<constraints>
 						<!-- TODO: check if this constraint works fine with multiple = true -->
 						<!-- TODO: change constraint in order to load list of allowed values 
@@ -959,10 +956,29 @@
 							<parameter name="allowedValues">
 								<list>
 									<value>N/A</value>
+									<value>Stone Age</value>
+									<value>Mesopotamian</value>
+									<value>Egyptian</value>
+									<value>Greek and Hellenistic</value>
+									<value>Roman</value>
+									<value>Byzantine and Islamic</value>
+									<value>Middle Ages</value>
+									<value>Classicism</value>
 									<value>Pre-Renaissance</value>
 									<value>Renaissance</value>
-									<value>Northern Renaissance</value>
-									<value>Post-impressionists</value>
+									<value>Venetian and Northern Renaissance</value>
+									<value>Mannerism </value>
+									<value>Neoclassical</value>
+									<value>Romanticism</value>
+									<value>Realism</value>
+									<value>Impressionism</value>
+									<value>Post-Impressionism</value>
+									<value>Fauvism and Expressionism</value>
+									<value>Cubism, Futurism, Supremativism, Constructivism, De Stijl</value>
+									<value>Art Deco</value>
+									<value>Dada and Surrealism</value>
+									<value>Abstract Expressionism</value>
+									<value>Modern Art</value>
 								</list>
 							</parameter>
 						</constraint>

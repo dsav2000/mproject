@@ -62,6 +62,7 @@
 			    </div>
 		    </@>
 	        <@region id="document-actions" scope="template"/>
+	        <@region id="actions-common" scope="template"/>
 	        <@region id="document-versions" scope="template"/>
 <#--
 			<@region id="comments" scope="template"/>
