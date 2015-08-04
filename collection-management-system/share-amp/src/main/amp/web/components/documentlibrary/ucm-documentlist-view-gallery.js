@@ -720,7 +720,16 @@
       
       if (isContainer)
       {
-         imgHtml = '<img id="' + imgId + '" class="alf-gallery-item-thumbnail-img" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-256.png" />';
+         // Artist folder uses the same thumbnail artist artifact does
+         var artistArtifactRef = node.properties['ucm:about_artist_artifact_reference'];
+         if (node.type === "ucm:artist" && artistArtifactRef) {
+            var artistArtifactUri = artistArtifactRef.replace(':/', '');
+            var artistThumbnailPreview = Alfresco.constants.PROXY_URI + "api/node/" + artistArtifactUri + "/content/thumbnails/" + renditionName +"?c=queue&ph=true&lastModified=1";
+            imgHtml = '<img id="' + imgId + '" class="alf-gallery-item-thumbnail-img" src="' + artistThumbnailPreview + '" alt="' + $html(extn) + '" title="' + $html(name) + '" />';
+         }
+         else {
+            imgHtml = '<img id="' + imgId + '" class="alf-gallery-item-thumbnail-img" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/documentlibrary/images/folder-256.png" />';
+         }
       }
       else
       {

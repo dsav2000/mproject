@@ -1038,29 +1038,79 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
 
                   form.target = iframe.name;
                   
-				  // UCM-customization: handle response
+                  // UCM-customization: handle response
+
+                  function ucmCommonFormProcessing(scope, isSuccess) {
+                  if (Dom.get(scope.formId))
+                     {
+                        // The form still exists
+                        scope._resetAllVisitedFields();
+                        if (!isSuccess || scope.reusable)
+                        {
+                           if (scope.showSubmitStateDynamically)
+                           {
+                              // Update using validation
+                              scope.updateSubmitElements();
+                           }
+                           else
+                           {
+                              // Enable submit buttons
+                              scope._toggleSubmitElements(true);
+                           }
+                        }
+                     }
+                  }
+
+                  var config = {};
+                  var submitHandlers = this.ajaxSubmitHandlers || {};
+                  if (submitHandlers)
+                  {
+                     config.successCallback = function(response) {
+                        ucmCommonFormProcessing(this, true);
+                        var successCallback = submitHandlers.successCallback;
+                        if (successCallback && successCallback.fn) {
+                           successCallback.fn.call(successCallback.scope || this, response);
+                        }
+                        if (submitHandlers.successMessage) {
+                           Alfresco.util.PopupManager.displayMessage(successMessage);
+                        }
+                     };
+                     config.failureCallback = function(response) {
+                        ucmCommonFormProcessing(this, false);
+                        var failureCallback = submitHandlers.failureCallback;
+                        if (failureCallback && failureCallback.fn) {
+                           failureCallback.fn.call(failureCallback.scope || this, response);
+                        }
+                        if (submitHandlers.failureMessage) {
+                            Alfresco.util.PopupManager.displayMessage(failureMessage);
+                         }
+                     };
+                  }
+                  
+                  var dataObj = {};
+                  for(var i = 0; i < form.elements.length; ++i) {
+                      dataObj[form.elements[i].name] = form.elements[i].value; 
+                  }
+                  
                   iframe.onload = function UCM_createContentFrameLoad()
                   {
-    				  var jsonText = YAHOO.util.Dom.getFirstChild(iframe.contentWindow.document.body).innerHTML;
-    				  if (jsonText)
-    				  {
-    					  var json = Alfresco.util.parseJSON(jsonText);
-    					  var contentMgr = Alfresco.util.ComponentManager.findFirst("Alfresco.CreateContentMgr");
-    					  var response = {json: json}; 
-    					  if (json.persistedObject)
-    					  {
-    						  contentMgr.onCreateContentSuccess(response);
-    					  }
-    					  else
-    					  {
-    						  console.error(json);
-    						  contentMgr.onCreateContentFailure(response);
-    					  }
-    				  }
+                      var jsonText = YAHOO.util.Dom.getFirstChild(iframe.contentWindow.document.body).innerHTML;
+                      if (jsonText)
+                      {
+                          var json = Alfresco.util.parseJSON(jsonText);
+                          var response = {json: json, config: {dataObj: dataObj}, serverResponse: {responseText: jsonText}};
+                          if (json.persistedObject) {
+                              config.successCallback(response);
+                          }
+                          else {
+                              console.error(json);
+                              config.failureCallback(response);
+                          }
+                      }
                   };
                   
                   form.submit();
-    			  return;
+                  return;
                }
                else
                {

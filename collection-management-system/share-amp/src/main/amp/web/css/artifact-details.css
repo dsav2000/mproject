@@ -14,3 +14,9 @@
 .ucm-metadata .share-form {
     border: 1px solid black;
 }
+
+.alfresco-twister .alfresco-twister-actions {
+	position: initial !important;
+	float: right !important;
+	right: initial !important;
+}

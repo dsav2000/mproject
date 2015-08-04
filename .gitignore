@@ -1,1 +1,26 @@
 
+target
+alf_data_dev
+solr_home
+/collection-management-system/repo-amp/src/main/amp/config/alfresco/extension/messages/uploader-plus.properties
+/collection-management-system/repo-amp/src/main/amp/config/alfresco/extension/messages/uploader-plus_de.properties
+/collection-management-system/repo-amp/src/main/amp/config/alfresco/extension/messages/uploader-plus_it.properties
+/collection-management-system/repo-amp/src/main/amp/config/alfresco/extension/messages/uploader-plus_pt_BR.properties
+/collection-management-system/repo-amp/src/main/amp/config/alfresco/extension/messages/uploader-plus_ru.properties
+/collection-management-system/repo-amp/src/main/amp/config/alfresco/extension/model/uploader-plus-model.xml
+/collection-management-system/repo-amp/src/main/amp/config/alfresco/extension/templates/webscripts/uploader-plus
+/collection-management-system/repo-amp/src/main/amp/config/alfresco/extension/templates/webscripts/org/alfresco/repository/upload/upload.post.js
+/collection-management-system/share-amp/src/main/amp/config/alfresco/web-extension/site-webscripts/uploader-plus
+/collection-management-system/share-amp/src/main/amp/config/alfresco/web-extension/site-webscripts/org/alfresco/components/upload
+/collection-management-system/share-amp/src/main/amp/web/components/uploader-plus
+bin
+/collection-management-system/share-amp/src/main/amp/config/alfresco/web-extension/messages/uploader-plus.properties
+/collection-management-system/share-amp/src/main/amp/config/alfresco/web-extension/messages/uploader-plus_de.properties
+/collection-management-system/share-amp/src/main/amp/config/alfresco/web-extension/messages/uploader-plus_it.properties
+/collection-management-system/share-amp/src/main/amp/config/alfresco/web-extension/messages/uploader-plus_pt_BR.properties
+/collection-management-system/share-amp/src/main/amp/config/alfresco/web-extension/messages/uploader-plus_ru.properties
+/collection-management-system/repo-amp/src/main/amp/config/alfresco/extension/uploader-plus-context.xml
+/collection-management-system/repo-amp/src/main/amp/config/alfresco/extension/web-client-config-custom.xml
+/collection-management-system/repo-amp/src/main/java/com/softwareloop/uploderplus/ListContentTypesGet.java
+/collection-management-system/share-amp/src/main/amp/config/alfresco/web-extension/site-data/extensions/uploader-plus-surf.xml
+/collection-management-system/share-amp/src/main/amp/config/org/springframework/extensions/surf/uploader-plus-surf-context.xml

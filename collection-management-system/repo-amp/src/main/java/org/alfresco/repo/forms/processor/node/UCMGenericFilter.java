@@ -3,24 +3,25 @@ package org.alfresco.repo.forms.processor.node;
 import static org.alfresco.museum.ucm.UCMConstants.CONTENT_PROP_DATA;
 import static org.alfresco.museum.ucm.UCMConstants.DEFAULT_CONTENT_MIMETYPE;
 import static org.alfresco.museum.ucm.UCMConstants.NAME_PROP_DATA;
-import static org.alfresco.museum.ucm.UCMConstants.TYPE_UCM_ARTIFACT_QNAME;
 import static org.alfresco.repo.forms.processor.node.FormFieldConstants.PROP_DATA_PREFIX;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.museum.ucm.UCMConstants;
 import org.alfresco.repo.forms.Form;
 import org.alfresco.repo.forms.FormData;
 import org.alfresco.repo.forms.FormData.FieldData;
 import org.alfresco.repo.forms.FormException;
 import org.alfresco.repo.forms.processor.AbstractFilter;
 import org.alfresco.repo.forms.processor.AbstractFormProcessor;
-import org.alfresco.repo.site.SiteModel;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
@@ -33,7 +34,17 @@ import org.alfresco.service.cmr.repository.MimetypeService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.QName;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.IOUtils;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.jpeg.JpegParser;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Form fields of type "file" are currently ignored in
@@ -46,24 +57,14 @@ import org.springframework.util.StringUtils;
  * {@link org.alfresco.repo.forms.processor.node.ContentModelFormProcessor form
  * processor class}.
  */
-public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
+public class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 	private NodeService nodeService;
 	private ContentService contentService;
 	private DictionaryService dictionaryService;
 	private FileFolderService fileFolderService;
 	private MimetypeService mimetypeService;
 
-	@Override
-	public void beforeGenerate(TypeDefinition item, List<String> fields, List<String> forcedFields, Form form,
-			Map<String, Object> context) {
-		// Do nothing
-	}
-
-	@Override
-	public void afterGenerate(TypeDefinition item, List<String> fields, List<String> forcedFields, Form form,
-			Map<String, Object> context) {
-		// Do nothing
-	}
+	private static Log logger = LogFactory.getLog(UCMGenericFilter.class);
 
 	protected String getFilename(FormData data) {
 		String filename = "";
@@ -116,100 +117,21 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 		return result;
 	}
 
-	/**
-	 * Fill file name field. Handle possible file name collisions.
-	 */
-	@Override
-	public void beforePersist(TypeDefinition item, FormData data) {
-		// firstly, ensure we have a destination to create the node in
-		NodeRef parentRef = null;
-		FieldData destination = data.getFieldData(AbstractFormProcessor.DESTINATION);
-		if (destination == null) {
-			throw new FormException("Failed to persist form for '" + item.getName() + "' as '"
-					+ AbstractFormProcessor.DESTINATION + "' data was not provided.");
-		}
-		// create the parent NodeRef
-		parentRef = new NodeRef((String) destination.getValue());
-
-		String originalFilename = getFilename(data);
-		String validFilename = findFreeFilename(parentRef, originalFilename);
-		// Use name of uploaded file as new content name
-		data.addFieldData(NAME_PROP_DATA, validFilename, true);
-	}
-
-	/**
-	 * Strore "cm:content" property value, which is ignored by default handler.<br/>
-	 * Create "media" folder as an attachment.<br/>
-	 * See
-	 * {@link org.alfresco.repo.forms.processor.node.ContentModelFormProcessor#persistNode(NodeRef, FormData)
-	 * persistNode},
-	 * {@link org.alfresco.repo.forms.processor.node.ContentModelFormProcessor#processPropertyPersist(NodeRef, Map,FieldData, Map, FormData)
-	 * processPropertyPersist},
-	 * {@link org.alfresco.repo.forms.processor.node.ContentModelFormProcessor#processContentPropertyPersist(NodeRef, FieldData, Map, FormData)
-	 * processContentPropertyPersist} and <a href=
-	 * "https://forums.alfresco.com/forum/developer-discussions/alfresco-share-development/file-upload-create-content-06282010-2333"
-	 * >discussion thread</a>
-	 */
-	@Override
-	public void afterPersist(TypeDefinition item, FormData data, NodeRef persistedObject) {
-		writeContent(item, data, persistedObject);
-		boolean isArtifact = item.getName().equals(TYPE_UCM_ARTIFACT_QNAME);
-		if (isArtifact) {
-			getOrCreateArtistMediaFolder(persistedObject);
-		}
-	}
-
-	//<site>/system/artifact_attachments/<artist>/<artifact_name>
-	protected NodeRef getOrCreateArtistMediaFolder(NodeRef artifactRef) {
-		// TODO: LOG
-		NodeRef site = getSiteRefByNode(artifactRef);
-		if (site == null) return null;
-		
-		Serializable artistNameValue = this.getNodeService().getProperty(artifactRef, UCMConstants.PROP_UCM_ARTIST_QNAME);
-		Serializable artifactNameValue = this.getNodeService().getProperty(artifactRef, ContentModel.PROP_NAME);
-		
-		if (artistNameValue == null || artifactNameValue == null) return null;
-		
-		String artistName = artistNameValue.toString();
-		String artifactName = artifactNameValue.toString();
-
-		NodeRef doclibFolder = getOrCreateFolder(site, "documentLibrary", false);
-		NodeRef systemFolder = getOrCreateFolder(doclibFolder, UCMConstants.SYSTEM_FOLDER_NAME, false); //NodeRef systemFolder = getOrCreateFolder(site, UCMConstants.SYSTEM_FOLDER_NAME, true);
-		NodeRef mediaFolder = getOrCreateFolder(systemFolder, UCMConstants.MEDIA_FOLDER_NAME, false);
-		NodeRef artistFolder = getOrCreateFolder(mediaFolder, artistName, false);
-		NodeRef artifactFolder = getOrCreateFolder(artistFolder, artifactName, false);
-		
-		// set media folder caption
-		this.getNodeService().setProperty(artifactFolder, ContentModel.PROP_TITLE, "Media content for " + artifactName);
-		
-		// save reference to folder in artifact association
-		this.getNodeService().addChild(artifactRef, artifactFolder, UCMConstants.ASSOC_UCM_ARTIFACT_CONTAINS_QNAME, QName.createQName(UCMConstants.UCM_NAMESPACE, artifactName));
-		
-		return mediaFolder;
-	}
-	
 	protected NodeRef getOrCreateFolder(NodeRef parentRef, String name, boolean isHidden) {
 		NodeRef result = this.getFileFolderService().searchSimple(parentRef, name);
 		if (result == null) {
 			result = this.getFileFolderService().create(parentRef, name, ContentModel.TYPE_FOLDER).getNodeRef();
 			if (isHidden) {
 				Map<QName, Serializable> aspectHiddenProperties = new HashMap<QName, Serializable>(1);
-//				 aspectHiddenProperties.put(ContentModel.PROP_VISIBILITY_MASK, true);
-				 this.getNodeService().addAspect(result, ContentModel.ASPECT_HIDDEN, aspectHiddenProperties);
-				 if (isHidden) {
-					 this.getNodeService().addAspect(result, ContentModel.ASPECT_HIDDEN, aspectHiddenProperties);
-				 }
+				// aspectHiddenProperties.put(ContentModel.PROP_VISIBILITY_MASK,
+				// true);
+				this.getNodeService().addAspect(result, ContentModel.ASPECT_HIDDEN, aspectHiddenProperties);
+				if (isHidden) {
+					this.getNodeService().addAspect(result, ContentModel.ASPECT_HIDDEN, aspectHiddenProperties);
+				}
 			}
 		}
 		return result;
-	}
-	
-	protected NodeRef getSiteRefByNode(NodeRef nodeRef) {
-		while (nodeRef != null && !SiteModel.TYPE_SITE.equals(this.getNodeService().getType(nodeRef))) {
-			nodeRef = this.getNodeService().getPrimaryParent(nodeRef).getParentRef();
-		}
-	 	
-		return nodeRef;
 	}
 
 	protected void writeContent(TypeDefinition item, FormData data, NodeRef persistedObject) {
@@ -221,15 +143,26 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 				ContentWriter writer = this.getContentService().getWriter(persistedObject, ContentModel.PROP_CONTENT,
 						true);
 				if (writer != null) {
+					InputStream inputStream = contentField.getInputStream();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					try {
+						IOUtils.copy(inputStream, baos);
+					} catch (IOException e) {
+						logger.error("Can't create copy of image stream", e);
+					}
+
+					processMetadata(new ByteArrayInputStream(baos.toByteArray()), persistedObject);
+
 					// write the content
-					writer.putContent(contentField.getInputStream());
+					writer.putContent(new ByteArrayInputStream(baos.toByteArray()));
 
 					// content data has not been persisted yet so get it from
 					// the node
 					ContentData contentData = (ContentData) this.getNodeService().getProperty(persistedObject,
 							ContentModel.PROP_CONTENT);
 					if (contentData != null) {
-						contentData = ContentData.setMimetype(contentData, determineDefaultMimetype(data));
+						String mimetype = determineDefaultMimetype(data);
+						contentData = ContentData.setMimetype(contentData, mimetype);
 						Map<QName, Serializable> propsToPersist = new HashMap<QName, Serializable>();
 						propsToPersist.put(ContentModel.PROP_CONTENT, contentData);
 						this.getNodeService().addProperties(persistedObject, propsToPersist);
@@ -238,6 +171,59 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 			}
 		}
 	}
+
+	/**
+	 * @see <a
+	 *      href="https://github.com/jpotts/alfresco-api-java-examples/blob/master/alfresco-api-examples/src/main/java/com/alfresco/api/example/CmisGeographicAspectExample.java">source</a>
+	 *      Only handle JPEG. inputStream is reset in the end.
+	 */
+	public void processMetadata(InputStream inputStream, NodeRef node) {
+		try {
+			Metadata metadata = new Metadata();
+			metadata.set(Metadata.CONTENT_TYPE, MediaType.IMAGE_JPEG_VALUE);
+
+			new JpegParser().parse(inputStream, new DefaultHandler(), metadata, new ParseContext());
+
+			String lat = metadata.get("geo:lat");
+			String lon = metadata.get("geo:long");
+
+			if (lat != null && lon != null) {
+				this.getNodeService().setProperty(node, ContentModel.PROP_LATITUDE, lat);
+				this.getNodeService().setProperty(node, ContentModel.PROP_LONGITUDE, lon);
+			}
+		} catch (IOException e) {
+			logger.warn("Can't read image content, skipping", e);
+		} catch (TikaException te) {
+			logger.warn("Caught tika exception, skipping", te);
+		} catch (SAXException se) {
+			logger.warn("Caught SAXException, skipping", se);
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.reset();
+				} catch (IOException e) {
+					logger.warn("Can't reset image stream", e);
+				}
+			}
+		}
+	}
+
+	/*
+	 * TODO: ideally metadata should be extracted in the same way it is done in
+	 * upload.post.js:extractMetadata
+	 * "actions.create("extract-metadata").execute(file, false, false)"
+	 * equivalent Java code would be
+	 * "create("extract-metadata").execute(persistedObject, false, false);" But
+	 * unfortunately registryService bean isn't available in current context.
+	 * Are there any workarounds? private ScriptAction create(String actionName)
+	 * { ScriptAction scriptAction = null; ActionService actionService =
+	 * serviceRegistry.getActionService(); ActionDefinition actionDef =
+	 * actionService.getActionDefinition(actionName); if (actionDef != null) {
+	 * Action action = actionService.createAction(actionName); scriptAction =
+	 * new ScriptAction(this.serviceRegistry, action, actionDef);
+	 * scriptAction.setScope(new BaseScopableProcessorExtension().getScope()); }
+	 * return scriptAction; }
+	 */
 
 	/**
 	 * Looks through the form data for the 'mimetype' transient field and
@@ -258,8 +244,7 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 				if (mimetypeFieldValue != null && mimetypeFieldValue.length() > 0) {
 					mimetype = mimetypeFieldValue;
 				}
-			}
-			else {
+			} else {
 				FieldData contentField = data.getFieldData(CONTENT_PROP_DATA);
 				if (contentField != null) {
 					String fileName = contentField.getValue().toString();
@@ -270,6 +255,57 @@ public class UCMFormFilter extends AbstractFilter<TypeDefinition, NodeRef> {
 		}
 
 		return mimetype;
+	}
+
+	protected void resolvePossibleFilenameConflict(TypeDefinition item, FormData data) {
+		// firstly, ensure we have a destination to create the node in
+		NodeRef parentRef = null;
+		FieldData destination = data.getFieldData(AbstractFormProcessor.DESTINATION);
+		if (destination == null) {
+			throw new FormException("Failed to persist form for '" + item.getName() + "' as '"
+					+ AbstractFormProcessor.DESTINATION + "' data was not provided.");
+		}
+		// create the parent NodeRef
+		parentRef = new NodeRef((String) destination.getValue());
+
+		String originalFilename = getFilename(data);
+		String validFilename = findFreeFilename(parentRef, originalFilename);
+		// Use name of uploaded file as new content name
+		data.addFieldData(NAME_PROP_DATA, validFilename, true);
+	}
+
+	/*
+	 * Fills properties of "to" node with values of "from" node. To be updated
+	 * property should: 1. be defined in child node type description in types
+	 * model file; 2. be set in parent node.
+	 */
+	protected void inheritProperties(TypeDefinition toType, NodeRef fromNode, NodeRef toNode) {
+		Set<QName> propsSet = toType.getProperties().keySet();
+		for (QName property : propsSet) {
+			Serializable fromValue = this.getNodeService().getProperty(fromNode, property);
+			Serializable toValue = this.getNodeService().getProperty(toNode, property);
+			if (toValue == null && fromValue != null) {
+				this.getNodeService().setProperty(toNode, property, fromValue);
+			}
+		}
+	}
+
+	@Override
+	public void beforeGenerate(T item, List<String> fields, List<String> forcedFields, Form form,
+			Map<String, Object> context) {
+	}
+
+	@Override
+	public void afterGenerate(T item, List<String> fields, List<String> forcedFields, Form form,
+			Map<String, Object> context) {
+	}
+
+	@Override
+	public void beforePersist(T item, FormData data) {
+	}
+
+	@Override
+	public void afterPersist(T item, FormData data, NodeRef persistedObject) {
 	}
 
 	public NodeService getNodeService() {

@@ -60,7 +60,7 @@
       <!-- Create Content Form -->
       <component>
          <region-id>create-content</region-id>
-         <url>/components/form?destination={destination}&amp;type={type}&amp;formId={formId}</url>
+         <url>/components/ucm-form?destination={destination}&amp;inherit={destination}&amp;type={type}&amp;formId={formId}</url>
          <properties>
             <itemKind>type</itemKind>
             <itemId>{type}</itemId>

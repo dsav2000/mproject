@@ -135,18 +135,12 @@
 			<title>Artist</title>
 			<parent>ucm:collection</parent>
 
-			<!-- TODO: implement references as an association with many="true" ? -->
-			<!-- <associations> <association name="ucm:artist_referenced_objects"> 
-				<source> <mandatory>false</mandatory> <many>true</many> </source> <target> 
-				<class>ucm:artifact</class> <mandatory>false</mandatory> <many>true</many> 
-				</target> </association> </associations> -->
-
 			<properties>
-				<property name="ucm:artist_referenced_objects">
-					<title>Referenced objects</title>
-					<type>d:noderef</type>
+				<property name="ucm:about_artist_artifact_reference">
+					<title>Artist artifact</title>
+					<type>d:text</type> <!-- TODO: d:noderef ? -->
 					<mandatory>false</mandatory>
-					<multiple>true</multiple>
+					<multiple>false</multiple>
 				</property>
 			</properties>
 
@@ -439,9 +433,9 @@
 			<mandatory-aspects>
 				<aspect>ucm:artist_aspect</aspect>
 				<aspect>ucm:museum_artifact_aspect</aspect>
+				<aspect>cm:geographic</aspect>
 <!--
 				<aspect>ucm:indoor_artifact_aspect</aspect>
-				<aspect>cm:geographical</aspect>
 				<aspect>ucm:archeological_aspect</aspect>
 				<aspect>ucm:artifact_donor</aspect>
 

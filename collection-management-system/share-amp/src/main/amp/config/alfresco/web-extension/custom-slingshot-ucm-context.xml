@@ -26,4 +26,6 @@
 			</list>
 		</property>
 	</bean>
+	
+	<bean id="webscript.org.alfresco.components.form.ucm-form.get" class="org.alfresco.web.scripts.forms.UCMFormUIGet" parent="webscript.org.alfresco.components.form.form.get"/>
 </beans>

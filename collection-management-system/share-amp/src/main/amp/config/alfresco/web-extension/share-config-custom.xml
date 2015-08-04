@@ -90,26 +90,21 @@
 		</types>
 
 		<create-content>
-	         <content id="plain-text" label="create-content.text" type="pagelink" index="10" icon="text">
-	            <param name="page">create-content?destination={nodeRef}&amp;itemId=cm:content&amp;mimeType=text/plain</param>
-	         </content>
-
 			<content id="artifact" mimetype="image/jpeg" label="menu.create-content.ucm_artifact" itemid="ucm:artifact" />
 
 	        <content id="collection" label="menu.create-content.ucm_collection"  index="2" type="javascript">
 	            <param name="function">onNewCollection</param>
 	        </content>
-<!-- 	         
-	         <content id="artist" label="menu.create-content.ucm_artist" icon="folder" index="3" type="javascript">
-	            <param name="function">onNewFolder</param>
-	         </content>
--->	        
+
+	        <content id="artist" label="menu.create-content.ucm_artist"  index="3" type="javascript">
+	            <param name="function">onNewArtist</param>
+	        </content>
 		</create-content>
 	
         <create-content-by-template>false</create-content-by-template>
 
       <folder-types>
-         <type name="ucm:Collection" display-label="FCollection" display-label-id="fcollection" icon="folder" itemid="ucm:Collection" />
+         <type name="ucm:collection" display-label="FCollection" display-label-id="fcollection" icon="folder" itemid="ucm:collection" />
       </folder-types>
 
 		<metadata-templates>
@@ -192,6 +187,120 @@
 					<field id="ucm:curator"/>
  	                <field id="cm:description"/>
 	            </appearance>
+			</form>
+		</forms>
+	</config>
+
+	<!-- ucm:artist type (creating nodes) -->
+	<config evaluator="model-type" condition="ucm:artist">
+		<forms>
+			<!-- Default form configuration for the ucm:artifact type -->
+			<form>
+				<create-form template="/com/alfresco/museum/ucm/form/ucm-artifact-props-form.ftl"/>
+				<field-visibility>
+					<show id="cm:content" force="true"/>
+					<show id="ucm:artist_nickname" />
+					<show id="ucm:artist_name" />
+					<show id="cm:name" />
+					<show id="ucm:artist_dob" />
+					<show id="ucm:artist_birth_place" />
+					<show id="ucm:artist_dod" />
+					<show id="ucm:artist_death_place" />
+					<show id="ucm:artist_study_workshop" />
+					<show id="ucm:artist_live_city" />
+					<show id="ucm:artist_period" />
+					<show id="ucm:artist_comments" />
+				</field-visibility>
+				<appearance>
+ 					<field id="cm:content">
+		               <control template="/com/alfresco/museum/ucm/form/controls/ucm-file-upload.ftl" />
+		            </field>
+					<field id="ucm:artist_nickname" />
+					<field id="ucm:artist_name" />
+	                <field id="cm:name" />
+					<field id="ucm:artist_dob" />
+					<field id="ucm:artist_birth_place" />
+					<field id="ucm:artist_dod" />
+					<field id="ucm:artist_death_place" />
+					<field id="ucm:artist_study_workshop" />
+					<field id="ucm:artist_live_city" />
+					<field id="ucm:artist_period" />
+					<field id="ucm:artist_comments" />
+				</appearance>
+			</form>
+		</forms>
+	</config>
+	
+	<!-- ucm:artist type (existing nodes) -->
+	<config evaluator="node-type" condition="ucm:artist">
+		<forms>
+			<!-- Default form configuration for the ucm:artifact type -->
+			<form>
+				<edit-form template="/com/alfresco/museum/ucm/form/ucm-artifact-props-form.ftl"/>
+				<field-visibility>
+					<show id="cm:content" force="true"/>
+					<show id="ucm:artist_nickname" />
+					<show id="ucm:artist_name" />
+					<show id="cm:name" />
+					<show id="ucm:artist_dob" />
+					<show id="ucm:artist_birth_place" />
+					<show id="ucm:artist_dod" />
+					<show id="ucm:artist_death_place" />
+					<show id="ucm:artist_study_workshop" />
+					<show id="ucm:artist_live_city" />
+					<show id="ucm:artist_period" />
+					<show id="ucm:artist_comments" />
+				</field-visibility>
+				<appearance>
+ 					<field id="cm:content">
+		               <control template="/com/alfresco/museum/ucm/form/controls/ucm-file-upload.ftl" />
+		            </field>
+					<field id="ucm:artist_nickname" />
+					<field id="ucm:artist_name" />
+	                <field id="cm:name" />
+					<field id="ucm:artist_dob" />
+					<field id="ucm:artist_birth_place" />
+					<field id="ucm:artist_dod" />
+					<field id="ucm:artist_death_place" />
+					<field id="ucm:artist_study_workshop" />
+					<field id="ucm:artist_live_city" />
+					<field id="ucm:artist_period" />
+					<field id="ucm:artist_comments" />
+				</appearance>
+			</form>
+			<!-- Document Library pop-up Edit Metadata form -->
+			<form id="doclib-simple-metadata">
+				<edit-form template="/com/alfresco/museum/ucm/form/ucm-artifact-props-form.ftl"/>
+				<field-visibility>
+					<show id="cm:content" force="true"/>
+					<show id="ucm:artist_nickname" />
+					<show id="ucm:artist_name" />
+					<show id="cm:name" />
+					<show id="ucm:artist_dob" />
+					<show id="ucm:artist_birth_place" />
+					<show id="ucm:artist_dod" />
+					<show id="ucm:artist_death_place" />
+					<show id="ucm:artist_study_workshop" />
+					<show id="ucm:artist_live_city" />
+					<show id="ucm:artist_period" />
+					<show id="ucm:artist_comments" />
+				</field-visibility>
+				<appearance>
+ 					<field id="cm:content">
+		               <control template="/com/alfresco/museum/ucm/form/controls/ucm-file-upload.ftl" />
+		            </field>
+					<field id="ucm:artist_nickname" />
+					<field id="ucm:artist_name" />
+	                <field id="cm:name" />
+					<field id="ucm:artist_dob" />
+					<field id="ucm:artist_birth_place" />
+					<field id="ucm:artist_dod" />
+					<field id="ucm:artist_death_place" />
+					<field id="ucm:artist_study_workshop" />
+					<field id="ucm:artist_live_city" />
+					<field id="ucm:artist_period" />
+					<field id="ucm:artist_comments" />
+				</appearance>
 			</form>
 		</forms>
 	</config>
@@ -518,8 +627,224 @@
 					<field id="ucm:museum_number" />
 				</appearance>
 			</form>
-	</forms>
-</config>
+		</forms>
+	</config>
+
+	<!-- ucm:about_artist_artifact type (existing nodes) -->
+	<config evaluator="node-type" condition="ucm:about_artist_artifact">
+		<forms>
+			<!-- Default form configuration for the ucm:about_artist_artifact type -->
+			<form>
+				<edit-form template="/com/alfresco/museum/ucm/form/ucm-artifact-props-form.ftl"/>
+				<field-visibility>
+					<show id="cm:name" />
+					<show id="cm:title" />
+					<show id="cm:content" />
+					
+					<show id="ucm:artifact_name"/>
+					<show id="ucm:artist_name" />
+					<show id="ucm:museum_number" />
+					<show id="ucm:artifact_date" />
+					<show id="ucm:artifact_medium" />
+					<show id="ucm:artifact_technique" />
+					<show id="ucm:artifact_dimension" />
+					<show id="ucm:artifact_status" />
+					<!-- show id="ucm:artifact_contains" /-->
+					
+					<show id="ucm:artifact_location" />
+					<show id="ucm:artifact_collection" />
+					<show id="ucm:artifact_acquisition_type" />
+					<show id="ucm:artifact_donor" />
+					<show id="ucm:artifact_type" />
+					<show id="ucm:artifact_on_display" />
+					<show id="ucm:artifact_comments" />
+					<!--show id="ucm:artifact_referenced_objects" /-->
+					<show id="ucm:artist_nickname" />
+					<show id="ucm:artist_dob" />
+					<show id="ucm:artist_birth_place" />
+					<show id="ucm:artist_dod" />
+					<show id="ucm:artist_death_place" />
+					<show id="ucm:artist_study_workshop" />
+					<show id="ucm:artist_live_city" />
+					<show id="ucm:artist_period" />
+					<show id="ucm:artist_comments" />
+					<show id="ucm:museum_artifact_gallery_location" />
+					
+					<!-- <show id="ucm:artifact_referenced_objects" /> -->
+
+					<!-- cm:dublincore aspect -->
+					<!--<show id="cm:publisher" />
+					<show id="cm:contributor" />
+					<show id="cm:type" />
+					<show id="cm:identifier" />
+					<show id="cm:dcsource" />
+					<show id="cm:coverage" />
+					<show id="cm:rights" />
+					<show id="cm:subject" /> -->
+				</field-visibility>
+				<appearance>
+					<set id="artifactMain" appearance="fieldset" label="Main artifact properties" />
+					<set id="artifactRest" appearance="accordion-wrapper" label="Additional properties" />
+						<set id="artifactAdditional" parent="artifactRest" appearance="accordion-element" label="Artifact" />
+						<set id="artifactArtist" parent="artifactRest" appearance="accordion-element" label="Artist" />
+						<set id="artifactMuseum" parent="artifactRest" appearance="accordion-element" label="Museum" />
+					<!-- TODO: rest of aspects. And properties? -->
+					<field id="cm:name">
+						<control>
+							<control-param name="maxLength">255</control-param>
+						</control>
+					</field>
+					<field id="cm:title" />
+					<field id="cm:content">
+		               <control template="/com/alfresco/museum/ucm/form/controls/ucm-file-upload.ftl" />
+		            </field>
+					<field id="ucm:artifact_name" set="artifactMain" />
+					<field id="ucm:artist_name" set="artifactMain" />
+					<field id="ucm:museum_number" set="artifactMain" />
+					
+					<field id="ucm:artifact_date" set="artifactMain" />
+					<field id="ucm:artifact_medium" set="artifactMain" />
+					<field id="ucm:artifact_technique" set="artifactMain" />
+					<field id="ucm:artifact_dimension" set="artifactMain" />
+					<field id="ucm:artifact_status" set="artifactMain" />
+					<!--field id="ucm:artifact_contains" set="artifactMain">
+			        	<control template="/org/alfresco/components/form/controls/association.ftl">
+							<control-param name="">items</control-param>
+							<control-param name="displayMode">items</control-param>
+							<control-param name="showTargetLink">true</control-param>
+							<control-param name="compactMode">true</control-param>
+						</control>
+					</field-->
+					
+					<field id="ucm:artifact_location" set="artifactAdditional" />
+					<field id="ucm:artifact_collection" set="artifactAdditional" />
+					<field id="ucm:artifact_acquisition_type" set="artifactAdditional" />
+<!-- 					<field id="ucm:artifact_donor" set="artifactAdditional" /> -->
+					<field id="ucm:artifact_type" set="artifactAdditional" />
+					<field id="ucm:artifact_on_display" set="artifactAdditional" />
+					<field id="ucm:artifact_comments" set="artifactAdditional" />
+					<!--field id="ucm:artifact_referenced_objects" set="artifactAdditional" /-->
+					
+					<field id="ucm:artist_nickname" set="artifactArtist" />
+					<field id="ucm:artist_dob" set="artifactArtist" />
+					<field id="ucm:artist_birth_place" set="artifactArtist" />
+					<field id="ucm:artist_dod" set="artifactArtist" />
+					<field id="ucm:artist_death_place" set="artifactArtist" />
+					<field id="ucm:artist_study_workshop" set="artifactArtist" />
+					<field id="ucm:artist_live_city" set="artifactArtist" />
+					<field id="ucm:artist_period" set="artifactArtist" />
+					<field id="ucm:artist_comments" set="artifactArtist" />
+					
+					<field id="ucm:museum_artifact_gallery_location" set="artifactMuseum" />
+				</appearance>
+			</form>
+			
+			<form id="doclib-simple-metadata">
+				<edit-form template="/com/alfresco/museum/ucm/form/ucm-artifact-props-form.ftl"/>
+				<field-visibility>
+					<show id="cm:name" />
+					<show id="cm:title" />
+					<show id="cm:content" />
+					
+					<show id="ucm:artifact_name"/>
+					<show id="ucm:artist_name" />
+					<show id="ucm:museum_number" />
+					<show id="ucm:artifact_date" />
+					<show id="ucm:artifact_medium" />
+					<show id="ucm:artifact_technique" />
+					<show id="ucm:artifact_dimension" />
+					<show id="ucm:artifact_status" />
+					<!-- show id="ucm:artifact_contains" /-->
+					
+					<show id="ucm:artifact_location" />
+					<show id="ucm:artifact_collection" />
+					<show id="ucm:artifact_acquisition_type" />
+					<show id="ucm:artifact_donor" />
+					<show id="ucm:artifact_type" />
+					<show id="ucm:artifact_on_display" />
+					<show id="ucm:artifact_comments" />
+					<!--show id="ucm:artifact_referenced_objects" /-->
+					<show id="ucm:artist_nickname" />
+					<show id="ucm:artist_dob" />
+					<show id="ucm:artist_birth_place" />
+					<show id="ucm:artist_dod" />
+					<show id="ucm:artist_death_place" />
+					<show id="ucm:artist_study_workshop" />
+					<show id="ucm:artist_live_city" />
+					<show id="ucm:artist_period" />
+					<show id="ucm:artist_comments" />
+					<show id="ucm:museum_artifact_gallery_location" />
+					
+					<!-- <show id="ucm:artifact_referenced_objects" /> -->
+
+					<!-- cm:dublincore aspect -->
+					<!--<show id="cm:publisher" />
+					<show id="cm:contributor" />
+					<show id="cm:type" />
+					<show id="cm:identifier" />
+					<show id="cm:dcsource" />
+					<show id="cm:coverage" />
+					<show id="cm:rights" />
+					<show id="cm:subject" /> -->
+				</field-visibility>
+				<appearance>
+					<set id="artifactMain" appearance="fieldset" label="Main artifact properties" />
+					<set id="artifactRest" appearance="accordion-wrapper" label="Additional properties" />
+						<set id="artifactAdditional" parent="artifactRest" appearance="accordion-element" label="Artifact" />
+						<set id="artifactArtist" parent="artifactRest" appearance="accordion-element" label="Artist" />
+						<set id="artifactMuseum" parent="artifactRest" appearance="accordion-element" label="Museum" />
+					<!-- TODO: rest of aspects. And properties? -->
+					<field id="cm:name">
+						<control>
+							<control-param name="maxLength">255</control-param>
+						</control>
+					</field>
+					<field id="cm:title" />
+					<field id="cm:content">
+		               <control template="/com/alfresco/museum/ucm/form/controls/ucm-file-upload.ftl" />
+		            </field>
+					<field id="ucm:artifact_name" set="artifactMain" />
+					<field id="ucm:artist_name" set="artifactMain" />
+					<field id="ucm:museum_number" set="artifactMain" />
+					
+					<field id="ucm:artifact_date" set="artifactMain" />
+					<field id="ucm:artifact_medium" set="artifactMain" />
+					<field id="ucm:artifact_technique" set="artifactMain" />
+					<field id="ucm:artifact_dimension" set="artifactMain" />
+					<field id="ucm:artifact_status" set="artifactMain" />
+					<!--field id="ucm:artifact_contains" set="artifactMain">
+			        	<control template="/org/alfresco/components/form/controls/association.ftl">
+							<control-param name="">items</control-param>
+							<control-param name="displayMode">items</control-param>
+							<control-param name="showTargetLink">true</control-param>
+							<control-param name="compactMode">true</control-param>
+						</control>
+					</field-->
+					
+					<field id="ucm:artifact_location" set="artifactAdditional" />
+					<field id="ucm:artifact_collection" set="artifactAdditional" />
+					<field id="ucm:artifact_acquisition_type" set="artifactAdditional" />
+<!-- 					<field id="ucm:artifact_donor" set="artifactAdditional" /> -->
+					<field id="ucm:artifact_type" set="artifactAdditional" />
+					<field id="ucm:artifact_on_display" set="artifactAdditional" />
+					<field id="ucm:artifact_comments" set="artifactAdditional" />
+					<!--field id="ucm:artifact_referenced_objects" set="artifactAdditional" /-->
+					
+					<field id="ucm:artist_nickname" set="artifactArtist" />
+					<field id="ucm:artist_dob" set="artifactArtist" />
+					<field id="ucm:artist_birth_place" set="artifactArtist" />
+					<field id="ucm:artist_dod" set="artifactArtist" />
+					<field id="ucm:artist_death_place" set="artifactArtist" />
+					<field id="ucm:artist_study_workshop" set="artifactArtist" />
+					<field id="ucm:artist_live_city" set="artifactArtist" />
+					<field id="ucm:artist_period" set="artifactArtist" />
+					<field id="ucm:artist_comments" set="artifactArtist" />
+					
+					<field id="ucm:museum_artifact_gallery_location" set="artifactMuseum" />
+				</appearance>
+			</form>
+		</forms>
+	</config>
 
 	<config evaluator="string-compare" condition="DocumentDetails"
 		replace="true">
