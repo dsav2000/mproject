@@ -119,6 +119,7 @@ public class UCMFormUIGet extends FormUIGet {
 
 		writer.startObject();
 		writer.writeValue(PARAM_ITEM_KIND, itemKind);
+		// URLEncode/URLDecode would do better, but Alfresco approach is to trim :/
 		writer.writeValue(PARAM_ITEM_ID, itemId.replace(":/", ""));
 		writer.writeValue(PARAM_INHERIT, inherit.replace(":/", ""));
 

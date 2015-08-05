@@ -39,4 +39,9 @@ public class UCMConstants {
 	public static final String SYSTEM_FOLDER_NAME = "system";
 	
 	public static final String MEDIA_FOLDER_NAME = "artifact_attachments";
+
+	public static final String MANDATORY_PROP_FILLER = "N/A";
+
+	public static final String ASPECT_GEOGRAPHICAL = ContentModel.ASPECT_GEOGRAPHIC.getLocalName();
+	public static final QName ASPECT_GEOGRAPHICAL_QNAME = ContentModel.ASPECT_GEOGRAPHIC;
 }

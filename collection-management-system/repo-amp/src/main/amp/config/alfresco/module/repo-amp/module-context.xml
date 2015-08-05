@@ -23,23 +23,26 @@
 
 	<bean id="ucmBaseFormFilter" class="org.alfresco.repo.forms.processor.node.UCMGenericFilter"
 		parent="baseFormFilter">
-		<property name="filterRegistry" ref="typeFilterRegistry" />
 		<property name="contentService" ref="ContentService" />
 		<property name="fileFolderService" ref="FileFolderService" />
 		<property name="dictionaryService" ref="DictionaryService" />
 		<property name="nodeService" ref="NodeService" />
 		<property name="mimetypeService" ref="MimetypeService" />
 	</bean>
+	<bean id="ucmCreateArtifactFilter" class="org.alfresco.museum.ucm.UCMCreateArtifact"
+		parent="ucmBaseFormFilter">
+		<property name="filterRegistry" ref="typeFilterRegistry" />
+	</bean>
 
-	<bean id="ucmCreateArtifactFilter"
-		class="org.alfresco.repo.forms.processor.node.UCMCreateArtifact"
-		parent="ucmBaseFormFilter" />
+	<bean id="ucmCreateArtistFilter" class="org.alfresco.museum.ucm.UCMCreateArtist"
+		parent="ucmBaseFormFilter">
+		<property name="filterRegistry" ref="typeFilterRegistry" />
+	</bean>
 
-	<bean id="ucmCreateArtistFilter" class="org.alfresco.repo.forms.processor.node.UCMCreateArtist"
-		parent="ucmBaseFormFilter" />
-
-	<bean id="ucmEditArtistFilter" class="org.alfresco.repo.forms.processor.node.UCMEditArtist"
-		parent="ucmBaseFormFilter" />
+	<bean id="ucmEditArtistFilter" class="org.alfresco.museum.ucm.UCMEditArtist"
+		parent="ucmBaseFormFilter">
+		<property name="filterRegistry" ref="nodeFilterRegistry" />
+	</bean>
 
 	<!-- TODO: explicitly override typeFormProcessor -->
 	<!-- TODO: explicitly override FileFolderServiceImpl -->

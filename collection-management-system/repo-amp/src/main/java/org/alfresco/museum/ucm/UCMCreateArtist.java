@@ -1,18 +1,24 @@
-package org.alfresco.repo.forms.processor.node;
+package org.alfresco.museum.ucm;
 
+import static org.alfresco.museum.ucm.UCMConstants.ASPECT_GEOGRAPHICAL_QNAME;
+import static org.alfresco.museum.ucm.UCMConstants.MANDATORY_PROP_FILLER;
+import static org.alfresco.museum.ucm.UCMConstants.PROP_UCM_ARTIST_ARTIFACT_QNAME;
+import static org.alfresco.museum.ucm.UCMConstants.PROP_UCM_ARTIST_QNAME;
+import static org.alfresco.museum.ucm.UCMConstants.TYPE_UCM_ARTIST_ARTIFACT_QNAME;
 import static org.alfresco.museum.ucm.UCMConstants.TYPE_UCM_ARTIST_QNAME;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.alfresco.museum.ucm.UCMConstants;
-import org.alfresco.repo.forms.Form;
+import org.alfresco.model.ContentModel;
 import org.alfresco.repo.forms.FormData;
 import org.alfresco.repo.forms.FormData.FieldData;
+import org.alfresco.repo.forms.processor.node.UCMGenericFilter;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.namespace.QName;
 import org.springframework.util.StringUtils;
 
 /**
@@ -23,19 +29,6 @@ import org.springframework.util.StringUtils;
  * used also as thumbnail for artist node.
  */
 public class UCMCreateArtist extends UCMGenericFilter<TypeDefinition> {
-
-	@Override
-	public void beforeGenerate(TypeDefinition item, List<String> fields, List<String> forcedFields, Form form,
-			Map<String, Object> context) {
-		// Do nothing
-	}
-
-	@Override
-	public void afterGenerate(TypeDefinition item, List<String> fields, List<String> forcedFields, Form form,
-			Map<String, Object> context) {
-		// Do nothing
-	}
-
 	/**
 	 * Fill artist name field. Handle possible file name collisions.
 	 */
@@ -43,7 +36,7 @@ public class UCMCreateArtist extends UCMGenericFilter<TypeDefinition> {
 	public void beforePersist(TypeDefinition item, FormData data) {
 		resolvePossibleFilenameConflict(item, data);
 	}
-	
+
 	/**
 	 * Store "cm:content" property value, which is ignored by default handler.<br/>
 	 * See
@@ -60,15 +53,25 @@ public class UCMCreateArtist extends UCMGenericFilter<TypeDefinition> {
 	public void afterPersist(TypeDefinition item, FormData data, NodeRef persistedObject) {
 		boolean isArtist = item.getName().equals(TYPE_UCM_ARTIST_QNAME);
 		if (isArtist) {
-			Serializable artistNameValue = this.getNodeService().getProperty(persistedObject, UCMConstants.PROP_UCM_ARTIST_QNAME);
+			Serializable artistNameValue = this.getNodeService().getProperty(persistedObject,
+					PROP_UCM_ARTIST_QNAME);
 			if (!StringUtils.isEmpty(artistNameValue)) {
 				String artistName = artistNameValue.toString();
-				
+
 				NodeRef artistArtifact = createArtistArtifact(data, persistedObject, artistName);
-				
+
 				if (artistArtifact != null) {
 					// save reference to artist artifact in artist property
-					this.getNodeService().setProperty(persistedObject, UCMConstants.PROP_UCM_ARTIST_ARTIFACT_QNAME, artistArtifact);
+					this.getNodeService().setProperty(persistedObject, PROP_UCM_ARTIST_ARTIFACT_QNAME,
+							artistArtifact);
+					if (this.getNodeService().getAspects(artistArtifact).contains(ASPECT_GEOGRAPHICAL_QNAME)) {
+						Serializable lat = this.getNodeService().getProperty(artistArtifact, ContentModel.PROP_LATITUDE); 
+						Serializable lon = this.getNodeService().getProperty(artistArtifact, ContentModel.PROP_LONGITUDE);
+						HashMap<QName, Serializable> geoProps = new HashMap<QName, Serializable>();
+						geoProps.put(ContentModel.PROP_LATITUDE, lat);
+						geoProps.put(ContentModel.PROP_LONGITUDE, lon);
+						this.getNodeService().addAspect(persistedObject, ASPECT_GEOGRAPHICAL_QNAME, geoProps);
+					}
 				}
 			}
 		}
@@ -82,15 +85,15 @@ public class UCMCreateArtist extends UCMGenericFilter<TypeDefinition> {
 		String artistArtifactFilename = "About " + artistName;
 		if (artistFolder != null && !StringUtils.isEmpty(artistArtifactFilename)) {
 			FileInfo artistImageFile = this.getFileFolderService().create(artistFolder, artistArtifactFilename,
-					UCMConstants.TYPE_UCM_ARTIST_ARTIFACT_QNAME);
+					TYPE_UCM_ARTIST_ARTIFACT_QNAME);
 
 			artistArtifactRef = artistImageFile.getNodeRef();
-			
 
 			TypeDefinition artistArtifactType = this.getDictionaryService().getType(
-					UCMConstants.TYPE_UCM_ARTIST_ARTIFACT_QNAME);
+					TYPE_UCM_ARTIST_ARTIFACT_QNAME);
 			inheritProperties(artistArtifactType, artistFolder, artistArtifactRef);
 			writeContent(artistArtifactType, data, artistArtifactRef);
+			fillMandatoryProperties(artistArtifactType, artistArtifactRef, MANDATORY_PROP_FILLER);
 		}
 		return artistArtifactRef;
 	}

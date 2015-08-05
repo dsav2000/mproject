@@ -116,10 +116,37 @@ function main()
 
     // UCM customization
     if (itemKind == "type" && json.has("inherit")) {
+    	// pre-populate the form data model
         try
         {
-            // attempt to get the form for the "inherit" item
-            inheritScriptObj = formService.getForm("node", inherit, fields, forcedFields);
+        	var sourceNode = search.findNode(inherit.replaceFirst("/", "://"));
+        	//only inherit from our objects
+        	if (sourceNode.getTypeShort().startsWith("ucm:")) {
+        		var shortPropertyNames = sourceNode.getPropertyNames(true);
+        		for (var i in shortPropertyNames) {
+        			var propertyName = shortPropertyNames[i];
+        			
+        			if (propertyName == "cm:name") continue;
+        			
+        			// for some reason (propertyName in fields) and (fields.indexOf(propertyName) != -1) always return false
+        			var found = false;
+        			for (i in fields) {
+        				var validField = fields[i];
+        				if (validField == propertyName) {
+        					found = true;
+        					break;
+        				}
+        			}
+        			if (!found) continue;
+        			
+        			var fieldName = "prop_" + propertyName.replace(":", "_");
+        			var propValue = sourceNode.properties[propertyName];
+        			if (propValue != null && propValue != undefined) {
+        				var fieldValue = ((value instanceof java.util.Date) ? utils.toISO8601(propValue) : propValue);
+        				formModel.formData[fieldName] = fieldValue;
+        			}
+        		}
+        	}
         }
         catch (error)
         {
@@ -127,26 +154,6 @@ function main()
             var msg = error.message;
             if (logger.isLoggingEnabled())
                 logger.log(msg);
-        }
-        
-        // pre-populate the form data model
-        //TODO: check type of inherit node
-        for (var k in inheritScriptObj.formData.data)
-        {
-        	if (k != "prop_cm_name") {
-        		var value = inheritScriptObj.formData.data[k].value;
-        		
-        		if (value instanceof java.util.Date)
-        		{
-        			formModel.formData[k] = utils.toISO8601(value);
-        		}
-        		// There is no need to handle java.util.List instances here as they are
-        		// returned from ScriptFormData.java as Strings
-        		else
-        		{
-        			formModel.formData[k] = value;
-        		}
-        	}
         }
     }
     // UCM customization end

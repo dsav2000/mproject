@@ -1,5 +1,6 @@
 package org.alfresco.repo.forms.processor.node;
 
+import static org.alfresco.museum.ucm.UCMConstants.ASPECT_GEOGRAPHICAL_QNAME;
 import static org.alfresco.museum.ucm.UCMConstants.CONTENT_PROP_DATA;
 import static org.alfresco.museum.ucm.UCMConstants.DEFAULT_CONTENT_MIMETYPE;
 import static org.alfresco.museum.ucm.UCMConstants.NAME_PROP_DATA;
@@ -188,8 +189,10 @@ public class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 			String lon = metadata.get("geo:long");
 
 			if (lat != null && lon != null) {
-				this.getNodeService().setProperty(node, ContentModel.PROP_LATITUDE, lat);
-				this.getNodeService().setProperty(node, ContentModel.PROP_LONGITUDE, lon);
+				HashMap<QName, Serializable> geoProps = new HashMap<QName, Serializable>();
+				geoProps.put(ContentModel.PROP_LATITUDE, lat);
+				geoProps.put(ContentModel.PROP_LONGITUDE, lon);
+				this.getNodeService().addAspect(node, ASPECT_GEOGRAPHICAL_QNAME, geoProps);
 			}
 		} catch (IOException e) {
 			logger.warn("Can't read image content, skipping", e);
@@ -290,6 +293,17 @@ public class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 		}
 	}
 
+	protected void fillMandatoryProperties(TypeDefinition type, NodeRef node, Serializable value) {
+		for (PropertyDefinition propDef : type.getProperties().values()) {
+			if (propDef.isMandatory()) {
+				Serializable currentValue = this.getNodeService().getProperty(node, propDef.getName());
+				if (currentValue == null) {
+					this.getNodeService().setProperty(node, propDef.getName(), value);
+				}
+			}
+		}
+	}
+	
 	@Override
 	public void beforeGenerate(T item, List<String> fields, List<String> forcedFields, Form form,
 			Map<String, Object> context) {
@@ -307,7 +321,7 @@ public class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 	@Override
 	public void afterPersist(T item, FormData data, NodeRef persistedObject) {
 	}
-
+	
 	public NodeService getNodeService() {
 		return nodeService;
 	}

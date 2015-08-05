@@ -1,16 +1,14 @@
-package org.alfresco.repo.forms.processor.node;
+package org.alfresco.museum.ucm;
 
 import static org.alfresco.museum.ucm.UCMConstants.TYPE_UCM_ARTIFACT_QNAME;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.museum.ucm.UCMConstants;
-import org.alfresco.repo.forms.Form;
 import org.alfresco.repo.forms.FormData;
 import org.alfresco.repo.forms.FormData.FieldData;
+import org.alfresco.repo.forms.processor.node.UCMGenericFilter;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -21,18 +19,6 @@ import org.alfresco.service.namespace.QName;
  * for attachments and setting image content as artifact property.
  */
 public class UCMCreateArtifact extends UCMGenericFilter<TypeDefinition> {
-	@Override
-	public void beforeGenerate(TypeDefinition item, List<String> fields, List<String> forcedFields, Form form,
-			Map<String, Object> context) {
-		// Do nothing
-	}
-
-	@Override
-	public void afterGenerate(TypeDefinition item, List<String> fields, List<String> forcedFields, Form form,
-			Map<String, Object> context) {
-		// Do nothing
-	}
-
 	/**
 	 * Fill file name field. Handle possible file name collisions.
 	 */

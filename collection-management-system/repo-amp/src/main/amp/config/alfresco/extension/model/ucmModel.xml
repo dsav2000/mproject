@@ -431,8 +431,8 @@
 			<mandatory-aspects>
 				<aspect>ucm:artist_aspect</aspect>
 				<aspect>ucm:museum_artifact_aspect</aspect>
-				<aspect>cm:geographic</aspect>
 <!--
+				<aspect>cm:geographic</aspect>
 				<aspect>ucm:indoor_artifact_aspect</aspect>
 				<aspect>ucm:archeological_aspect</aspect>
 				<aspect>ucm:artifact_donor</aspect>

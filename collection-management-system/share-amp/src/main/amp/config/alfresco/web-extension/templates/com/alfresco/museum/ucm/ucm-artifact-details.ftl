@@ -1,13 +1,9 @@
 <#include "../../../../org/alfresco/include/alfresco-template.ftl" />
 <@templateHeader>
+   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/actions.js" group="document-details"/>
+   <@script type="text/javascript" src="${url.context}/res/components/documentlibrary/actions-util.js" group="document-details"/>
+   <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/documentlibrary/actions.css" group="document-details"/>
    <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/doclib-actions.js" group="document-details"/>
-<#--
-	<@script type="text/javascript" src="${url.context}/res/js/jquery.js"  group="document-details"/>
-	<@script type="text/javascript" src="${url.context}/res/js/jquery-ui.js"  group="document-details"/>
-	<@script type="text/javascript" src="${url.context}/res/js/lib/jquery-1.11.1/jquery.js" group="document-details"/>
-	<@script type="text/javascript" src="${url.context}/res/js/jquery.layout.js"  group="document-details"/>
-	<@script type="text/javascript" src="${url.context}/res/js/jquery.loupe.min.js"  group="document-details"/>
--->
    <@script type="text/javascript" src="${url.context}/res/js/artifact-preview.js" group="artifact"/>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/artifact-preview.css" group="artifact"/>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/artifact-details.css" group="artifact"/>
@@ -36,13 +32,6 @@
 			   </script>
 			   <div id="ucm-artifact-image" class="artifact-preview">
 			   	  <@region id="web-preview" scope="template"/>
-			   	  <#--script type="text/javascript">
-                $("img").loupe({
-                      width: 250, // width of magnifier
-                      height: 250, // height of magnifier
-                      loupe: 'loupe' // css class for magnifier 
-                    });
-            </script-->
 			   </div>
             </#if>
 			<div id="ucm-left-bottom">
@@ -51,6 +40,7 @@
          </div>
 
          <div id="ucm-metadata" class="yui-u ucm-metadata">
+         	<@region id="document-actions" scope="template"/>
             <@region id="document-links" scope="template"/>
 			<@region id="document-tags" scope="template"/>
             <@markup id="bd">
@@ -61,15 +51,15 @@
 			       </div>
 			    </div>
 		    </@>
-	        <@region id="document-actions" scope="template"/>
 	        <@region id="document-versions" scope="template"/>
 <#--
+			<@region id="document-actions" scope="template"/>
 			<@region id="comments" scope="template"/>
 -->    
           </div>
 		  <div class="yui-u">
-<#--		    
-	            <@region id="document-actions" scope="template"/>                 
+<#--                 
+	            <@region id="document-actions" scope="template"/>
 	            <@region id="document-metadata" scope="template"/>
 	            <@region id="document-sync" scope="template"/>
 	            <@region id="document-permissions" scope="template"/>
