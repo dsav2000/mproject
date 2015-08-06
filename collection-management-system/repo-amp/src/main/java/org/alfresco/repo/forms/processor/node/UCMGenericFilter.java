@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +24,7 @@ import org.alfresco.repo.forms.FormData.FieldData;
 import org.alfresco.repo.forms.FormException;
 import org.alfresco.repo.forms.processor.AbstractFilter;
 import org.alfresco.repo.forms.processor.AbstractFormProcessor;
+import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
@@ -283,7 +285,7 @@ public class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 	 * model file; 2. be set in parent node.
 	 */
 	protected void inheritProperties(TypeDefinition toType, NodeRef fromNode, NodeRef toNode) {
-		Set<QName> propsSet = toType.getProperties().keySet();
+		Set<QName> propsSet = getAllProperties(toType).keySet();
 		for (QName property : propsSet) {
 			Serializable fromValue = this.getNodeService().getProperty(fromNode, property);
 			Serializable toValue = this.getNodeService().getProperty(toNode, property);
@@ -294,7 +296,7 @@ public class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 	}
 
 	protected void fillMandatoryProperties(TypeDefinition type, NodeRef node, Serializable value) {
-		for (PropertyDefinition propDef : type.getProperties().values()) {
+		for (PropertyDefinition propDef : getAllProperties(type).values()) {
 			if (propDef.isMandatory()) {
 				Serializable currentValue = this.getNodeService().getProperty(node, propDef.getName());
 				if (currentValue == null) {
@@ -302,6 +304,15 @@ public class UCMGenericFilter<T> extends AbstractFilter<T, NodeRef> {
 				}
 			}
 		}
+	}
+	
+	public static HashMap<QName, PropertyDefinition> getAllProperties(TypeDefinition type) {
+		HashMap<QName, PropertyDefinition> result = new HashMap<QName, PropertyDefinition>();
+		result.putAll(type.getProperties());
+		for (AspectDefinition aspect : type.getDefaultAspects()) {
+			result.putAll(aspect.getProperties());
+		}
+		return result;
 	}
 	
 	@Override

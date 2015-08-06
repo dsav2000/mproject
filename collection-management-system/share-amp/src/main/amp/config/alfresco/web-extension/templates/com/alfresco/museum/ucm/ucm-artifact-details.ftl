@@ -40,7 +40,7 @@
          </div>
 
          <div id="ucm-metadata" class="yui-u ucm-metadata">
-         	<@region id="document-actions" scope="template"/>
+         	<!--@region id="document-actions" scope="template"/-->
             <@region id="document-links" scope="template"/>
 			<@region id="document-tags" scope="template"/>
             <@markup id="bd">
@@ -51,9 +51,10 @@
 			       </div>
 			    </div>
 		    </@>
+	        <@region id="actions-common" scope="template"/>
 	        <@region id="document-versions" scope="template"/>
-<#--
 			<@region id="document-actions" scope="template"/>
+<#--
 			<@region id="comments" scope="template"/>
 -->    
           </div>

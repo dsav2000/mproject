@@ -3,7 +3,8 @@
 function main()
 {
 	var itemKind = "type";
-	var itemId = "cm:content";
+//	var itemId = "cm:content";
+	var itemId = "ucm:attached_file";
 
     if (logger.isLoggingEnabled())
     {

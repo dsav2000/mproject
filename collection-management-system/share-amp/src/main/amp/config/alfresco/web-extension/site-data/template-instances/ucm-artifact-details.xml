@@ -177,7 +177,7 @@
             <nodeRef>{nodeRef}</nodeRef>
          </properties>
       </component>
-<!-- 
+ 
       <component>
          <region-id>actions-common</region-id>
          <url>/components/documentlibrary/actions-common</url>
@@ -185,7 +185,7 @@
             <nodeRef>{nodeRef}</nodeRef>
             <dependencyGroup>document-details</dependencyGroup>
          </properties>
-      </component> -->
+      </component>
 
       <!-- Document Tags -->
        <component>
