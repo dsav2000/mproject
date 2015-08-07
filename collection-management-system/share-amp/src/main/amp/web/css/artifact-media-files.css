@@ -47,6 +47,20 @@
 	border: 0px;
 }
 
+.ucm-media-file-edit-button {
+	border: 0px;
+	padding: 1px;
+	background: inherit;
+	vertical-align: middle;
+	float: right;
+	margin-left:8px;
+}
+
+.ucm-media-file-edit-button:hover {
+	color: red;
+	border: 0px;
+}
+
 .ucm-media-dialog.ui-dialog-content.ui-widget-content {
 	overflow: hidden;
 }
