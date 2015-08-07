@@ -55,22 +55,33 @@ function ucmCreateMediaFile(mediaFile) {
 	var url = ucmMediaServiceUrl();
 	var wrapper = $('<div class="ucm-media-wrapper"/>');
 
-	var name = mediaFile.title || mediaFile.name;
+	var name = mediaFile.name;
+	var title = mediaFile.title;
 
 /* TODO implement it and check it
 	var deleteButton = $('&nbsp;');
-	
+	var editButton = = $('&nbsp;');
 	if (mediaFile.hasPermission("write"))
 	{
 		deleteButton = $('<button class="ucm-media-file-delete-button"><img src="/share/images/delete-item-on.png"/></button>'
 		).click(function() {
 			ucmDeleteFile(mediaFile.nodeRef, wrapper);
 		});
+
+		editButton = $('<button class="ucm-media-file-edit-button"><img src="/share/images/edit-16.png"/></button>'
+		).click(function() {
+			ucmEditFile(mediaFile.nodeRef, wrapper);
+		});
 	}
 */
-	var deleteButton = $('<button class="ucm-media-file-delete-button"><img src="/share/images/delete-item-on.png"/></button>'
+	var deleteButton = $('<button class="ucm-media-file-delete-button"><img src="/share/images/delete-16-red.png"/></button>'
 	).click(function() {
 		ucmDeleteFile(mediaFile.nodeRef, wrapper);
+	});
+
+	editButton = $('<button class="ucm-media-file-edit-button"><img src="/share/images/edit-16.png"/></button>'
+	).click(function() {
+		ucmEditFile(mediaFile.nodeRef, wrapper);
 	});
 
 	var contentLink = appContext + '/proxy/alfresco/api/node' + mediaFile.link
@@ -82,7 +93,7 @@ function ucmCreateMediaFile(mediaFile) {
 		wrapper.addClass('ucm-audio-wrapper');
 		wrapper.append(name+
 				     '<span class="ucm-media-right">'+'<audio src="' + contentLink
-				+ '" class="ucm-media-audio" preload="none" controls/>'+deleteButton.get(0).outerHTML+"</span>");
+				+ '" class="ucm-media-audio" preload="none" controls/>'+deleteButton.get(0).outerHTML+editButton.get(0).outerHTML+"</span>");
 		break;
 	case 'application/pdf':
 		var link = $('<a/>', {
@@ -94,6 +105,7 @@ function ucmCreateMediaFile(mediaFile) {
 		});
 		wrapper.append(link);
 		wrapper.append(deleteButton);
+		wrapper.append(editButton);
 		break;
 	case 'application/msword':
 	case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
@@ -107,6 +119,7 @@ function ucmCreateMediaFile(mediaFile) {
 		});
 		wrapper.append(link);
 		wrapper.append(deleteButton);
+		wrapper.append(editButton);
 		break;
 	case 'video/mp4':
 		var link = $('<a/>', {
@@ -118,13 +131,14 @@ function ucmCreateMediaFile(mediaFile) {
 		});
 		wrapper.append(link);
 		wrapper.append(deleteButton);
+		wrapper.append(editButton);
 		break;
 	case 'text/uri-list':
 		var link = $('<a/>', {
 			href : mediaFile.title,
 			'class' : 'ucm-media-link',
 			target : '_blank',
-			text : mediaFile.title
+			text : mediaFile.name
 		});
 		// Some sites can't be opened inside frame.
 		/*
@@ -133,6 +147,7 @@ function ucmCreateMediaFile(mediaFile) {
 		 */
 		wrapper.html(link);
 		wrapper.append(deleteButton);
+		wrapper.append(editButton);
 		break;
 	default: // TODO: let user save content instead of showing dialog?
 		var link = $('<a/>', {
@@ -144,10 +159,41 @@ function ucmCreateMediaFile(mediaFile) {
 		});
 		wrapper.append(link);
 		wrapper.append(deleteButton);
+		wrapper.append(editButton);
 		break;
 	}
 //http://www.sanwebe.com/2013/03/addremove-input-fields-dynamically-with-jquery
 	return wrapper;
+}
+
+function ucmEditFile(nodeRef, element) {
+	require(
+			[ "jquery" ],
+			function($) {
+				jQuery = $;
+				var editUrl = appContext
+						+ "/proxy/alfresco/slingshot/doclib/action/files?alf_method=edit";
+/* TODO needs proper implementation !!!!!!!!
+				var headers = {};
+				headers[Alfresco.util.CSRFPolicy.getParameter()] = Alfresco.util.CSRFPolicy
+						.getToken();
+
+				var request = $.ajax({
+					url : deleteUrl,
+					method : 'POST',
+					contentType : 'application/json',
+					headers : headers,
+					data : JSON.stringify({
+						nodeRefs : [ nodeRef ]
+					}),
+					dataType : 'json'
+				});
+/*
+				request.done(function(msg) {
+					element.remove();
+				});
+*/	
+			});
 }
 
 function ucmDeleteFile(nodeRef, element) {
