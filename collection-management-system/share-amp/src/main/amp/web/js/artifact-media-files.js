@@ -50,36 +50,40 @@ function ucmMediaServiceUrl() {
 // (https://www.theparticlelab.com/building-a-custom-html5-audio-player-with-jquery/)
 // https://serversideup.net/style-the-html-5-audio-element/
 // http://webdesign.tutsplus.com/tutorials/create-a-customized-html5-audio-player--webdesign-7081
-
+//http://www.sanwebe.com/2013/03/addremove-input-fields-dynamically-with-jquery
 function ucmCreateMediaFile(mediaFile) {
 	var url = ucmMediaServiceUrl();
 	var wrapper = $('<div class="ucm-media-wrapper"/>');
 
 	var name = mediaFile.name;
 	var title = mediaFile.title;
+	var lang = mediaFile.language;
 
-/* TODO implement it and check it
-	var deleteButton = $('&nbsp;');
-	var editButton = = $('&nbsp;');
-	if (mediaFile.hasPermission("write"))
-	{
-		deleteButton = $('<button class="ucm-media-file-delete-button"><img src="/share/images/delete-item-on.png"/></button>'
+/*
+    var deleteButton = "&nbsp;";
+    var deleteButton = "&nbsp;";
+
+	if (mediaFile.permission="write") {
+	
+		deleteButton = $('<button class="ucm-media-file-delete-button"><img src="/share/images/delete-16-red.png"/></button>'
 		).click(function() {
 			ucmDeleteFile(mediaFile.nodeRef, wrapper);
 		});
-
+	
 		editButton = $('<button class="ucm-media-file-edit-button"><img src="/share/images/edit-16.png"/></button>'
 		).click(function() {
 			ucmEditFile(mediaFile.nodeRef, wrapper);
 		});
 	}
-*/
+
+ */
+	
 	var deleteButton = $('<button class="ucm-media-file-delete-button"><img src="/share/images/delete-16-red.png"/></button>'
 	).click(function() {
 		ucmDeleteFile(mediaFile.nodeRef, wrapper);
 	});
 
-	editButton = $('<button class="ucm-media-file-edit-button"><img src="/share/images/edit-16.png"/></button>'
+	var editButton = $('<button class="ucm-media-file-edit-button"><img src="/share/images/edit-16.png"/></button>'
 	).click(function() {
 		ucmEditFile(mediaFile.nodeRef, wrapper);
 	});
@@ -91,7 +95,7 @@ function ucmCreateMediaFile(mediaFile) {
 	case 'audio/mpeg':
 	case 'audio/mp3':
 		wrapper.addClass('ucm-audio-wrapper');
-		wrapper.append(name+
+		wrapper.append(name+' ('+lang+')'+
 				     '<span class="ucm-media-right">'+'<audio src="' + contentLink
 				+ '" class="ucm-media-audio" preload="none" controls/>'+deleteButton.get(0).outerHTML+editButton.get(0).outerHTML+"</span>");
 		break;
@@ -99,7 +103,7 @@ function ucmCreateMediaFile(mediaFile) {
 		var link = $('<a/>', {
 			href : contentLink,
 			'class' : 'ucm-media-pdf'
-		}).html(name).click(function(e) {
+		}).html(name+' ('+lang+')').click(function(e) {
 			e.preventDefault();
 			ucmShowDialog(contentLink, 600, 600, name);
 		});
@@ -113,7 +117,7 @@ function ucmCreateMediaFile(mediaFile) {
 		var link = $('<a/>', {
 			href : contentLink,
 			'class' : 'ucm-media-pdf'
-		}).html(name).click(function(e) {
+		}).html(name+' ('+lang+')').click(function(e) {
 			e.preventDefault();
 			ucmShowDialog(contentLink, 600, 600, name);
 		});
@@ -125,7 +129,7 @@ function ucmCreateMediaFile(mediaFile) {
 		var link = $('<a/>', {
 			href : contentLink,
 			'class' : 'ucm-media-video'
-		}).html(name+ ' (Video)').click(function(e) {
+		}).html(name+' ('+lang+')' +'. Video.').click(function(e) {
 			e.preventDefault();
 			ucmShowVideo(contentLink, 600, 600, name);
 		});
@@ -138,7 +142,7 @@ function ucmCreateMediaFile(mediaFile) {
 			href : mediaFile.title,
 			'class' : 'ucm-media-link',
 			target : '_blank',
-			text : mediaFile.name
+			text : mediaFile.name+" ("+lang+")"
 		});
 		// Some sites can't be opened inside frame.
 		/*
@@ -162,7 +166,7 @@ function ucmCreateMediaFile(mediaFile) {
 		wrapper.append(editButton);
 		break;
 	}
-//http://www.sanwebe.com/2013/03/addremove-input-fields-dynamically-with-jquery
+
 	return wrapper;
 }
 

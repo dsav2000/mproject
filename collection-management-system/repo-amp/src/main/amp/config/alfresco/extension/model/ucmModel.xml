@@ -207,7 +207,7 @@
 					<type>d:text</type>
 					<mandatory>false</mandatory>
 <!--					
-            		<default>English</default> 
+            		<default>Media</default> 
 					<constraints>
 						<constraint name="ucm:allowed_attach_types" type="LIST">
 							<parameter name="allowedValues">

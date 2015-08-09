@@ -15,7 +15,16 @@ function getArtifactFolder(artifactRef) {
 	return result;
 }
 
-function getMediaFiles(artifactRef) {
+function getMediaFiles(artifactRef) 
+{
+/*
+  for each(permission in node.fullPermissions) {
+    if (/;DIRECT$/.test(permission)) {
+      logger.log(node.displayPath + "/" + node.name + ";" + permission);
+    }
+  }
+getPermissions(noderef) 
+*/
 	var mediaFiles = [];
 	var mediaFolder = getArtifactFolder(artifactRef);
 	if (mediaFolder != null) {
@@ -30,6 +39,8 @@ function getMediaFiles(artifactRef) {
 					link : "/" + file.storeType + "/" + file.storeId + "/" + file.id,
 					type : file.mimetype,
 					size : file.size,
+					permission : "",
+					language : (file.properties["ucm:attached_file_language"]) ? file.properties["ucm:attached_file_language"] : "",
 					description : (file.properties["cm:description"]) ? file.properties["cm:description"] : ""
 				});
 			}
