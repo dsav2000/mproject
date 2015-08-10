@@ -10,6 +10,12 @@
 	<!-- TODO: Adjust index settings (e.g. for ID properties) -->
 	<!-- TODO: References to attachments and references to attachment owners 
 		should be kept in sync -->
+		
+ <!-- 
+ 	TODO look on these sites	
+ 	http://collection-online.moa.ubc.ca/collection-online/explore
+ 	
+ -->
 
 	<imports>
 		<!-- Import Alfresco Dictionary Definitions -->
