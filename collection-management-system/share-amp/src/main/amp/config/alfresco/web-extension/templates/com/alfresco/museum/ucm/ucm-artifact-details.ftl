@@ -51,23 +51,8 @@
 			       </div>
 			    </div>
 		    </@>
-	        <@region id="actions-common" scope="template"/>
-	        <@region id="document-versions" scope="template"/>
 			<@region id="document-actions" scope="template"/>
-<#--
-			<@region id="comments" scope="template"/>
--->    
-          </div>
 		  <div class="yui-u">
-<#--                 
-	            <@region id="document-actions" scope="template"/>
-	            <@region id="document-metadata" scope="template"/>
-	            <@region id="document-sync" scope="template"/>
-	            <@region id="document-permissions" scope="template"/>
-	            <@region id="document-workflows" scope="template"/>    
-	            <@region id="document-versions" scope="template"/>
-				<@region id="document-attachments" scope="template"/>
--->    
             </div>
          </div>
       </div>
